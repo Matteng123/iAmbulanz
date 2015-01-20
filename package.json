@@ -1,7 +1,7 @@
 {
   "name": "gulp-starter-cadman",
   "version": "0.1.1",
-  "description": "Gulp starter specialy for Cadman",
+  "description": "Gulp starter specialy by Cadman",
   "repository": {
     "type": "git",
     "url": "http://dev2.cadman.ws/gulp-starter-cadman.git"
