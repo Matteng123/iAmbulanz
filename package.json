@@ -1,10 +1,10 @@
 {
-  "name": "gulp-starter",
+  "name": "gulp-starter-cadman",
   "version": "0.1.1",
-  "description": "Gulp starter with common tasks and scenarios",
+  "description": "Gulp starter specialy for Cadman",
   "repository": {
     "type": "git",
-    "url": "git://github.com/greypants/gulp-starter.git"
+    "url": "http://dev2.cadman.ws/gulp-starter-cadman.git"
   },
   "//": [
     "The following 'underscore' example demonstrates exposing a module included ",
