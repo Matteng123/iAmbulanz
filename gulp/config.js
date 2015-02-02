@@ -23,6 +23,30 @@ module.exports = {
     src: src + "/images/**",
     dest: dest + "/images"
   },
+  sprites: {
+    src: src + '/images/sprites/icon/*.png',
+    dest: {
+      css: src + '/scss/base/',
+      image: src + '/images/sprites/'
+    },
+    options: {
+      cssName: '_sprites.scss',
+      cssFormat: 'css',
+      cssOpts: {
+        cssClass: function (item) {
+          // If this is a hover sprite, name it as a hover one (e.g. 'home-hover' -> 'home:hover')
+          if (item.name.indexOf('-hover') !== -1) {
+            return '.icon-' + item.name.replace('-hover', ':hover');
+            // Otherwise, use the name as the selector (e.g. 'home' -> 'home')
+          } else {
+            return '.icon-' + item.name;
+          }
+        }
+      },
+      imgName: 'icon-sprite.png',
+      imgPath: '/assets/images/sprites/icon-sprite.png'
+    }
+  },
   markup: {
     src: src + "/htdocs/**",
     dest: dest
