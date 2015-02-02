@@ -8,15 +8,14 @@ module.exports = {
       baseDir: dest
     }
   },
-  sass: {
+  styles: {
     src: src + "/sass/*.{sass,scss}",
     dest: dest,
-    settings: {
-      // Required if you want to use SASS syntax
-      // See https://github.com/dlmanning/gulp-sass/issues/81
-      compass: true,
-      sourceComments: 'map',
-      imagePath: '/images' // Used by the image-url helper
+    options: {
+      project: "./",
+      config_file: 'config.rb',
+      css: './src/.temp',
+      sass: './src/sass/',
     }
   },
   images: {
