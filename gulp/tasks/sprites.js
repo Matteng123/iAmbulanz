@@ -1,6 +1,6 @@
 var gulp        = require('gulp');
 var spritesmith = require('gulp.spritesmith');
-var config      = require('../../config').sprites;
+var config      = require('../config').sprites;
 
 /**
  * Generate sprite and css file from PNGs
