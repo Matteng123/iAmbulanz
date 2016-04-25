@@ -1,0 +1,60 @@
+.Nav {
+
+}
+
+.Nav-items {
+	@include clearfix;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.Nav-item {
+	float: left;
+	display: block;
+}
+
+.Nav-button {
+	padding: ms(0.875em, 0.8) ms(0.5em, 0.8);
+	display: block;
+	font-size: 0.8em;
+	letter-spacing: 0.125em;
+	line-height: ms(1, 0.8);
+	text-transform: uppercase;
+}
+
+button.Nav-button {
+	background-color: transparent;
+	background-image: none;
+	border: none;
+	color: inherit;
+	font-family: inherit;
+
+	&:focus {
+		outline: 0;
+	}
+}
+
+.Nav--pills {
+
+	.Nav-item {
+		margin-right: ms(0.25em);
+		margin-bottom: ms(0.25em);
+
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+
+	.Nav-button {
+		padding: ms(0.375em, 0.8) ms(0.875em, 0.8);
+		border-radius: ms(0.875em, 0.8);
+		background-color: $primary-color;
+		letter-spacing: normal;
+		text-transform: none;
+	}
+
+	.Nav-item.isActive .Nav-button {
+		background-color: $text-color;
+		color: $primary-color;
+	}
+}

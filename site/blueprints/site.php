@@ -18,3 +18,18 @@ fields:
   copyright:
     label: Copyright
     type:  textarea
+  company:
+    label: Company
+    type:  text
+  adress:
+    label: Adresse
+    type:  textarea
+  ust:
+    label: USt-IdNr.
+    type:  text
+  tel:
+    label: Telefon
+    type:  text
+  email:
+    label: E-Mail
+    type:  text

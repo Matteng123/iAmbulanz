@@ -4,8 +4,11 @@
       <?php echo $site->copyright()->kirbytext() ?>
     </div>
 
-    <div class="colophon">
-      <a href="http://getkirby.com/made-with-kirby-and-love">Made with Kirby and <b>♥</b></a>
+    <div class="leftbar">
+    	<?php echo $site->company()->kirbytext() ?>
+    	<?php echo $site->adress()->kirbytext() ?>
+    	<?php echo $site->ust()->kirbytext() ?>
+
     </div>
 
   </footer>
