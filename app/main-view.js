@@ -6,29 +6,16 @@ var dom = require('ampersand-dom');
 var ViewSwitcher = require('ampersand-view-switcher');
 var gsap = require('./vendor/gsap/uncompressed/TweenMax.js');
 var gsap = require('./vendor/gsap/uncompressed/plugins/ScrollToPlugin.js');
-var L = require('./vendor/mapbox/mapbox.js');
-require('modernizr');
 
 var MainView = View.extend({
 
     props: {
         isMobile: false,
-        pageTitle: [String, true, 'Signa'],
-        filterSet: [String, true, ''],
-        mqSize: [Boolean, true, false],
-        cacheScroll: [Number, true, 0],
-        showVideo: [Boolean, true, false],
-        openVideo: [Boolean, true, false],
-        langSwitcher: [Object, true, false]
+        pageTitle: [String, true, 'iAmbulanz']
     },
 
     events: {
         'click a[href]': 'handleLinkClick',
-        'click .box-dorpdown-menu h3': 'handleDropdownMenu',
-        
-        'click .ovl_anchor': 'handleOverlayer',
-        'click .overlayer_close': 'handleOverlayer',
-        
         'click .togglemenu': 'handleTogglemenu',
         'click .nav-holder #close': 'handleTogglemenu'
     },
@@ -56,11 +43,11 @@ var MainView = View.extend({
                 // it's inserted and rendered for me so we'll add a class 
                 // that has a corresponding CSS transition.
 
-                console.log(app.pageAnimation);
+                console.log("old View", oldView);
+                console.log("new View", newView);
 
                 if(oldView && oldView.el){
                     oldView.hookBeforeHide();
-
                     // TweenMax.set(oldView.el, { opacity:0 });
                     TweenMax.to(oldView.el, 0.8, { opacity:0, delay:0.2 });
                     TweenMax.to(window, 1, {scrollTo:{y:0}});
@@ -71,30 +58,17 @@ var MainView = View.extend({
             },
 
             show: function (newView, oldView) {
-
-                self.topmenu = document.getElementById('topmenu');
-                $topmenu = $(self.topmenu);
-                self.topmenu.innerHTML = _.result(newView.model, 'pageTopMenu');
-
-                self.bottommenu = document.getElementById('bottommenu');
-                self.bottommenu.innerHTML = _.result(newView.model, 'pageBottomMenu');
-
-                // reset language navigation
-                self.langSwitcher = document.querySelector('#i18n_menu');
-                self.langSwitcher.replaceChild(_.result(newView.model, 'i18nSwitcher')[0], self.langSwitcher.querySelector('.i18n-inner'));
                 
                 // it's inserted and rendered for me
                 document.title = _.result(newView.model, 'pageTitle');
                 // document.getElementsByClassName('page')[0].scrollTop = self.cacheScroll;
-                window.scrollTo(0, 0);
-                // document.scrollTop = 0;
+
                 
                 TweenMax.set(newView.el, { opacity:0 });
                 TweenMax.to(newView.el, 1.2, {opacity:1, delay:0.5, onComplete:function(){
                     newView.el.setAttribute("style", " ");
                     newView.hookAfterRender();
                 }});
-                app.currentPage = newView;
 
             }
         });
@@ -218,24 +192,10 @@ var MainView = View.extend({
     },
 
     closeMainMenu: function(){
-        this.mediaQuery('790px');
         if ( this.mobile() || this.mqSize ){
             console.log(this.navmain);
             dom.addClass( this.navmain, "close");
         }
-    },
-
-    initScroll: function (){
-        var self = this;
-        window.addEventListener("scroll", function(e) {
-            scroll = document.getElementsByTagName('body')[0].scrollTop;
-            if (scroll >= 70 ){
-                $('#header').addClass('scroll');
-            }else{
-                $('#header').removeClass('scroll');
-            }
-            // self.resizeMenu();
-        });
     },
 
     initMenu: function(){
@@ -287,43 +247,6 @@ var MainView = View.extend({
         });
     },
 
-    handleOverlayer: function(el){
-        el.preventDefault();
-        
-        var self    = this,
-            aTag    = el.delegateTarget,
-            body    = document.body,
-            output  = document.getElementsByClassName('overlayer_inner')[0],
-            tween   = new TimelineMax(),
-            tag     = aTag.getAttribute('data-tag'),
-            loader  = '<div class="ovl_loader"><div class="spinner"><span></span></div></div>';
-
-        if(dom.hasClass(aTag, 'unselect') || dom.hasClass(aTag.parentNode, 'unselect')){
-            return;
-        }
-
-        // check classes and set data
-
-        if(dom.hasClass(body, 'overlayer_open') == false) {
-            var dataID  = document.getElementById(tag);
-            
-            dom.addClass(body, 'overlayer_open');
-            dom.removeClass(output, 'loaded');
-
-            output.innerHTML = '<div class="frame"><span class="overlayer_close"></span><iframe src="' + tag + '" width="100%" height="700" frameborder="0" name="wohnungen"></iframe></div>' + loader;
-
-            // show iframe loader
-            var iframe = document.querySelector('iframe');
-            iframe.onload = function() {
-                dom.addClass(output, 'loaded');
-            };
-
-        } else {
-            dom.removeClass(body, 'overlayer_open');
-            setTimeout(function(){ output.innerHTML = ''; }, 400);
-        }
-    },
-
     mobile: function (){
         isMobile = {
             Android: function() {
@@ -349,14 +272,6 @@ var MainView = View.extend({
             return false;
         } else{
             return true;
-        }
-    },
-
-    mediaQuery: function(w){
-        if ( Modernizr.mq('only screen and (max-width: '+ w +')') ) {
-            this.mqSize = true;
-        } else {
-            this.mqSize = false;
         }
     }
 

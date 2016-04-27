@@ -1,0 +1,82 @@
+.Button {
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	color: $primary-color;
+	background-color: $secondary-color;
+	// Reset unusual Firefox-on-Android default style;
+	// see https://github.com/necolas/normalize.css/issues/214
+	background-image: none;
+	border: none;
+	white-space: nowrap;
+
+	padding: ms(0.625em) ms(1em);
+	height: ms(2.25em);
+
+	font-family: $serif-font;
+	font-style: italic;
+	font-weight: inherit;
+	letter-spacing: 0.0625em;
+	line-height: ms(1);
+	text-align: center;
+
+	user-select: none;
+	transition-duration: 280ms;
+	transition-property: background-color;
+	transition-timing-function: cubic-bezier(0.4,0,0.2,1);
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+
+	&,
+	&:active,
+	&:hover,
+	&:focus,
+	&:visited {
+		outline: 0;
+		text-decoration: none;
+	}
+
+	&:active,
+	&:focus {
+		background-color: $secondary-color;
+	}
+
+	&:active {
+		transition-duration: 0ms;
+	}
+
+	&.is-disabled,
+	&[disabled],
+	fieldset[disabled] & {
+		color: rgb(168,168,168);
+		cursor: not-allowed;
+		// Future-proof disabling of clicks
+		pointer-events: none;
+		box-shadow: none;
+	}
+}
+
+.Button--block {
+	display: block;
+	width: 100%;
+}
+
+.Button--secondary {
+	color: $text-color;
+	background-color: $primary-color;
+}
+
+.Button--translucent {
+	background-color: transparentize($secondary-color, 0.1);
+}
+
+.ButtonGroup--vertical {
+
+	.Button {
+		display: block;
+		width: 100%;
+	}
+
+	.Button + .Button {
+		margin-top: ms(0.0625em);
+	}
+}

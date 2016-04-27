@@ -21,9 +21,6 @@ var Content = Model.extend({
         var dom = $(resp);
         this.pageTitle = resp.split("<title>")[1].split("</title>")[0];
         this.pageContent = dom.find('.view')[0];
-        this.pageTopMenu = dom.find('#topmenu').html();
-        this.i18nSwitcher = dom.find('.i18n-inner');
-        this.pageBottomMenu = dom.find('#bottommenu').html();
         return resp;
     },
 

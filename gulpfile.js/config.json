@@ -1,0 +1,45 @@
+{
+  "root": {
+    "src": "./app",
+    "dest": "./assets"
+  },
+  "tasks": {
+    "browserSync": {
+      "proxy": "iambulanz.dev"
+    },
+    "css": {
+      "src": "styles",
+      "dest": "css",
+      "autoprefixer": {
+        "browsers": [
+          "last 3 version"
+        ]
+      },
+      "sass": {
+        "indentedSyntax": true
+      },
+      "extensions": ["sass", "scss", "css"]
+    },
+    "fonts": {
+      "src": "fonts",
+      "dest": "fonts",
+      "extensions": ["eot", "svg", "ttf", "woff", "woff2", "css"],
+      "exclude": [
+        "**/specimen_files/**/*"
+      ]
+    },
+    "js": {
+      "src": "",
+      "dest": "js",
+      "extractSharedJs": false,
+      "entries": {
+        "app": [
+          "./app.js"
+        ]
+      },
+      "extensions": [
+        "js"
+      ]
+    }
+  }
+}

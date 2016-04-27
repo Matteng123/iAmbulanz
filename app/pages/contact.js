@@ -1,4 +1,4 @@
-jQuery = $ = require('jquery');
+var $ = require('jquery');
 var _ = require('underscore');
 var PageView = require('./base');
 var dom = require('ampersand-dom');
