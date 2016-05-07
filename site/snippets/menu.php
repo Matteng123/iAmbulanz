@@ -1,16 +1,16 @@
 
-<nav role="navigation">
+<nav class="Menu" role="navigation">
   <?php 
     $mainitems = $pages->filterBy('ispart', 'main');
     if($mainitems and $mainitems->count()):
   ?>
-  <ul class="menu cf">
+  <ul class="Menu-body">
     <?php foreach($mainitems as $p): ?>
     <li>
       <a <?php e($p->isOpen(), ' class="active"') ?> href="<?php echo $p->url() ?>"><?php echo $p->title()->html() ?></a>
 
       <?php if($p->hasVisibleChildren()): ?>
-      <ul class="submenu">
+      <ul class="Menu-submenu">
         <?php foreach($p->children()->visible() as $p): ?>
         <li>
           <a href="<?php echo $p->url() ?>"><?php echo $p->title()->html() ?></a>

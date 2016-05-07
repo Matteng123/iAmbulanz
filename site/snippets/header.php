@@ -10,13 +10,18 @@
   <meta name="keywords" content="<?php echo $site->keywords()->html() ?>">
 
   <?php echo css('assets/css/app.css') ?>
+  <link type="text/css" rel="stylesheet" href="http://fast.fonts.net/cssapi/c05c1886-8820-4603-a8c9-c17649fa0874.css">
 
 </head>
 <body>
 
-  <header class="header cf" role="banner">
-    <a class="logo" href="<?php echo url() ?>">
-      <img src="<?php echo url('assets/images/logo.svg') ?>" alt="<?php echo $site->title()->html() ?>" />
-    </a>
-    <?php snippet('menu') ?>
+  <header class="Header" role="banner">
+    <?php snippet('logo') ?>
+    <div class="Header-body">
+      <?php snippet('topbar') ?>
+      <?php snippet('menu') ?>
+    </div>
+    <span class="Header-toggle">
+      <span></span>
+    </span>
   </header>

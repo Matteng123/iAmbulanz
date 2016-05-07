@@ -1,9 +1,7 @@
 <?php if(!defined('KIRBY')) exit ?>
 
-title: Projects
-pages:
-  template: project
-files: false
+title: About
+pages: false
 fields:
   title:
     label: Title
@@ -11,3 +9,4 @@ fields:
   text:
     label: Text
     type:  textarea
+    size:  large

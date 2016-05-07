@@ -2,15 +2,24 @@
 $scale-base: 1;
 
 // Colors
-$primary-color: rgb(28,28,25);
-$primary-light-color: lighten($primary-color, 15%);
-$secondary-color: rgb(237,127,6);
-$text-color: rgb(227,227,227);
-$background-color: rgb(45,44,39);
+$primary-color: rgb(241,241,241);
+$secondary-color: rgb(76,84,84);
+$button-color: rgb(177,0,0);
+$text-color: rgb(49,41,41);
+$neg-text-color: rgb(255,255,255);
+$background-color: rgb(255,255,255);
+$footer-color: #4c5454;
 
 // Fonts
-$sans-serif-font: "news-gothic-std", Helvetica, Arial, sans-serif;
-$serif-font: "minion-pro", "Times New Roman", Times, serif;
+$headline-font: "Brandon Text W01 Bold", Helvetica, Arial, sans-serif;
+$button-font: "Brandon Text W01 Bold", Helvetica, Arial, sans-serif;
+$subline-font: "Brandon Text W01 Medium", Helvetica, Arial, sans-serif;
+$text-font: "Brandon Text W01 Regular", Helvetica, Arial, sans-serif;
+$link-font: "Brandon Text W01 Regular", Helvetica, Arial, sans-serif;
+
+// Standards
+$medium-border: 30px;
+$max-size: 1600px;
 
 // Mixins
 @import "mixins/all";
@@ -26,14 +35,16 @@ $serif-font: "minion-pro", "Times New Roman", Times, serif;
 // Objects
 @import "modules/button";
 @import "modules/responsive-media";
-@import "modules/logo";
 @import "modules/nav";
 
 // Modules
 @import "modules/menu";
+@import "modules/logo";
+@import "modules/topbar";
 
 // Layout
 @import "modules/application";
+@import "modules/header";
 
 
 

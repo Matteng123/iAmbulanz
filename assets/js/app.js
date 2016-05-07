@@ -63,6 +63,7 @@
 	    initial: true,
 	
 	    blastoff: function () {
+	        console.log("blastoff");
 	        var self = window.app = this;
 	        // init our URL handlers and the history tracker
 	        this.router = new Router();
@@ -70,6 +71,7 @@
 	        var mainView = self.view = new MainView({
 	            el: document.body
 	        });
+	        console.log("main View", mainView);
 	
 	        mainView.render();
 	
@@ -102,6 +104,9 @@
 	        this.router.history.navigate(url, {trigger: true});
 	    }
 	};
+	domReady(function () {
+	  App.blastoff();
+	})
 	
 	module.exports = window.App = App;
 
@@ -44817,7 +44822,7 @@
 	
 	    events: {
 	        'click a[href]': 'handleLinkClick',
-	        'click .togglemenu': 'handleTogglemenu',
+	        'click .Header-toggle': 'handleTogglemenu',
 	        'click .nav-holder #close': 'handleTogglemenu'
 	    },
 	
@@ -44829,7 +44834,8 @@
 	            page: '#page',
 	            main: '#main',
 	            footer: '#footer',
-	            header: '#header',
+	            header: '.Header',
+	            headerBody: '.Header-body',
 	            nav: '.nav',
 	            navmain: '.nav-main',
 	            togglemenu: '.togglemenu'
@@ -44889,9 +44895,6 @@
 	                'title': view.model.pageTitle
 	            });
 	        }
-	        
-	        // SET IS MOBILE OR NOT
-	        view._setIsMobile(this.mobile());
 	
 	        // SWICTH THE VIEW
 	        this.pageSwitcher.set(view);
@@ -44902,8 +44905,6 @@
 	    handleInitialPage: function (view) {
 	        var self = this;
 	        view.handleInitialPage();
-	        // SET IS MOBILE OR NOT
-	        view._setIsMobile(this.mobile());
 	
 	        view.el = this.query('.view');
 	        view.render();
@@ -44915,13 +44916,15 @@
 	    },
 	
 	    handleTogglemenu: function (e){
-	        // console.log(document.body)
-	        var body = document.body;
+	        console.log("handleTogglemenu");
 	
-	        if( dom.hasClass(body, 'show-menu') || e == undefined){
-	            dom.removeClass(body, 'show-menu');
-	        } else{
-	            dom.addClass(body, 'show-menu');
+	
+	        if( dom.hasClass(this.header, 'Header--open') || e == undefined){
+	            dom.setAttribute(this.header, 'style', '');
+	            dom.removeClass(this.header, 'Header--open');
+	        } else {
+	            dom.setAttribute(this.header, 'style', 'margin-top:'+this.headerBody.offsetHeight+'px');
+	            dom.addClass(this.header, 'Header--open');
 	        }
 	    },
 	

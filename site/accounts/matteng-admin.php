@@ -7,5 +7,7 @@ password: >
 language: de
 role: admin
 history:
+  - projects
+  - faq
   - meta-about
   - contact

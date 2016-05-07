@@ -10,6 +10,7 @@ var App = {
     initial: true,
 
     blastoff: function () {
+        console.log("blastoff");
         var self = window.app = this;
         // init our URL handlers and the history tracker
         this.router = new Router();
@@ -17,6 +18,7 @@ var App = {
         var mainView = self.view = new MainView({
             el: document.body
         });
+        console.log("main View", mainView);
 
         mainView.render();
 
@@ -49,5 +51,8 @@ var App = {
         this.router.history.navigate(url, {trigger: true});
     }
 };
+domReady(function () {
+  App.blastoff();
+})
 
 module.exports = window.App = App;

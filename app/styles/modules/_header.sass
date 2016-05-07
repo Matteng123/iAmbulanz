@@ -1,0 +1,102 @@
+.Header 
+	background-color: $background-color
+	width: 100%
+	position: relative
+	height: 5.3rem
+	margin-bottom: 1rem
+	margin-top: 0%
+	+transition(margin, .5s)
+	+bp('large')
+		height: auto
+
+
+	&--open 
+		// margin-top: 40%
+		// height: auto
+		.Header-body
+			// +transform(translateY(0%))
+			
+		.Header-toggle
+			span
+				background: $button-color
+				+transform(translateY(0rem) translateX(0rem) rotate(45deg))
+				&:before
+					background: $button-color
+					+transform(translateY(0rem) translateX(0rem) rotate(90deg))
+				&:after
+					background: $button-color
+					+transform(translateY(0rem) translateX(0rem) rotate(-90deg))
+
+	&-body
+		position: relative
+		left: 0
+		right: 0
+		padding-top: 5.3rem
+		background-color: $text-color
+		+bp('large')
+			padding-top: 0rem
+			background-color: $background-color
+			+transform(translateY(0%))
+		+transform(translateY(-100%))
+		+transition(transform, .3s)
+
+	&-toggle
+		position: absolute;
+		top: 30px
+		right: 30px
+		width: 36px
+		height: 1.6rem
+		font-size: 30px
+		display: inline-block
+		z-index: 9999
+		cursor: pointer
+		+bp('large')
+			display: none
+
+		span
+			position: absolute
+			top: 50%
+			left: 0
+			display: block
+			width: 100%
+			height: 0.1rem
+			margin-top: -0.1rem
+			background-color: $secondary-color
+			-webkit-touch-callout: none
+			-webkit-user-select: none
+			-khtml-user-select: none
+			-moz-user-select: none
+			-ms-user-select: none
+			user-select: none
+			+transition(background-color, .3s)
+			+transition(transform, .5s)
+
+			&:after
+				position: absolute
+				left: 0
+				width: 100%
+				height: 100%
+				background-color: $secondary-color
+				content: ''
+				+transition(transform, .3s)
+			&:before
+				position: absolute
+				left: 0
+				width: 100%
+				height: 100%
+				background-color: $secondary-color
+				content: ''
+				+transition(transform, .3s)
+				+transform(translateY(-0.6rem))
+			&:after
+				+transform(translateY(0.6rem))
+		
+		&:hover span
+			background-color: $button-color
+			+transform(translateY(0rem) translateX(0rem) rotate(-90deg))
+			&:before
+				background: $button-color
+				+transform(translateY(0rem) translateX(0rem) rotate(90deg))
+			&:after
+				background: $button-color
+				+transform(translateY(0rem) translateX(0rem) rotate(-90deg))

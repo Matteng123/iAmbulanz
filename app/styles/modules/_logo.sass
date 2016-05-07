@@ -1,0 +1,29 @@
+.Logo 
+	position: absolute
+	top: 1.6rem
+	left: 50%
+	z-index: 99
+	+transform(translateX(-50%))
+	// +bp('medium')
+	// 	left: $medium-border
+	// 	+transform(translateX(0%))
+	&-body
+		max-width: inherit
+		margin: 0
+	img 
+		width: 10rem
+	+bp('large')
+		left: 0%
+		right: 0%
+		top: 6.5rem
+		+transform(translateX(0%))
+		&-body
+			position: relative
+			max-width: $max-size
+			margin: 0 auto
+			a 
+				padding: 0 .8rem
+		
+		
+	
+

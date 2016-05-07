@@ -16,7 +16,7 @@ var MainView = View.extend({
 
     events: {
         'click a[href]': 'handleLinkClick',
-        'click .togglemenu': 'handleTogglemenu',
+        'click .Header-toggle': 'handleTogglemenu',
         'click .nav-holder #close': 'handleTogglemenu'
     },
 
@@ -28,7 +28,8 @@ var MainView = View.extend({
             page: '#page',
             main: '#main',
             footer: '#footer',
-            header: '#header',
+            header: '.Header',
+            headerBody: '.Header-body',
             nav: '.nav',
             navmain: '.nav-main',
             togglemenu: '.togglemenu'
@@ -88,9 +89,6 @@ var MainView = View.extend({
                 'title': view.model.pageTitle
             });
         }
-        
-        // SET IS MOBILE OR NOT
-        view._setIsMobile(this.mobile());
 
         // SWICTH THE VIEW
         this.pageSwitcher.set(view);
@@ -101,8 +99,6 @@ var MainView = View.extend({
     handleInitialPage: function (view) {
         var self = this;
         view.handleInitialPage();
-        // SET IS MOBILE OR NOT
-        view._setIsMobile(this.mobile());
 
         view.el = this.query('.view');
         view.render();
@@ -114,13 +110,15 @@ var MainView = View.extend({
     },
 
     handleTogglemenu: function (e){
-        // console.log(document.body)
-        var body = document.body;
+        console.log("handleTogglemenu");
 
-        if( dom.hasClass(body, 'show-menu') || e == undefined){
-            dom.removeClass(body, 'show-menu');
-        } else{
-            dom.addClass(body, 'show-menu');
+
+        if( dom.hasClass(this.header, 'Header--open') || e == undefined){
+            dom.setAttribute(this.header, 'style', '');
+            dom.removeClass(this.header, 'Header--open');
+        } else {
+            dom.setAttribute(this.header, 'style', 'margin-top:'+this.headerBody.offsetHeight+'px');
+            dom.addClass(this.header, 'Header--open');
         }
     },
 
