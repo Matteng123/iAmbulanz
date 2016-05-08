@@ -21,12 +21,25 @@
   	</div>
   	<?php endif ?>
 
-    <div class="text">
-      <h1><?php echo $page->title()->html() ?></h1>
-      <?php echo $page->text()->kirbytext() ?>
+    <div class="Location-teaser">
+    	<div class="Location-teaser-body">
+    		<div class="Location-teaser-text">
+      			<h1><?php echo $page->headline1()->html() ?></h1>
+      			<?php echo $page->text1()->kirbytext() ?>
+      		</div>
+      		<div class="Location-teaser-tab">
+      			<?php 
+      				$locations = $site->standorte()->toStructure();
+      				if($locations and $locations->count()): ?>
+      			<?php foreach($locations as $l): ?>
+      				<p><?php echo html($l->title()) ?></p>
+      				<p><?php echo html($l->street()) ?></p>
+      				
+      			<?php endforeach ?>
+      			<?php endif ?>
+      		</div>
+      	</div>
     </div>
-
-    <hr>
 
   </main>
 <?php snippet('view-end') ?>
