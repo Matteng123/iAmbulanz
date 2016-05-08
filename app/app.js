@@ -18,7 +18,6 @@ var App = {
         var mainView = self.view = new MainView({
             el: document.body
         });
-        console.log("main View", mainView);
 
         mainView.render();
 

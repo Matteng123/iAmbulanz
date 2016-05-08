@@ -1,6 +1,6 @@
 <?php if(!defined('KIRBY')) exit ?>
 
-title: Prices
+title: Preise
 pages: false
 fields:
   title:
@@ -10,3 +10,4 @@ fields:
     label: Text
     type:  textarea
     size:  large
+  ispart: ispart

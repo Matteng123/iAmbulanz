@@ -11,3 +11,4 @@ fields:
   text:
     label: Text
     type:  textarea
+  ispart: ispart

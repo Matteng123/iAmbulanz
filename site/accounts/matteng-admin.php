@@ -7,7 +7,8 @@ password: >
 language: de
 role: admin
 history:
-  - projects
-  - faq
-  - meta-about
-  - contact
+  - home
+  - standorte
+  - preise
+  - fuer-unternehmen
+  - service

@@ -7,7 +7,7 @@ var owlCarousel = require('../vendor/owl.carousel.js');
 var responsImg = require('../vendor/responsiveimage/jquery.responsImg.js');
 
 
-var Content = PageView.extend({
+var Home = PageView.extend({
 	
 	events: {
 		
@@ -18,12 +18,23 @@ var Content = PageView.extend({
 	},
 
 	hookInRender: function () {
+		console.log("------- HOME View");
 		var self = this;
-
+		TweenMax.delayedCall(0.1, this.initializeSlider, [], this); // Slider
 		this.bindResponsimg();
 	},
 
 	hookAfterRender: function (){
+	},
+
+	initializeSlider: function(){
+
+		$('.Application-carousel').owlCarousel({
+			    loop:true,
+			    margin:0,
+			    nav:true,
+			    items:1
+			});
 	},
 
 	bindResponsimg: function (){
@@ -35,4 +46,4 @@ var Content = PageView.extend({
 
 });
 
-module.exports = Content;
+module.exports = Home;

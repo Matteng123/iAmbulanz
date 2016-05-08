@@ -1,0 +1,150 @@
+.Footer 
+	background-color: $footer-color
+	color: white
+	&-body
+		max-width: $max-size
+		margin: 0 auto
+		padding: 30px $small-border
+		+bp('medium')
+			padding: $medium-border
+		+bp('large')
+			padding: $large-border
+		
+	&:after 
+		content: ""
+		display: table
+		clear: both
+
+	a 
+		font-family: $link-font
+		font-style: italic
+		text-decoration: underline
+		&:hover
+			color: $button-color
+
+	table 
+		width: 100%
+		tr 
+			width: 100% 
+		td:first-child 
+			width: 30%
+		td:last-child 
+			width: 70%
+	&-navigation 
+		&-col
+			+bp('medium')
+				float: left
+				width: unit(6)
+	&-leftbar
+		+bp('medium')
+			float: left
+			width: unit(6)
+		+bp('large')
+			width: unit(4)
+	&-centerbar
+		ul 
+			margin-bottom: 30px
+			padding: 0
+		+bp('medium')
+			float: left
+			width: unit(6)
+		+bp('large')
+			width: unit(4)
+	&-rightbar
+		+bp('medium')
+			float: left
+			width: unit(12)
+		+bp('large')
+			width: unit(4)
+	&-copyright
+		margin-top: 30px
+		text-align: center
+		+bp('medium')
+			width: unit(12)
+			float: left
+		+bp('large')
+			text-align: left
+			margin-bottom: $large-border
+	&-box
+		text-align: center
+		border: 5px solid white
+		padding: 20px
+		+bp('large')
+			text-align: left
+			padding: 40px
+		+bp('larger')
+			padding: $larger-border
+		
+		p 
+			font-size: 1.2em
+			+bp('larger')
+				font-size: 1.2em
+		a
+			font-family: $button-font
+			font-style: normal
+			text-decoration: none
+			font-size: 1.4em
+			display: inline-block
+			margin-bottom: 0.75rem	
+			+bp('large')
+				font-size: 1.4em
+			+bp('larger')
+				font-size: 2.0em
+
+		&-button
+			position: relative
+			display: inline-block
+			margin-top: 0.5rem
+			margin-bottom: 0 !important
+			background: transparent
+			padding: 0 2rem
+			font-size: 1.4em
+			opacity: 1 !important
+			overflow: hidden
+			+border-radius(2rem)
+			cursor: pointer
+			font-family: $button-font
+			+bp('large')
+				padding: 0 1.8rem
+				+border-radius(4rem)
+			+bp('larger')
+				padding: 0 3rem
+			span 
+				position: relative
+				color: white
+				+transition(color, 0.5s)
+				z-index: 10 !important
+				line-height: 3.5rem
+				+bp('large')
+					font-size: 0.69em
+				+bp('larger')
+					line-height: 4rem
+			&:before,
+			&:after,
+				content: ''
+				position: absolute
+				+border-radius(2rem)
+				left: 0
+				top: 0
+				right: 0
+				bottom: 0
+			&:before 
+				background-color: transparent
+				border: 3px solid white
+				z-index: 5
+			&:after
+				background-color: $button-color
+				border: 3px solid $button-color
+				z-index: 7
+				+transition(width, 0.5s)
+				opacity: 0
+				width: 2rem
+			&:hover 
+				&:after 
+					opacity: 1
+					width: 100%
+
+
+		
+	
+

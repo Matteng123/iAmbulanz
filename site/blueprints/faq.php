@@ -17,12 +17,3 @@ fields:
   tags:
     label: Tags
     type:  tags
-  ispart:
-    label: Navigation
-    width: 1/2
-    type: select
-    default: meta 
-    options: 
-      main: Haupt
-      meta: Meta
-      footer: Footer

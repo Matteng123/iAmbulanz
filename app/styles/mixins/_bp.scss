@@ -18,6 +18,10 @@ $max-width: (
 	huge: 79.9375em
 );
 
+@mixin bpf($value) {
+	@media (min-width: $value) { @content; }
+};
+
 @mixin bp($min, $max: null) {
 	$min-value: map-get($min-width, $min);
 	$max-value: map-get($max-width, $max);

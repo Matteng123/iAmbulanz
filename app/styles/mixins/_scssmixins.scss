@@ -210,6 +210,17 @@
     animation:         $name $time $count $direction; /* IE 10+, Fx 29+ */
 }
 
+@mixin keyframe($name) {
+  @-webkit-keyframes #{$name}
+    @content
+  @-moz-keyframes #{$name}
+    @content
+  @-ms-keyframes #{$name}
+    @content
+  @keyframes #{$name}
+    @content
+}
+
 @mixin noselect() {
   -moz-user-select:none;
   -khtml-user-select:none;

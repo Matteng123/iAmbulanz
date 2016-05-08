@@ -1,6 +1,6 @@
 <?php if(!defined('KIRBY')) exit ?>
 
-title: Contact
+title: Kontakt
 pages: false
 fields:
   title:
@@ -10,3 +10,8 @@ fields:
     label: Text
     type:  textarea
     size:  large
+  description:
+    label: Description
+    type:  textarea
+    size:  large
+  ispart: ispart

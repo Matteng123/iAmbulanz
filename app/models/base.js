@@ -20,7 +20,7 @@ var Content = Model.extend({
     parse:function (resp, options) {
         var dom = $(resp);
         this.pageTitle = resp.split("<title>")[1].split("</title>")[0];
-        this.pageContent = dom.find('.view')[0];
+        this.pageContent = dom.find('.Application-view')[0];
         return resp;
     },
 

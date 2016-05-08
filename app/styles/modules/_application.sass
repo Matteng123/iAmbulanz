@@ -1,0 +1,101 @@
+.Application 
+	position: relative
+
+	&-main 
+		position: relative
+		// max-width: $max-size
+		margin: 0 auto
+		z-index: 0
+	&-carousel
+		&-content
+			background-position: center
+			background-size: cover
+			background-repeat: no-repeat
+			width: 100%
+			img 
+				height: 300px
+			+bp('medium')
+				img 
+					height: auto
+		&-layer
+			position: absolute
+			left: 10%
+			top: 20%
+			-webkit-transform-style: preserve-3d
+    		transform-style: preserve-3d
+			h2 
+				color: white
+				font-family: $headline-font
+				font-size: 1.5em
+				line-height: 1.0em
+				margin-bottom: 0.5em
+			p 
+				color: white
+				font-family: $subline-font
+			+bp('medium')
+				max-width: 40%
+			+bpf($max-size)
+				width: $max-size
+				left: 50%
+				+transform(translateX(-800px))
+				h2, p
+					max-width: 50%
+			+bp('large')
+				left: $large-border
+				right: $large-border
+				max-width: none
+				h2, p
+					max-width: 30%
+				h2
+					font-size: 2.2em
+				p 
+					font-size: 1.1em
+
+	&-button
+		position: relative
+		display: inline-block
+		margin-top: 1.5rem
+		padding: 0 1.5rem
+		opacity: 1 !important
+		overflow: hidden
+		+border-radius(2rem)
+		cursor: pointer
+		font-family: $button-font
+		color: white
+		+bp('large')
+			margin-top: 2.5rem
+			vertical-align: middle
+		span 
+			position: relative
+			color: white
+			+transition(color, 0.5s)
+			z-index: 10 !important
+			line-height: 2.2rem
+		&:before,
+		&:after,
+			content: ''
+			position: absolute
+			+border-radius(2rem)
+			left: 0
+			top: 0
+			right: 0
+			bottom: 0
+		&:before 
+			background-color: $button-color
+			z-index: 5
+		&:after
+			background-color: white
+			border: 2px solid $button-color
+			z-index: 7
+			+transition(width, 0.5s)
+			opacity: 0
+			width: 2rem
+		&:hover 
+			span 
+				color: $button-color
+			&:after 
+				opacity: 1
+				width: 100%
+
+
+

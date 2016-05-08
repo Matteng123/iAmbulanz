@@ -40,31 +40,19 @@ var MainView = View.extend({
          // init and configure our page switcher
         this.pageSwitcher = new ViewSwitcher(this.queryByHook('switcher'), {
             waitForRemove: true,
-            hide: function (oldView, newView, cb) {
-                // it's inserted and rendered for me so we'll add a class 
-                // that has a corresponding CSS transition.
-
-                console.log("old View", oldView);
-                console.log("new View", newView);
-
+            hide: function (oldView, cb) {
                 if(oldView && oldView.el){
                     oldView.hookBeforeHide();
-                    // TweenMax.set(oldView.el, { opacity:0 });
                     TweenMax.to(oldView.el, 0.8, { opacity:0, delay:0.2 });
                     TweenMax.to(window, 1, {scrollTo:{y:0}});
                 }
-
-                // give it time to finish (yes there are other ways to do this)
                 setTimeout(cb, 1000);
             },
 
-            show: function (newView, oldView) {
-                
-                // it's inserted and rendered for me
-                document.title = _.result(newView.model, 'pageTitle');
-                // document.getElementsByClassName('page')[0].scrollTop = self.cacheScroll;
+            show: function (newView) {
 
-                
+                document.title = _.result(newView.model, 'pageTitle');
+
                 TweenMax.set(newView.el, { opacity:0 });
                 TweenMax.to(newView.el, 1.2, {opacity:1, delay:0.5, onComplete:function(){
                     newView.el.setAttribute("style", " ");
@@ -89,9 +77,10 @@ var MainView = View.extend({
                 'title': view.model.pageTitle
             });
         }
-
+        
         // SWICTH THE VIEW
         this.pageSwitcher.set(view);
+        
         // UPDATE PAG NAV
         this.updateActiveNav();
     },
@@ -100,7 +89,7 @@ var MainView = View.extend({
         var self = this;
         view.handleInitialPage();
 
-        view.el = this.query('.view');
+        view.el = this.query('.Application-view');
         view.render();
 
         this.pageSwitcher.current = view;
@@ -110,16 +99,20 @@ var MainView = View.extend({
     },
 
     handleTogglemenu: function (e){
-        console.log("handleTogglemenu");
-
-
         if( dom.hasClass(this.header, 'Header--open') || e == undefined){
-            dom.setAttribute(this.header, 'style', '');
-            dom.removeClass(this.header, 'Header--open');
+            this._closeToggleMenu();
         } else {
-            dom.setAttribute(this.header, 'style', 'margin-top:'+this.headerBody.offsetHeight+'px');
-            dom.addClass(this.header, 'Header--open');
+            this._openToggleMenu();
         }
+    },
+    _openToggleMenu: function(){
+        dom.setAttribute(this.header, 'style', 'margin-top:'+this.headerBody.offsetHeight+'px');
+        dom.addClass(this.header, 'Header--open');
+    },
+    _closeToggleMenu: function(){
+        dom.setAttribute(this.header, 'style', '');
+        dom.removeClass(this.header, 'Header--open');
+        TweenMax.to(window, 1, {scrollTo:{y:0}});
     },
 
     handleLinkClick: function (e) {
@@ -136,12 +129,12 @@ var MainView = View.extend({
                 ? aTag.pathname+hash
                 : aTag.getAttribute('xlink:href');
 
-        this.doLinkClick(path, e, aTag);
+        this._doLinkClick(path, e, aTag);
 
-        dom.removeClass(this.togglemenu, 'active');
+        this._closeToggleMenu()
     },
 
-    doLinkClick: function(path, e, tag){
+    _doLinkClick: function(path, e, tag){
         var local = tag.host === window.location.host,
             link = this.query(e.delegateTarget),
             href = window.location.href,
@@ -161,7 +154,7 @@ var MainView = View.extend({
             app.pageHash = tag.hash;
             if(dom.hasClass(tag, 'anchor') && window.location.pathname == tag.pathname ){
                 // console.log(app);
-                this.scrollTo();
+                this._scrollToSection();
                 if(dom.hasClass(tag, 'anchor-close') )
                     this.handleTogglemenu();
             } else {
@@ -173,59 +166,13 @@ var MainView = View.extend({
         } 
     },
 
-    scrollTo: function(){
+    _scrollToSection: function(){
         if (app.pageHash.length >= 1){
             var id = this.query(app.pageHash);
             TweenMax.to(window, 1.2, {scrollTo:{y:id.offsetTop}, ease:Power2.easeOut});
         }
     },
 
-    handleDropdownMenu: function(e){
-        if(('.box-dorpdown-menu')){
-            $(e.delegateTarget).parents()
-                .toggleClass('active')
-                .siblings()
-                .removeClass('active');
-        }
-    },
-
-    closeMainMenu: function(){
-        if ( this.mobile() || this.mqSize ){
-            console.log(this.navmain);
-            dom.addClass( this.navmain, "close");
-        }
-    },
-
-    initMenu: function(){
-        this.resizeMenu();
-    },
-
-    resizeMenu: function (){
-        // console.log("resize Menu");
-        var self = this;
-
-        var menuItemWidth = 0,
-            menuAreaWidth = 0;
-
-        menuAreaWidth = $(this.header).width() - 256; //- 166;
-        $('.menu > li').each(function(index, el) {
-            menuItemWidth = menuItemWidth + $(this).find('a').outerWidth();
-        });
-    
-        if(menuItemWidth > menuAreaWidth){
-            dom.addClass(self.header, 'mobile');
-            dom.addClass(self.page, 'mobile');
-        }else{
-            dom.removeClass(self.header,'mobile');
-            dom.removeClass(self.page,'mobile');
-            dom.removeClass(self.togglemenu, 'active');
-            dom.removeClass(document.body, 'overlayer');
-        }
-    },
-
-    rotationMenu: function (){
-        this.resizeMenu();
-    },
 
     updateActiveNav: function () {
         var path = window.location.pathname.slice(1);

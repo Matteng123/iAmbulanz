@@ -7,7 +7,7 @@
   <ul class="Menu-body">
     <?php foreach($mainitems as $p): ?>
     <li>
-      <a <?php e($p->isOpen(), ' class="active"') ?> href="<?php echo $p->url() ?>"><?php echo $p->title()->html() ?></a>
+      <a <?php e($p->isOpen(), ' class="active"') ?> href="<?php echo $p->url() ?>"><span><?php echo $p->title()->html() ?></span></a>
 
       <?php if($p->hasVisibleChildren()): ?>
       <ul class="Menu-submenu">

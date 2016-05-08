@@ -1,4 +1,5 @@
 <?php snippet('header') ?>
+<?php snippet('view-start') ?>
 
   <main class="main" role="main">
 
@@ -8,5 +9,5 @@
     </div>
 
   </main>
-
+<?php snippet('view-end') ?>
 <?php snippet('footer') ?>

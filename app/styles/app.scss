@@ -18,7 +18,10 @@ $text-font: "Brandon Text W01 Regular", Helvetica, Arial, sans-serif;
 $link-font: "Brandon Text W01 Regular", Helvetica, Arial, sans-serif;
 
 // Standards
+$small-border: 15px;
 $medium-border: 30px;
+$large-border: 40px;
+$larger-border: 60px;
 $max-size: 1600px;
 
 // Mixins
@@ -26,6 +29,7 @@ $max-size: 1600px;
 
 // Vendor
 @import "vendor/normalize";
+@import "vendor/carousel";
 
 // Globals
 @import "globals/webfonts";
@@ -41,10 +45,12 @@ $max-size: 1600px;
 @import "modules/menu";
 @import "modules/logo";
 @import "modules/topbar";
+@import "modules/footer";
 
 // Layout
 @import "modules/application";
 @import "modules/header";
+
 
 
 

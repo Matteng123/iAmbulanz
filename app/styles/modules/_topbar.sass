@@ -1,11 +1,12 @@
 .Topbar 
 	color: rgb(0,0,0)
 	+bp('large')
-
 		background-color: $primary-color
 
 	&-body 
 		text-align: center
+		ul 
+			padding: 0
 		li 
 			display: block
 			padding: 0 .8rem
@@ -20,6 +21,8 @@
 			margin: 0 auto
 			text-align: left
 			line-height: 30px
+			margin-left: $large-border
+			margin-right: $large-border
 			&:after 
 				content: ""
   				display: table
@@ -31,10 +34,16 @@
 			li 
 				display: inline-block
 				margin: 0.3rem 0 0.5rem 0
+				&:first-child
+					padding-left: 0
+				&:last-child
+					padding-right: 0
 				a 
 					color: $text-color
 					opacity: 1
 					font-size: 0.9em
+		+bpf($max-size)
+			margin: 0 auto
 	&-phone
 		opacity: 1 !important
 		font-family: $button-font
@@ -79,7 +88,7 @@
 			z-index: 5
 		&:after
 			background-color: white
-			border: 1px solid $button-color
+			border: 2px solid $button-color
 			z-index: 7
 			+transition(width, 0.5s)
 			opacity: 0

@@ -1,6 +1,6 @@
 <?php if(!defined('KIRBY')) exit ?>
 
-title: About
+title: Über uns
 pages: false
 fields:
   title:
@@ -10,3 +10,4 @@ fields:
     label: Text
     type:  textarea
     size:  large
+  ispart: ispart

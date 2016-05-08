@@ -1,4 +1,5 @@
 <?php snippet('header') ?>
+<?php snippet('view-start') ?>
 
   <main class="main" role="main">
 
@@ -12,5 +13,5 @@
     <?php snippet('projects') ?>
 
   </main>
-
+<?php snippet('view-end') ?>
 <?php snippet('footer') ?>
