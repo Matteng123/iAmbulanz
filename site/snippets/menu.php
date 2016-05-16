@@ -1,6 +1,6 @@
 
 <nav class="Menu" role="navigation">
-  <?php 
+  <?php
     $mainitems = $pages->filterBy('ispart', 'main');
     if($mainitems and $mainitems->count()):
   ?>
@@ -9,7 +9,7 @@
     <li>
       <a <?php e($p->isOpen(), ' class="active"') ?> href="<?php echo $p->url() ?>"><span><?php echo $p->title()->html() ?></span></a>
 
-      <?php if($p->hasVisibleChildren()): ?>
+      <!-- <?php if($p->hasVisibleChildren()): ?>
       <ul class="Menu-submenu">
         <?php foreach($p->children()->visible() as $p): ?>
         <li>
@@ -17,7 +17,7 @@
         </li>
         <?php endforeach ?>
       </ul>
-      <?php endif ?>
+      <?php endif ?> -->
 
     </li>
     <?php endforeach ?>

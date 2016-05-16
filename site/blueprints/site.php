@@ -1,8 +1,8 @@
 <?php if(!defined('KIRBY')) exit ?>
 
 title: Site
-pages: 
-  template: 
+pages:
+  template:
     - default
     - faq
     - landing
@@ -99,7 +99,7 @@ fields:
       device:
         label: Device Typ
         type: select
-        options: 
+        options:
           iphone: iPhone
           ipad: iPad
           samsunggalaxy: Samsung Galaxy
@@ -110,15 +110,11 @@ fields:
   section0:
     label: Meta Angaben
     type: headline
-  title:
-    label: Title
-    type:  text
+  title: title
   author:
     label: Author
     type:  text
-  description:
-    label: Description
-    type:  textarea
+  description: description
   keywords:
     label: Keywords
     type: tags

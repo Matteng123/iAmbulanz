@@ -1,4 +1,4 @@
-.Header 
+.Header
 	background-color: $background-color
 	width: 100%
 	position: relative
@@ -8,14 +8,16 @@
 	+transition(margin, .5s)
 	+bp('large')
 		height: auto
+	a
+	 text-decoration: none
+	 font-style: normal
 
-
-	&--open 
+	&--open
 		// margin-top: 40%
 		// height: auto
 		.Header-body
 			// +transform(translateY(0%))
-			
+
 		.Header-toggle
 			span
 				background: $button-color
@@ -91,7 +93,7 @@
 				+transform(translateY(-0.6rem))
 			&:after
 				+transform(translateY(0.6rem))
-		
+
 		&:hover span
 			background-color: $button-color
 			+transform(translateY(0rem) translateX(0rem) rotate(-90deg))

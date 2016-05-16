@@ -1,0 +1,25 @@
+label: Services
+type: structure
+modalsize: large
+entry: >
+  Icon: {{icon}}<br />
+  <strong>{{headline}}</strong><br />
+  {{time}}<br />
+  <br />
+  {{description}}
+fields:
+  icon:
+    label: Icon
+    type: select
+    options:
+      express: Express
+      onsite: Vor-Ort
+      courier: Kurier
+      post: Post
+  headline: headline
+  description: description
+  time:
+    label: Zeit
+    type:  text
+  button_text: button_text
+  button_url: button_url

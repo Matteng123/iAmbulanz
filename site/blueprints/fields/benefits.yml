@@ -1,0 +1,19 @@
+label: Vorteile
+type: structure
+modalsize: large
+entry: >
+  Icon: {{icon}}<br />
+  <strong>{{headline}}</strong><br />
+  <br/>
+  {{description}}
+fields:
+  icon:
+    label: Icon
+    type: select
+    options:
+      time: Zeit
+      quality: Qualität
+      security: Sicherheit
+      price: Preis
+  headline: headline
+  description: description

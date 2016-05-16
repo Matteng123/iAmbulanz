@@ -3,9 +3,7 @@
 title: Kontakt
 pages: false
 fields:
-  title:
-    label: Title
-    type:  text
+  title: title
   text:
     label: Text
     type:  textarea

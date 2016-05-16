@@ -11,11 +11,11 @@ $background-color: rgb(255,255,255);
 $footer-color: #4c5454;
 
 // Fonts
-$headline-font: "Brandon Text W01 Bold", Helvetica, Arial, sans-serif;
-$button-font: "Brandon Text W01 Bold", Helvetica, Arial, sans-serif;
-$subline-font: "Brandon Text W01 Medium", Helvetica, Arial, sans-serif;
-$text-font: "Brandon Text W01 Regular", Helvetica, Arial, sans-serif;
-$link-font: "Brandon Text W01 Regular", Helvetica, Arial, sans-serif;
+$headline-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$button-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$subline-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$text-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$link-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
 
 // Standards
 $small-border: 15px;
@@ -46,12 +46,14 @@ $max-size: 1600px;
 @import "modules/logo";
 @import "modules/topbar";
 @import "modules/footer";
+@import "modules/section";
+@import "modules/carousel";
+@import "modules/location";
+@import "modules/devices";
+@import "modules/benefits";
+@import "modules/services";
+@import "modules/tabbar";
 
 // Layout
 @import "modules/application";
 @import "modules/header";
-
-
-
-
-

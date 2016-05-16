@@ -1,4 +1,4 @@
-.Footer 
+.Footer
 	background-color: $footer-color
 	color: white
 	&-body
@@ -9,28 +9,29 @@
 			padding: $medium-border
 		+bp('large')
 			padding: $large-border
-		
-	&:after 
+
+	&:after
 		content: ""
 		display: table
 		clear: both
 
-	a 
+	a
 		font-family: $link-font
 		font-style: italic
 		text-decoration: underline
+		color: white
 		&:hover
 			color: $button-color
 
-	table 
+	table
 		width: 100%
-		tr 
-			width: 100% 
-		td:first-child 
+		tr
+			width: 100%
+		td:first-child
 			width: 30%
-		td:last-child 
+		td:last-child
 			width: 70%
-	&-navigation 
+	&-navigation
 		&-col
 			+bp('medium')
 				float: left
@@ -42,7 +43,7 @@
 		+bp('large')
 			width: unit(4)
 	&-centerbar
-		ul 
+		ul
 			margin-bottom: 30px
 			padding: 0
 		+bp('medium')
@@ -74,18 +75,19 @@
 			padding: 40px
 		+bp('larger')
 			padding: $larger-border
-		
-		p 
+
+		p
 			font-size: 1.2em
 			+bp('larger')
 				font-size: 1.2em
 		a
 			font-family: $button-font
+			font-weight: bold
 			font-style: normal
 			text-decoration: none
 			font-size: 1.4em
 			display: inline-block
-			margin-bottom: 0.75rem	
+			margin-bottom: 0.75rem
 			+bp('large')
 				font-size: 1.4em
 			+bp('larger')
@@ -104,21 +106,23 @@
 			+border-radius(2rem)
 			cursor: pointer
 			font-family: $button-font
+			font-weight: bold
 			+bp('large')
-				padding: 0 1.8rem
+				padding: 0.3rem 1.8rem
 				+border-radius(4rem)
 			+bp('larger')
-				padding: 0 3rem
-			span 
+				padding: 0.3rem 2.5rem 0.6rem
+			span
 				position: relative
 				color: white
+				display: inline-block
+				text-align: center
 				+transition(color, 0.5s)
 				z-index: 10 !important
-				line-height: 3.5rem
+				// line-height: 1em
 				+bp('large')
 					font-size: 0.69em
-				+bp('larger')
-					line-height: 4rem
+
 			&:before,
 			&:after,
 				content: ''
@@ -128,7 +132,7 @@
 				top: 0
 				right: 0
 				bottom: 0
-			&:before 
+			&:before
 				background-color: transparent
 				border: 3px solid white
 				z-index: 5
@@ -139,12 +143,7 @@
 				+transition(width, 0.5s)
 				opacity: 0
 				width: 2rem
-			&:hover 
-				&:after 
+			&:hover
+				&:after
 					opacity: 1
 					width: 100%
-
-
-		
-	
-

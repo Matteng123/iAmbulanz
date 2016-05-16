@@ -24,3 +24,9 @@ html {
 body {
 	height: 100%;
 }
+
+.clear {
+	content: "";
+	display: table;
+	clear: both;
+}

@@ -1,0 +1,27 @@
+.Section
+  &-body
+    max-width: $max-size
+    margin: 0 auto
+    padding: 30px $small-border
+    +bp('medium')
+      padding: $medium-border
+    +bp('large')
+      padding: 2*$large-border $large-border
+    +bp('medium')
+      &:after
+        content: ""
+        display: table
+        clear: both
+  &-body--small
+      max-width: $max-size - 160
+      margin: 0 auto
+      padding: 30px $small-border
+      +bp('medium')
+        padding: $medium-border
+      +bp('large')
+        padding: 2*$large-border $large-border
+      +bp('medium')
+        &:after
+          content: ""
+          display: table
+          clear: both

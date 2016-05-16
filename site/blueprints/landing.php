@@ -4,9 +4,7 @@ title: Landing Page
 pages: true
 files: true
 fields:
-  title:
-    label: Title
-    type:  text
+  title: title
   text:
     label: Text
     type: textarea

@@ -148,13 +148,46 @@
 }
 
 /* TRANSITION */
-@mixin transition($what: all, $length: 1s, $easing: ease-in-out, $delay: 0s) {
-    -moz-transition:    $what $length $easing $delay;
-    -o-transition:      $what $length $easing $delay;
-    -webkit-transition: $what $length $easing $delay;
-    -ms-transition:     $what $length $easing $delay;
-    transition:         $what $length $easing $delay;
+// @mixin transition($what: all, $length: 1s, $easing: ease-in-out, $delay: 0s) {
+//     -moz-transition:    $what $length $easing $delay;
+//     -o-transition:      $what $length $easing $delay;
+//     -webkit-transition: $what $length $easing $delay;
+//     -ms-transition:     $what $length $easing $delay;
+//     transition:         $what $length $easing $delay;
+//
+// }
 
+@mixin transition($transitions...) {
+  $unfoldedTransitions: ();
+  @each $transition in $transitions {
+    $unfoldedTransitions: append($unfoldedTransitions, unfoldTransition($transition), comma);
+  }
+
+  -webkit-transition: $unfoldedTransitions;
+  transition: $unfoldedTransitions;
+}
+
+@function unfoldTransition ($transition) {
+  // Default values
+  $property: all;
+  $duration: .2s;
+  $easing: null; // Browser default is ease, which is what we want
+  $delay: null; // Browser default is 0, which is what we want
+  $defaultProperties: ($property, $duration, $easing, $delay);
+
+  // Grab transition properties if they exist
+  $unfoldedTransition: ();
+  @for $i from 1 through length($defaultProperties) {
+    $p: null;
+    @if $i <= length($transition) {
+      $p: nth($transition, $i)
+    } @else {
+      $p: nth($defaultProperties, $i)
+    }
+    $unfoldedTransition: append($unfoldedTransition, $p);
+  }
+
+  @return $unfoldedTransition;
 }
 
 /* TRIPLE BORDERS */
@@ -189,17 +222,17 @@
 }
 
 @mixin box-scale($scale){
-  -webkit-transform: scale($scale);  
-     -moz-transform: scale($scale);  
-      -ms-transform: scale($scale);  
-       -o-transform: scale($scale);  
+  -webkit-transform: scale($scale);
+     -moz-transform: scale($scale);
+      -ms-transform: scale($scale);
+       -o-transform: scale($scale);
           transform: scale($scale);
 }
 @mixin box-scale-x($scale){
-  -webkit-transform: scaleX($scale);  
-     -moz-transform: scaleX($scale);  
-      -ms-transform: scaleX($scale);  
-       -o-transform: scaleX($scale);  
+  -webkit-transform: scaleX($scale);
+     -moz-transform: scaleX($scale);
+      -ms-transform: scaleX($scale);
+       -o-transform: scaleX($scale);
           transform: scaleX($scale);
 }
 
@@ -273,13 +306,13 @@ $max: max-width;
     }
   } @else if $constraint == retina {
     /****** RETINA MEDIA QUERIES **********************/
-    @media 
-    only screen and (-webkit-min-device-pixel-ratio: 2), 
-    only screen and (   min--moz-device-pixel-ratio: 2), 
-    only screen and (     -o-min-device-pixel-ratio: 2/1), 
+    @media
+    only screen and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (   min--moz-device-pixel-ratio: 2),
+    only screen and (     -o-min-device-pixel-ratio: 2/1),
     only screen and (        min-device-pixel-ratio: 2),
     only screen and (                min-resolution: 192dpi),
-    only screen and (                min-resolution: 2dppx) { 
+    only screen and (                min-resolution: 2dppx) {
       @content;
     }
   } @else {

@@ -55,8 +55,8 @@
 	jQuery = $ = __webpack_require__(2);
 	var _ = __webpack_require__(3);
 	var Router = __webpack_require__(4);
-	var domReady = __webpack_require__(300);
-	var MainView = __webpack_require__(301);
+	var domReady = __webpack_require__(301);
+	var MainView = __webpack_require__(302);
 	
 	var App = {
 	    // this is the the whole app initter
@@ -11387,14 +11387,12 @@
 	
 	var FormModel = __webpack_require__(42);
 	var ContentView = __webpack_require__(103);
-	var HomeView = __webpack_require__(304);
-	var ContentModel = __webpack_require__(283);
-	var ContactView = __webpack_require__(299);
+	var ContentModel = __webpack_require__(284);
+	var ContactView = __webpack_require__(300);
 	
 	
 	var Router = AmpersandRouter.extend({
 	    routes: {
-	        '': 'home',
 	        // 'de/kontakt/': 'contact',
 	        // ':i18n/:query/': 'project',
 	        // ':i18n/:query/:page': 'project',
@@ -11402,12 +11400,6 @@
 	    },
 	
 	    // ------- ROUTE HANDLERS ---------
-	    home: function (value) {
-	        console.log("HOME");
-	        this.trigger('page', new HomeView({
-	            model: new ContentModel({id:value})
-	        }));
-	    },
 	    content: function (value) {
 	        console.log("CONTENT");
 	        this.trigger('page', new ContentView({
@@ -11424,6 +11416,7 @@
 	});
 	
 	module.exports = Router;
+
 
 /***/ },
 /* 5 */
@@ -22891,9 +22884,9 @@
 	
 	
 	var Content = PageView.extend({
-		
+	
 		events: {
-			
+			"click .Location-teaser-tab-item":"_handleTabbarClick"
 		},
 	
 		hookBeforeHide: function(){
@@ -22902,11 +22895,19 @@
 	
 		hookInRender: function () {
 			var self = this;
-	
+			TweenMax.delayedCall(0.1, this.initializeSlider, [], this); // Slider
 			this.bindResponsimg();
+			this.Tabbars = this.queryAll('.Location-teaser-tab-item');
 		},
 	
-		hookAfterRender: function (){
+		initializeSlider: function(){
+	
+			$('.Carousel').owlCarousel({
+				    loop:true,
+				    margin:0,
+				    nav:true,
+				    items:1
+				});
 		},
 	
 		bindResponsimg: function (){
@@ -22914,11 +22915,21 @@
 			img.responsImg({
 				allowDownsize: true
 			});
+		},
+	
+		_handleTabbarClick: function(event){
+				if(!dom.hasClass(event.delegateTarget, 'active')){
+					_.each(this.Tabbars, function(item, index){
+						dom.removeClass(item, 'active')
+					});
+					dom.addClass(event.delegateTarget, 'active');
+				}
 		}
 	
 	});
 	
 	module.exports = Content;
+
 
 /***/ },
 /* 104 */
@@ -42209,12 +42220,13 @@
 
 
 /***/ },
-/* 283 */
+/* 283 */,
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global $*/
 	// base view for pages
-	var Model = __webpack_require__(284);
+	var Model = __webpack_require__(285);
 	//var _ = require('underscore');
 	//var key = require('keymaster');
 	
@@ -42226,13 +42238,13 @@
 	module.exports = Content;
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global $*/
 	// base view for pages
 	var $ = __webpack_require__(2);
-	var Model = __webpack_require__(285);
+	var Model = __webpack_require__(286);
 	var _ = __webpack_require__(3);
 	//var key = require('keymaster');
 	
@@ -42280,16 +42292,16 @@
 
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*$AMPERSAND_VERSION*/
-	var State = __webpack_require__(286);
+	var State = __webpack_require__(287);
 	var sync = __webpack_require__(76);
-	var assign = __webpack_require__(288);
+	var assign = __webpack_require__(289);
 	var isObject = __webpack_require__(64);
-	var clone = __webpack_require__(296);
-	var result = __webpack_require__(294);
+	var clone = __webpack_require__(297);
+	var result = __webpack_require__(295);
 	
 	// Throw an error when a URL is needed, and none is supplied.
 	var urlError = function () {
@@ -42428,26 +42440,26 @@
 
 
 /***/ },
-/* 286 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	/*$AMPERSAND_VERSION*/
-	var uniqueId = __webpack_require__(287);
-	var assign = __webpack_require__(288);
+	var uniqueId = __webpack_require__(288);
+	var assign = __webpack_require__(289);
 	var cloneObj = function(obj) { return assign({}, obj); };
-	var omit = __webpack_require__(289);
+	var omit = __webpack_require__(290);
 	var escape = __webpack_require__(58);
 	var forOwn = __webpack_require__(59);
 	var includes = __webpack_require__(60);
-	var isString = __webpack_require__(292);
+	var isString = __webpack_require__(293);
 	var isObject = __webpack_require__(64);
 	var isDate = __webpack_require__(65);
 	var isFunction = __webpack_require__(25);
-	var _isEqual = __webpack_require__(293); // to avoid shadowing
+	var _isEqual = __webpack_require__(294); // to avoid shadowing
 	var has = __webpack_require__(69);
-	var result = __webpack_require__(294);
-	var bind = __webpack_require__(295); // because phantomjs doesn't have Function#bind
+	var result = __webpack_require__(295);
+	var bind = __webpack_require__(296); // because phantomjs doesn't have Function#bind
 	var union = __webpack_require__(72);
 	var Events = __webpack_require__(18);
 	var KeyTree = __webpack_require__(74);
@@ -43289,7 +43301,7 @@
 
 
 /***/ },
-/* 287 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43435,7 +43447,7 @@
 
 
 /***/ },
-/* 288 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43521,7 +43533,7 @@
 
 
 /***/ },
-/* 289 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43533,12 +43545,12 @@
 	 * Available under MIT license <https://lodash.com/license>
 	 */
 	var arrayMap = __webpack_require__(47),
-	    baseDifference = __webpack_require__(290),
+	    baseDifference = __webpack_require__(291),
 	    baseFlatten = __webpack_require__(52),
 	    bindCallback = __webpack_require__(15),
 	    pickByArray = __webpack_require__(53),
 	    pickByCallback = __webpack_require__(54),
-	    keysIn = __webpack_require__(291),
+	    keysIn = __webpack_require__(292),
 	    restParam = __webpack_require__(17);
 	
 	/**
@@ -43587,7 +43599,7 @@
 
 
 /***/ },
-/* 290 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43656,7 +43668,7 @@
 
 
 /***/ },
-/* 291 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43794,7 +43806,7 @@
 
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports) {
 
 	/**
@@ -43853,7 +43865,7 @@
 
 
 /***/ },
-/* 293 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43921,7 +43933,7 @@
 
 
 /***/ },
-/* 294 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44063,7 +44075,7 @@
 
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44133,7 +44145,7 @@
 
 
 /***/ },
-/* 296 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44144,7 +44156,7 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseClone = __webpack_require__(297),
+	var baseClone = __webpack_require__(298),
 	    bindCallback = __webpack_require__(15),
 	    isIterateeCall = __webpack_require__(16);
 	
@@ -44217,7 +44229,7 @@
 
 
 /***/ },
-/* 297 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -44228,7 +44240,7 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var arrayCopy = __webpack_require__(298),
+	var arrayCopy = __webpack_require__(299),
 	    arrayEach = __webpack_require__(28),
 	    baseAssign = __webpack_require__(8),
 	    baseFor = __webpack_require__(55),
@@ -44495,7 +44507,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 298 */
+/* 299 */
 /***/ function(module, exports) {
 
 	/**
@@ -44530,7 +44542,7 @@
 
 
 /***/ },
-/* 299 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(2);
@@ -44769,7 +44781,7 @@
 	module.exports = Contact;
 
 /***/ },
-/* 300 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -44805,7 +44817,7 @@
 
 
 /***/ },
-/* 301 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global me, app*/
@@ -44813,9 +44825,9 @@
 	var _ = __webpack_require__(3);
 	var View = __webpack_require__(105);
 	var dom = __webpack_require__(278);
-	var ViewSwitcher = __webpack_require__(302);
+	var ViewSwitcher = __webpack_require__(303);
 	var gsap = __webpack_require__(281);
-	var gsap = __webpack_require__(303);
+	var gsap = __webpack_require__(304);
 	
 	var MainView = View.extend({
 	
@@ -45036,7 +45048,7 @@
 	module.exports = MainView;
 
 /***/ },
-/* 302 */
+/* 303 */
 /***/ function(module, exports) {
 
 	/*$AMPERSAND_VERSION*/
@@ -45162,7 +45174,7 @@
 
 
 /***/ },
-/* 303 */
+/* 304 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -45286,60 +45298,6 @@
 	
 	}); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 304 */
-/***/ function(module, exports, __webpack_require__) {
-
-	$ = __webpack_require__(2);
-	var _ = __webpack_require__(3);
-	var PageView = __webpack_require__(104);
-	var dom = __webpack_require__(278);
-	var gsap = __webpack_require__(281);
-	var owlCarousel = __webpack_require__(282);
-	var responsImg = __webpack_require__(280);
-	
-	
-	var Home = PageView.extend({
-		
-		events: {
-			
-		},
-	
-		hookBeforeHide: function(){
-	
-		},
-	
-		hookInRender: function () {
-			console.log("------- HOME View");
-			var self = this;
-			TweenMax.delayedCall(0.1, this.initializeSlider, [], this); // Slider
-			this.bindResponsimg();
-		},
-	
-		hookAfterRender: function (){
-		},
-	
-		initializeSlider: function(){
-	
-			$('.Application-carousel').owlCarousel({
-				    loop:true,
-				    margin:0,
-				    nav:true,
-				    items:1
-				});
-		},
-	
-		bindResponsimg: function (){
-			img = $(this.el).find('.responsimg');
-			img.responsImg({
-				allowDownsize: true
-			});
-		}
-	
-	});
-	
-	module.exports = Home;
 
 /***/ }
 /******/ ]);

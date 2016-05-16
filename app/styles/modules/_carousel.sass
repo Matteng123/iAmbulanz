@@ -1,0 +1,50 @@
+.Carousel
+	&-content
+		background-position: center
+		background-size: cover
+		background-repeat: no-repeat
+		width: 100%
+		img
+			height: 300px
+		+bp('medium')
+			img
+				height: auto
+	&-layer
+		position: absolute
+		left: 10%
+		right: 10%
+		top: 20%
+		-webkit-transform-style: preserve-3d
+  		transform-style: preserve-3d
+		h1
+			color: white
+			font-family: $headline-font
+			font-weight: bold
+			font-size: 1.8em
+			line-height: 1.0em
+			margin-bottom: 0.5em
+		p
+			color: white
+			font-family: $subline-font
+			font-weight: 500
+		+bp('medium')
+			max-width: 40%
+		+bp('large')
+			left: $large-border
+			max-width: $max-size
+			h1, p
+				max-width: 60%
+			h1
+				font-size: 2.8em
+			p
+				font-size: 1.1em
+		+bpf($max-size)
+			width: $max-size - $large-border * 2
+			left: 50%
+			+transform(translateX(($max-size - $large-border * 2)/2*-1))
+			h1, p
+				max-width: 40%
+		+bp('larger')
+			h1
+				font-size: 4em
+				max-width: 65%

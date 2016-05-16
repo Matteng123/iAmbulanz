@@ -7,8 +7,8 @@ password: >
 language: de
 role: admin
 history:
+  - service/vorteile
+  - service/linkbar
+  - service/slider
   - home
-  - standorte
-  - preise
-  - fuer-unternehmen
-  - service
+  - home/slider
