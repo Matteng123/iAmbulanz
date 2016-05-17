@@ -7,7 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "gulp",
-    "production": "gulp production"
+    "production": "gulp production",
+    "init": "git-ftp init --syncroot public -u matteng_de_9  -P - ftp://kontentftp.matteng.de/"
   },
   "browserify": "",
   "devDependencies": {
