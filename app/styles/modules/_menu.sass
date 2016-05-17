@@ -1,4 +1,4 @@
-.Menu 
+.Menu
 	color: rgb(255,255,255)
 	+bp('medium')
 		position: relative
@@ -6,20 +6,31 @@
 		padding: 0
 		text-align: center
 		li
+			user-select: none
+			-webkit-tap-highlight-color: rgba(0,0,0,0)
 			a
+				user-select: none
+				-webkit-tap-highlight-color: rgba(0,0,0,0)
 				z-index: 999
 				font-family: $text-font
 				color: $neg-text-color
 				line-height: 4rem
 				font-size: 1.1rem
-		+bp('medium')	
-			li 
-				a			
-					span 
-						position: relative	
-						&:after 
+				&,
+				&:active,
+				&:hover,
+				&:focus,
+				&:visited
+					outline: 0
+					text-decoration: none
+		+bp('medium')
+			li
+				a
+					span
+						position: relative
+						&:after
 							content: ""
-							display: inline-block 
+							display: inline-block
 							position: absolute
 							bottom: 0
 							left: 0
@@ -27,10 +38,10 @@
 							height: 2px
 							background-color: $button-color
 							+transition(right, 0.5s)
-				&:hover 
+				&:hover
 					a
-						span 
-							&:after 
+						span
+							&:after
 								right: 0
 
 
@@ -38,15 +49,13 @@
 		+bp('large')
 			padding-top: 2.84em
 			li
-				display: inline-block 
-				a 
+				display: inline-block
+				a
 					padding: 1rem 1.5rem
 					color: $text-color
 					font-size: 1.1rem
 		+bp('larger')
-			li 
-				a 
+			li
+				a
 					padding: 1rem 2rem
 					font-size: 1.3rem
-		
-	
