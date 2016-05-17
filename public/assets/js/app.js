@@ -55,8 +55,8 @@
 	jQuery = $ = __webpack_require__(2);
 	var _ = __webpack_require__(3);
 	var Router = __webpack_require__(4);
-	var domReady = __webpack_require__(301);
-	var MainView = __webpack_require__(302);
+	var domReady = __webpack_require__(300);
+	var MainView = __webpack_require__(301);
 	
 	var App = {
 	    // this is the the whole app initter
@@ -11387,8 +11387,8 @@
 	
 	var FormModel = __webpack_require__(42);
 	var ContentView = __webpack_require__(103);
-	var ContentModel = __webpack_require__(284);
-	var ContactView = __webpack_require__(300);
+	var ContentModel = __webpack_require__(283);
+	var ContactView = __webpack_require__(299);
 	
 	
 	var Router = AmpersandRouter.extend({
@@ -42220,13 +42220,12 @@
 
 
 /***/ },
-/* 283 */,
-/* 284 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global $*/
 	// base view for pages
-	var Model = __webpack_require__(285);
+	var Model = __webpack_require__(284);
 	//var _ = require('underscore');
 	//var key = require('keymaster');
 	
@@ -42238,13 +42237,13 @@
 	module.exports = Content;
 
 /***/ },
-/* 285 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global $*/
 	// base view for pages
 	var $ = __webpack_require__(2);
-	var Model = __webpack_require__(286);
+	var Model = __webpack_require__(285);
 	var _ = __webpack_require__(3);
 	//var key = require('keymaster');
 	
@@ -42292,16 +42291,16 @@
 
 
 /***/ },
-/* 286 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*$AMPERSAND_VERSION*/
-	var State = __webpack_require__(287);
+	var State = __webpack_require__(286);
 	var sync = __webpack_require__(76);
-	var assign = __webpack_require__(289);
+	var assign = __webpack_require__(288);
 	var isObject = __webpack_require__(64);
-	var clone = __webpack_require__(297);
-	var result = __webpack_require__(295);
+	var clone = __webpack_require__(296);
+	var result = __webpack_require__(294);
 	
 	// Throw an error when a URL is needed, and none is supplied.
 	var urlError = function () {
@@ -42440,26 +42439,26 @@
 
 
 /***/ },
-/* 287 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	/*$AMPERSAND_VERSION*/
-	var uniqueId = __webpack_require__(288);
-	var assign = __webpack_require__(289);
+	var uniqueId = __webpack_require__(287);
+	var assign = __webpack_require__(288);
 	var cloneObj = function(obj) { return assign({}, obj); };
-	var omit = __webpack_require__(290);
+	var omit = __webpack_require__(289);
 	var escape = __webpack_require__(58);
 	var forOwn = __webpack_require__(59);
 	var includes = __webpack_require__(60);
-	var isString = __webpack_require__(293);
+	var isString = __webpack_require__(292);
 	var isObject = __webpack_require__(64);
 	var isDate = __webpack_require__(65);
 	var isFunction = __webpack_require__(25);
-	var _isEqual = __webpack_require__(294); // to avoid shadowing
+	var _isEqual = __webpack_require__(293); // to avoid shadowing
 	var has = __webpack_require__(69);
-	var result = __webpack_require__(295);
-	var bind = __webpack_require__(296); // because phantomjs doesn't have Function#bind
+	var result = __webpack_require__(294);
+	var bind = __webpack_require__(295); // because phantomjs doesn't have Function#bind
 	var union = __webpack_require__(72);
 	var Events = __webpack_require__(18);
 	var KeyTree = __webpack_require__(74);
@@ -43301,7 +43300,7 @@
 
 
 /***/ },
-/* 288 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43447,7 +43446,7 @@
 
 
 /***/ },
-/* 289 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43533,7 +43532,7 @@
 
 
 /***/ },
-/* 290 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43545,12 +43544,12 @@
 	 * Available under MIT license <https://lodash.com/license>
 	 */
 	var arrayMap = __webpack_require__(47),
-	    baseDifference = __webpack_require__(291),
+	    baseDifference = __webpack_require__(290),
 	    baseFlatten = __webpack_require__(52),
 	    bindCallback = __webpack_require__(15),
 	    pickByArray = __webpack_require__(53),
 	    pickByCallback = __webpack_require__(54),
-	    keysIn = __webpack_require__(292),
+	    keysIn = __webpack_require__(291),
 	    restParam = __webpack_require__(17);
 	
 	/**
@@ -43599,7 +43598,7 @@
 
 
 /***/ },
-/* 291 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43668,7 +43667,7 @@
 
 
 /***/ },
-/* 292 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43806,7 +43805,7 @@
 
 
 /***/ },
-/* 293 */
+/* 292 */
 /***/ function(module, exports) {
 
 	/**
@@ -43865,7 +43864,7 @@
 
 
 /***/ },
-/* 294 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43933,7 +43932,7 @@
 
 
 /***/ },
-/* 295 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44075,7 +44074,7 @@
 
 
 /***/ },
-/* 296 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44145,7 +44144,7 @@
 
 
 /***/ },
-/* 297 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44156,7 +44155,7 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseClone = __webpack_require__(298),
+	var baseClone = __webpack_require__(297),
 	    bindCallback = __webpack_require__(15),
 	    isIterateeCall = __webpack_require__(16);
 	
@@ -44229,7 +44228,7 @@
 
 
 /***/ },
-/* 298 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -44240,7 +44239,7 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var arrayCopy = __webpack_require__(299),
+	var arrayCopy = __webpack_require__(298),
 	    arrayEach = __webpack_require__(28),
 	    baseAssign = __webpack_require__(8),
 	    baseFor = __webpack_require__(55),
@@ -44507,7 +44506,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 299 */
+/* 298 */
 /***/ function(module, exports) {
 
 	/**
@@ -44542,7 +44541,7 @@
 
 
 /***/ },
-/* 300 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(2);
@@ -44781,7 +44780,7 @@
 	module.exports = Contact;
 
 /***/ },
-/* 301 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -44817,7 +44816,7 @@
 
 
 /***/ },
-/* 302 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global me, app*/
@@ -44825,9 +44824,9 @@
 	var _ = __webpack_require__(3);
 	var View = __webpack_require__(105);
 	var dom = __webpack_require__(278);
-	var ViewSwitcher = __webpack_require__(303);
+	var ViewSwitcher = __webpack_require__(302);
 	var gsap = __webpack_require__(281);
-	var gsap = __webpack_require__(304);
+	var gsap = __webpack_require__(303);
 	
 	var MainView = View.extend({
 	
@@ -45048,7 +45047,7 @@
 	module.exports = MainView;
 
 /***/ },
-/* 303 */
+/* 302 */
 /***/ function(module, exports) {
 
 	/*$AMPERSAND_VERSION*/
@@ -45174,7 +45173,7 @@
 
 
 /***/ },
-/* 304 */
+/* 303 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*!
