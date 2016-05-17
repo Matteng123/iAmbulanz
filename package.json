@@ -8,7 +8,8 @@
   "scripts": {
     "start": "gulp",
     "production": "gulp production",
-    "init": "git-ftp init --syncroot public -u matteng_de_9  -P - ftp://kontentftp.matteng.de/"
+    "init": "git-ftp init --syncroot public -u matteng_de_9  -P - ftp://kontentftp.matteng.de/",
+    "push": "git-ftp push --syncroot public -u matteng_de_9  -P - ftp://kontentftp.matteng.de/"
   },
   "browserify": "",
   "devDependencies": {
