@@ -44855,7 +44855,7 @@
 	            navmain: '.nav-main',
 	            togglemenu: '.togglemenu'
 	        });
-	        
+	
 	        // initial view
 	
 	         // init and configure our page switcher
@@ -44890,7 +44890,7 @@
 	    },
 	
 	    handleNewPage: function (view) {
-	        
+	
 	        // TRACKING
 	        if(typeof ga != 'undefined'){
 	            ga('send', 'pageview', {
@@ -44898,10 +44898,10 @@
 	                'title': view.model.pageTitle
 	            });
 	        }
-	        
+	
 	        // SWICTH THE VIEW
 	        this.pageSwitcher.set(view);
-	        
+	
 	        // UPDATE PAG NAV
 	        this.updateActiveNav();
 	    },
@@ -44941,7 +44941,7 @@
 	            self = this,
 	            hash = '',
 	            path = '';
-	        
+	
 	        if (aTag.hash !== undefined && aTag.hash.length >= 1){
 	            hash = aTag.hash;
 	        }
@@ -44984,7 +44984,7 @@
 	                // close menu container
 	                this.handleTogglemenu();
 	            }
-	        } 
+	        }
 	    },
 	
 	    _scrollToSection: function(){
@@ -44997,8 +44997,9 @@
 	
 	    updateActiveNav: function () {
 	        var path = window.location.pathname.slice(1);
+	        console.log(path);
 	
-	        this.queryAll('.nav-main a[href]').forEach(function (aTag) {
+	        this.queryAll('.Header a[href]').forEach(function (aTag) {
 	
 	            var aPath = aTag.pathname.slice(1);
 	
@@ -45045,6 +45046,7 @@
 	});
 	
 	module.exports = MainView;
+
 
 /***/ },
 /* 302 */

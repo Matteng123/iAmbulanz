@@ -11,11 +11,21 @@
 			display: block
 			padding: 0 .8rem
 			margin: 0.4rem 0
+			&.active
+				a
+					font-weight: 600
 			a
 				display: inline-block
 				line-height: 2.2rem
 				color: $neg-text-color
 				opacity: 0.2
+				&,
+				&:active,
+				&:hover,
+				&:focus,
+				&:visited
+					outline: 0
+					text-decoration: none
 		+bp('large')
 			max-width: $max-size
 			margin: 0 auto

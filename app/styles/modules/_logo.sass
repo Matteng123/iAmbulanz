@@ -1,4 +1,4 @@
-.Logo 
+.Logo
 	position: absolute
 	top: 1.6rem
 	left: 50%
@@ -10,9 +10,17 @@
 	&-body
 		margin: 0
 		// background-color: #ff0000
-	img 
+		a
+			&,
+			&:active,
+			&:hover,
+			&:focus,
+			&:visited
+				outline: 0
+				text-decoration: none
+	img
 		width: 10rem
-	
+
 	+bp('large')
 		left: 0%
 		top: 6.55rem
@@ -20,19 +28,15 @@
 		+transform(translateX(0%))
 		&-body
 			width: 15rem
-			a 
+			a
 				padding: 0 $large-border
 	+bpf($max-size)
 		left: 50%
 		+transform(translateX(($max-size - $large-border * 2)/2*-1))
-		&-body 
-			a 
+		&-body
+			a
 				padding: 0
 	+bp('larger')
 		top: 5.75rem
-		img 
+		img
 			width: 15rem
-		
-		
-	
-
