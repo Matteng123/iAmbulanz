@@ -9,7 +9,6 @@ pages:
     - section_benefits
     - section_services
     - section_linkbar
-    - section_testimonials
 files: false
 fields:
   title: title

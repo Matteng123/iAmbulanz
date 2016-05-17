@@ -1,0 +1,41 @@
+Title: Vorteile
+
+----
+
+Headline: Vorteile mit iAmbulanz
+
+----
+
+Benefits:
+
+-
+  icon: time
+  headline: Express-Reparatur in 30-60 Min.
+  description: >
+    Vorbeikommen und drankommen. Wir
+    reparieren Ihr Gerät sofort vor Ort,
+    sodass Sie es in kurzer Wartezeit direkt
+    wieder in Betrieb nehmen können
+-
+  icon: quality
+  headline: Ersatzteile in Originalqualität
+  description: >
+    Wir verbauen ausschließlich
+    Originalteile oder Ersatzteile in
+    Originalqualität, um Ihnen stets das
+    beste Reparaturergebnis garantieren zu
+    können.
+-
+  icon: security
+  headline: Lebenslange Garantie
+  description: >
+    Alle Reparaturen sind mit einer
+    lebenslangen Garantie abgesichert.
+-
+  icon: price
+  headline: Volle Kostenkontrolle
+  description: 'Durch pauschale Preislisten  wissen Sie genau was auf Sie zukommt. Sie können nach der Reparatur bar, mit Karte oder bequem auf Rechnung bezahlen.'
+
+----
+
+Section: true

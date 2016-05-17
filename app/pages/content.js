@@ -26,12 +26,20 @@ var Content = PageView.extend({
 
 	initializeSlider: function(){
 
-		$('.Carousel').owlCarousel({
+		$('.Carousel .Carousel-body').owlCarousel({
 			    loop:true,
 			    margin:0,
 			    nav:true,
 			    items:1
-			});
+		});
+
+		$('.Carousel--testimonials .Carousel-body').owlCarousel({
+			    loop:true,
+			    margin:0,
+			    nav:true,
+			    items:1
+		});
+
 	},
 
 	bindResponsimg: function (){
