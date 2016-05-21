@@ -94,13 +94,19 @@
 				font-size: 2.0em
 
 		&-button
+			&,
+			&:active,
+			&:hover,
+			&:focus,
+			&:visited
+				outline: 0
+				text-decoration: none
 			position: relative
+			box-sizing: border-box
 			display: inline-block
 			margin-top: 0.5rem
 			margin-bottom: 0 !important
 			background: transparent
-			padding: 0 2rem
-			font-size: 1.4em
 			opacity: 1 !important
 			overflow: hidden
 			+border-radius(2rem)
@@ -108,26 +114,31 @@
 			font-family: $button-font
 			font-weight: bold
 			+bp('large')
-				padding: 0.3rem 1.8rem
-				+border-radius(4rem)
-			+bp('larger')
-				padding: 0.3rem 2.5rem 0.6rem
+				+border-radius(10rem)
+
 			span
+				box-sizing: border-box
 				position: relative
 				color: white
 				display: inline-block
 				text-align: center
 				+transition(color, 0.5s)
 				z-index: 10 !important
-				// line-height: 1em
+				line-height: 1em
+				padding: 0.5rem 0
 				+bp('large')
 					font-size: 0.69em
+					padding: 0.3rem 1.8rem
+				+bp('larger')
+					padding: 0.3rem 2.5rem
 
 			&:before,
 			&:after,
 				content: ''
 				position: absolute
 				+border-radius(2rem)
+				+bp('large')
+					+border-radius(10rem)
 				left: 0
 				top: 0
 				right: 0

@@ -7,20 +7,18 @@
 		</div>
 		<div class="Carousel-body">
 			<?php foreach($slideritems as $item):
-				$stars = $item->stars()->int();
-				echo $stars;
-			?>
+				$stars = $item->stars()->int(); ?>
 
 			<div class="item">
 				<div class="Carousel-content">
-					<img src="/assets/images/slider.png">
+					<img src="/assets/images/testimonials.png">
 				</div>
-				<div class="Carousel-layer" >
+				<div class="Carousel-layer--testimonials" >
 					<div class="Carousel-layer-img">
 						<img src="<?php echo $section->contentURL().'/'.$item->image(); ?>">
 					</div>
 					<div class="Carousel-layer-body">
-						<span class="Carousel--testimonials-stars"><?php for($i=0; $i<$stars; $i++): ?>Stern<?php endfor; ?></span>
+						<span class="Carousel--testimonials-stars"><?php for($i=0; $i<$stars; $i++): ?><span></span><?php endfor; ?></span>
 							<p>„<?php echo html($item->description()) ?>“<span><?php echo html($item->author()) ?></span></p>
 					</div>
 				</div>

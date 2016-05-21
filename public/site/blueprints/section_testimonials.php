@@ -7,5 +7,6 @@ fields:
   title:
     label: Title
     type: text
+  headline: headline
   testimonials: testimonials
 files: images
