@@ -7,9 +7,8 @@ password: >
 language: de
 role: admin
 history:
-  - >
-    fuer-unternehmen/unternehmen-kundenstimmen
+  - standorte/standorte
+  - fuer-unternehmen/unternehmen-kundenstimmen
   - fuer-unternehmen/vorteile-unternehmen
   - fuer-unternehmen/unternehmen-linkbar
   - home
-  - home/slider

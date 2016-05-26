@@ -1,0 +1,6 @@
+label: Teaser Icon
+type: select
+options:
+  heart: Herz
+  hint: Hinweis
+  garanty: Garantie

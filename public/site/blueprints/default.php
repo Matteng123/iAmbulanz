@@ -5,11 +5,14 @@ pages:
   template:
     - section_slider
     - section_location-short
+    - section_location
     - section_devices-short
     - section_benefits
     - section_services
     - section_linkbar
     - section_testimonials
+    - section_text-teaser
+
 files: false
 fields:
   title: title
