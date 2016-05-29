@@ -12,7 +12,7 @@ pages:
     - section_linkbar
     - section_testimonials
     - section_text-teaser
-
+    - section_map
 files: false
 fields:
   title: title

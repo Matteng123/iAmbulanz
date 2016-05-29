@@ -1,14 +1,13 @@
 // var mapboxgl = require('mapbox-gl');
 var mapboxgl = require('../vendor/mapboxgl/mapbox-gl.js');
-var Layermodel = require('../models/layer.js');
 var each = require('amp-each');
 
 var layers = {
-	
+
 	map:null,
 	activeChapterName:null,
 	i18n:null,
-	
+
 	// events: {
 	// 	'click .taglist li a': 'toggleLayer'
 	// },
@@ -20,7 +19,7 @@ var layers = {
 	showLayer: function(name){
 		this.map.setLayoutProperty(name, 'visibility', 'visible');
 	},
-	
+
 	toggleLayer: function (e){
 		e.preventDefault();
 		e.stopPropagation();
@@ -46,14 +45,14 @@ var layers = {
 		var target = e.delegateTarget,
 			getid = target.getAttribute('href'),
 			mappoint = getid.split('#').join(''),
-			config = this.mapconfig.positions;
-		
+			config = this.MapConfig.positions;
+
 		if (mappoint === this.activeChapterName) return;
 
 		this.map.flyTo(config[mappoint]);
 
 	    document.getElementById(mappoint).setAttribute('class', 'active');
-	    if(this.activeChapterName != null){
+	    if(this.activeChapterName !== null){
 	    	document.getElementById(this.activeChapterName).setAttribute('class', '');
 	    }
 
@@ -61,35 +60,32 @@ var layers = {
 	},
 
 	_switchCoordinates: function(item){
-		switch(this.mapconfig.coordinates){
+		switch(this.MapConfig.coordinates){
 			case "mapbox":
 				return [item.lat, item.lng];
-				break;
 			case "google":
 				return [item.lng, item.lat];
-				break;
 		}
 	},
 
-	i18n: function(){
+	_i18n: function(){
 		this.i18n = window.location.pathname.split('/')[1];
 	},
 
 	_renderMap: function(mapNode){
-		if(this.mapconfig == undefined){
+		if(this.MapConfig === undefined){
 			console.log("Keine Config Datei angelegt");
 			return;
 		}
-		
-		var mToken = this.mapconfig.token,
-			mName = this.mapconfig.name,
-			mId = this.mapconfig.id,
-			mStyle = this.mapconfig.style,
-			mSprite = this.mapconfig.sprite,
-			mCoords = [this.mapconfig.view[1], this.mapconfig.view[0]],
-			mZoom = this.mapconfig.zoom,
-			mBearing = this.mapconfig.bearing,
-			mPitch = this.mapconfig.pitch,
+
+		var mToken = this.MapConfig.token,
+			mName = this.MapConfig.name,
+			mId = this.MapConfig.id,
+			mStyle = this.MapConfig.style,
+			mCoords = [this.MapConfig.view[1], this.MapConfig.view[0]],
+			mZoom = this.MapConfig.zoom,
+			mBearing = this.MapConfig.bearing,
+			mPitch = this.MapConfig.pitch,
 			self = this;
 
 		if(mapNode !== null){
@@ -99,7 +95,6 @@ var layers = {
 				name: mName,
 				container: mId,
 				style: mStyle,
-				sprite: mSprite,
 				center: mCoords,
 				zoom: mZoom,
 				bearing: mBearing,
@@ -109,7 +104,7 @@ var layers = {
 
 			// set initials
 			this.map = mapbox;
-			this.i18n();
+			this._i18n();
 
 			this.map.addControl( new mapboxgl.Navigation( {position:"top-right"} ) );
 			this.map.on('style.load', function() {
@@ -129,7 +124,7 @@ var layers = {
 	_mouseMove: function(e){
 		var self = this,
 			keys = [];
-		each(self.mapconfig.layer, function(layerData, key) {
+		each(self.MapConfig.layer, function(layerData, key) {
 			keys.push(key);
 		});
 		self.map.featuresAt(e.point, {
@@ -139,12 +134,15 @@ var layers = {
 			self.map.getCanvas().style.cursor = (!err && features.length) ? 'pointer' : '';
 		});
 	},
-	
+
 	_clickPopup: function (e){
 		var self = this,
 			keys = [];
 
-		each(self.mapconfig.layer, function(layerData, key) {
+			console.log("_clickPopup");
+
+		each(self.MapConfig.layer, function(layerData, key) {
+			console.log(key);
 			keys.push(key);
 		});
 
@@ -159,34 +157,29 @@ var layers = {
 			}
 			var feature = features[0];
 			var prop = feature.properties;
-			
+
 			// popup template
 			var output = '';
 			output += '<div class="map-popup-layer">';
-			output += prop.headline != "" ? '<strong>' + feature.properties.headline + '</strong>' : '';
-			output += prop.description != "" ? '<br/>' + prop.description : '';
-			output += prop.i18n[self.i18n] != undefined ? '<br/><a class="pin" href="' + prop.i18n[self.i18n] + '">Details</a>' : '';
-			output += '</div>'
+			output += prop.headline !== "" ? '<strong>' + prop.headline + '</strong>' : '';
+			output += prop.description !== "" ? prop.description : '';
+			output += '</div>';
 
 			self.popup.setLngLat( feature.geometry.coordinates )
 				.setHTML(output)
 				.addTo(self.map);
 		});
 	},
-	
+
 	_loadLayer: function (){
 		var self = this;
-		
-		console.log(self.mapconfig.layer);
 
-		each(self.mapconfig.layer, function(layerData, key) {
-			// console.log("type: ", layerData, key);
+		each(self.MapConfig.layer, function(layerData, key) {
 			self.map.addSource(key, {
 				'type': 'geojson',
 				'data': layerData.url
 			});
 			if(layerData.type == "point"){
-				console.log("key:", key);
 				self.map.addLayer({
 					"id": key,
 					"interactive": true,
@@ -203,10 +196,7 @@ var layers = {
 				});
 			}
 		});
-
 	}
-
-
 };
 
 module.exports = layers;

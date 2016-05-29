@@ -1,0 +1,19 @@
+{
+    "name": "Mapbox iAmbulanz",
+    "token": "pk.eyJ1IjoibHJjLWtyZW1pbiIsImEiOiJjaW42aHc5eDEwMDA0dzlsenkxYmE0ZWZuIn0.i67nrTIW0H5hGF20VjFFIg",
+    "style": "/assets/map/style/cin6hzdwg00294rma8ka3rj31.json",
+    "id": "mapbox",
+    "view": [50.995356, 6.849134],
+    "zoom": 8,
+    "bearing": 0,
+    "pitch": 0,
+    "layer":{
+        "locations": {
+            "type": "point",
+            "url": "/api/locations/",
+            "range": [0, 25],
+            "isactive": true,
+            "instance": null
+        }
+    }
+}

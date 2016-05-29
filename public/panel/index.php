@@ -5,9 +5,7 @@ use Kirby\Panel;
 define('DS', DIRECTORY_SEPARATOR);
 
 // fetch the site's index directory
-
 $index = dirname(__DIR__);
-
 
 // load the kirby bootstrapper
 require($index . DS . 'kirby' . DS . 'bootstrap.php');
@@ -47,7 +45,7 @@ if(!isset($kirby->roots->thumbs)) {
 try {
 
   // create the panel object
-  $panel = new Panel($kirby, __DIR__);
+  $panel = new Panel($kirby, __DIR__);  
 
   // launch the panel
   echo $panel->launch();
