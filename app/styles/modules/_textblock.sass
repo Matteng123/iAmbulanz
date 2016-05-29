@@ -1,0 +1,69 @@
+.TextBlock
+  h2
+    font-weight: 600
+  &-body
+    @extend .Section-body--small
+    &:after
+      content: ""
+      display: table
+      clear: both
+  &--center
+    .TextBlock-body
+      @extend .Section-body--smallest
+    h2
+      text-align: center
+      &:after
+        content: none
+    p
+      +bp('medium')
+        font-size: 1.5em
+  &--list
+    .TextBlock-body
+      @extend .Section-body--smaller
+      h2
+        font-size: 2.5em
+        &:after
+          content: none
+      div
+        h2
+          text-align: center
+        +bp('medium')
+          float: left
+          width: 50%
+          h2
+            text-align: left
+          div:first-child
+            width: 40%
+          div:second-child
+            width: 60%
+  &--image-left,
+  &--image-right,
+    .TextBlock-body
+      @extend .Section-body--smaller
+      h2
+        font-size: 2.5em
+        &:after
+          content: none
+      div
+        padding-bottom: $small-border
+        img
+          width: 100%
+        h2
+          text-align: left
+        +bp('medium')
+          float: left
+          margin-left: 5%
+          margin-right: 5%
+          width: 40%
+  &--image-right
+    h2, p
+      text-align: right
+  &--center,
+  &--list,
+  &--image-left,
+  &--image-right,
+    .TextBlock-body
+      +bp('medium')
+        margin-top: -1*$medium-border
+      +bp('large')
+        margin-top: -2*$large-border

@@ -7,8 +7,8 @@ password: >
 language: de
 role: admin
 history:
-  - standorte/karte
-  - preise/text-garantie
-  - preise/text-hinweis
+  - fuer-unternehmen/unternehmen-text-2
+  - fuer-unternehmen/unternehmen-text-1
+  - fuer-unternehmen/unternehmen-service-liste
+  - fuer-unternehmen/unternehmen-intro
   - standorte/text-termin
-  - standorte/standorte

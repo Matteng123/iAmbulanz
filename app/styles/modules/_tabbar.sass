@@ -1,36 +1,40 @@
 .Tabbar
 	&-body
 		@extend .Section-body
-	&-item
-		&--active
-			a
-				&:after
-					content: ''
-					position: absolute
-					background-color: white
-					top: 0
-					left: 0
-					bottom: -2px
-					right: 0
-					z-index: 0
-				span
-					color: darken($primary-color, 50%)
 	&--links
+		.Tabbar-item
+			&--active
+				a
+					&:after
+						content: ''
+						position: absolute
+						background-color: white
+						top: 0
+						left: 0
+						bottom: 0
+						right: 0
+						z-index: 0
+						+bp('large')
+							bottom: -2px
+					span
+						color: darken($primary-color, 50%)
 		&-body
 			@extend .Section-body--small
 		ul
 			width: 100%
-			border-bottom: 2px solid darken($primary-color, 10%)
 			text-align: center
+			+bp('large')
+				border-bottom: 2px solid darken($primary-color, 10%)
 			li
-				display: inline-block
+				display: block
 				cursor: pointer
 				user-select: none
 				-webkit-tap-highlight-color: rgba(0,0,0,0)
 				border: 2px solid darken($primary-color, 10%)
 				margin: 0 $small-border/2
-				margin-bottom: -2px
-				+bp('medium')
+				margin-bottom: 4px
+				+bp('large')
+					display: inline-block
 					margin: 0 $small-border
 					margin-bottom: -2px
 

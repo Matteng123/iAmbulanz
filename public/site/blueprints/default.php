@@ -3,15 +3,16 @@
 title: Standardseite
 pages:
   template:
-    - section_slider
+    - section_benefits
+    - section_devices-short
+    - section_linkbar
     - section_location-short
     - section_location
-    - section_devices-short
-    - section_benefits
     - section_services
-    - section_linkbar
+    - section_slider
     - section_testimonials
     - section_text-teaser
+    - section_text-block
     - section_map
 files: false
 fields:

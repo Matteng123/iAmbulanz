@@ -51,6 +51,14 @@
 
 
 	&--testimonials
+		border-top: 1px solid lighten($secondary-color, 50%)
+		padding-top: $small-border
+		+bp('medium')
+			padding-top: $medium-border
+		+bp('large')
+			padding-top: $large-border
+		+bp('larger')
+			padding-top: $larger-border
 		.owl-controls
 			+bp('large')
 				width: auto

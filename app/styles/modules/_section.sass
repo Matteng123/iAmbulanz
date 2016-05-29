@@ -26,6 +26,19 @@
           display: table
           clear: both
   &-body--smaller
+      max-width: $max-size - 320
+      margin: 0 auto
+      padding: 30px $small-border
+      +bp('medium')
+        padding: $medium-border
+      +bp('large')
+        padding: 2*$large-border $large-border
+      +bp('medium')
+        &:after
+          content: ""
+          display: table
+          clear: both
+  &-body--smallest
       max-width: $max-size - 640
       margin: 0 auto
       padding: 30px $small-border
