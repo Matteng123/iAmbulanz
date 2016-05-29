@@ -7,7 +7,7 @@ fields:
   title: title
   headline: headline
   copy: copy
-  icon: icon_teaser
+  icon: icons_teaser
   button_text: button_text
   button_url: button_url
   section: section
