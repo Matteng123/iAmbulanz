@@ -1,12 +1,12 @@
 <?php
 	$type = $section->type()
 ?>
-<div class="TextBlock TextBlock--<?php echo $type ?>">
-	<div class="TextBlock-body">
+<div class="TextBlock TextBlock--<?php echo $type ?><?php if(!$section->line()->isEmpty() ) { echo " TextBlock--border".$section->line(); } ?>">
+	<div class="TextBlock-body<?php if( $section->margin()->isTrue() ) { echo " TextBlock-body--margin"; } ?>">
 		<?php if($type == "center"): ?>
 			<div>
 					<h2><?php echo $section->headline()->html() ?></h2>
-					<p><?php echo $section->copy()->html() ?></p>
+					<?php echo $section->copy()->kirbytext() ?>
 			</div>
 		<?php endif; ?>
 		<?php if($type == "list"): ?>
@@ -14,7 +14,7 @@
 					<h2><?php echo $section->headline()->html() ?></h2>
 			</div>
 			<div>
-					<p><?php echo $section->copy()->html() ?></p>
+					<?php echo $section->copy()->kirbytext() ?>
 			</div>
 		<?php endif; ?>
 		<?php if($type == "image-left"): ?>
@@ -25,7 +25,7 @@
 					<?php if(!$section->headline()->isEmpty()): ?>
 						<h2><?php echo $section->headline()->html() ?></h2>
 					<?php endif; ?>
-					<p><?php echo $section->copy()->html() ?></p>
+					<?php echo $section->copy()->kirbytext() ?>
 			</div>
 		<?php endif; ?>
 		<?php if($type == "image-right"): ?>
@@ -33,7 +33,7 @@
 					<?php if(!$section->headline()->isEmpty()): ?>
 						<h2><?php echo $section->headline()->html() ?></h2>
 					<?php endif; ?>
-					<p><?php echo $section->copy()->html() ?></p>
+					<?php echo $section->copy()->kirbytext() ?>
 			</div>
 			<div>
 					<img src="<?php echo $section->image()->url() ?>" />

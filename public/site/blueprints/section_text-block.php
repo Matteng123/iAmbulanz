@@ -12,4 +12,6 @@ fields:
   copy: copy
   type: types_text
   image: image_select
+  line: border_select
+  margin: margin
   section: section
