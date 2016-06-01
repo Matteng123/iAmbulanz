@@ -11,7 +11,9 @@ var MainView = View.extend({
 
     props: {
         isMobile: false,
-        pageTitle: [String, true, 'iAmbulanz']
+        pageTitle: [String, true, 'iAmbulanz'],
+        isStickyOff: false,
+        isSticky: false,
     },
 
     events: {
@@ -62,6 +64,16 @@ var MainView = View.extend({
             }
         });
 
+        window.addEventListener('scroll', function() {
+          if(window.scrollY > self.header.offsetHeight && !self.isStickyOff && !self.isSticky){
+            self.isSticky = true;
+            dom.addClass(document.body, 'Header--sticky');
+          } else if(window.scrollY < self.header.offsetHeight && self.isSticky){
+            self.isSticky = false;
+            dom.removeClass(document.body, 'Header--sticky');
+          }
+        });
+
         // setting a favicon for fun (note, it's dynamic)
         // setFavicon('/images/ampersand.png');
 
@@ -78,7 +90,7 @@ var MainView = View.extend({
             });
         }
 
-        // SWICTH THE VIEW
+        // SWITCH THE VIEW
         this.pageSwitcher.set(view);
 
         // UPDATE PAG NAV
@@ -99,16 +111,18 @@ var MainView = View.extend({
     },
 
     handleTogglemenu: function (e){
-        if( dom.hasClass(this.header, 'Header--open') || e == undefined){
+        if( dom.hasClass(this.header, 'Header--open') || e === undefined){
             this._closeToggleMenu();
         } else {
             this._openToggleMenu();
         }
     },
+
     _openToggleMenu: function(){
         dom.setAttribute(this.header, 'style', 'margin-top:'+this.headerBody.offsetHeight+'px');
         dom.addClass(this.header, 'Header--open');
     },
+
     _closeToggleMenu: function(){
         dom.setAttribute(this.header, 'style', '');
         dom.removeClass(this.header, 'Header--open');
@@ -125,13 +139,11 @@ var MainView = View.extend({
             hash = aTag.hash;
         }
 
-        path =  aTag.hash !== undefined
-                ? aTag.pathname+hash
-                : aTag.getAttribute('xlink:href');
+        path =  aTag.hash !== undefined ? aTag.pathname+hash : aTag.getAttribute('xlink:href');
 
         this._doLinkClick(path, e, aTag);
 
-        this._closeToggleMenu()
+        this._closeToggleMenu();
     },
 
     _doLinkClick: function(path, e, tag){
@@ -141,7 +153,7 @@ var MainView = View.extend({
             aUrl = e.delegateTarget.href,
             attr = e.delegateTarget.getAttribute('data-value') || undefined;
 
-        if ( $(tag).data('animation') != undefined ){
+        if ( $(tag).data('animation') !== undefined ){
             app.pageAnimation = $(tag).data('animation');
         } else {
             app.pageAnimation = "scroll";
@@ -184,7 +196,7 @@ var MainView = View.extend({
 
             if ((!aPath && !path) || (aPath && path.indexOf(aPath) === 0)) {
                 // start film nicht aktiv !!
-                if(aPath != ''){
+                if(aPath !== ''){
                     dom.addClass(aTag.parentNode, 'active');
                 }
             } else {

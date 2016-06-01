@@ -56,9 +56,9 @@
     .TextBlock-body
       @extend .Section-body--smaller
       h2
-        font-size: 2.5em
+        font-size: 2.0em
         &:after
-          content: none
+          height: 1px
       div
         padding-bottom: $small-border
         img
@@ -71,9 +71,15 @@
           margin-right: 5%
           width: 40%
   &--image-right
-    h2, p
-      +bp('medium')
-        text-align: right
+    .TextBlock-body
+      div
+        h2, p
+          +bp('medium')
+            text-align: right
+        h2
+          &:after
+            left: auto
+            right: 0
   &--image-left,
   &--image-right,
   &--list,

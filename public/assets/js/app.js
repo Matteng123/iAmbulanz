@@ -55,8 +55,8 @@
 	jQuery = $ = __webpack_require__(2);
 	var _ = __webpack_require__(3);
 	var Router = __webpack_require__(4);
-	var domReady = __webpack_require__(300);
-	var MainView = __webpack_require__(301);
+	var domReady = __webpack_require__(314);
+	var MainView = __webpack_require__(315);
 	
 	var App = {
 	    // this is the the whole app initter
@@ -11387,8 +11387,8 @@
 	
 	var FormModel = __webpack_require__(42);
 	var ContentView = __webpack_require__(103);
-	var ContentModel = __webpack_require__(283);
-	var ContactView = __webpack_require__(299);
+	var ContentModel = __webpack_require__(311);
+	var ContactView = __webpack_require__(313);
 	
 	
 	var Router = AmpersandRouter.extend({
@@ -21803,7 +21803,7 @@
 /* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -22877,12 +22877,12 @@
 	$ = __webpack_require__(2);
 	var _ = __webpack_require__(3),
 			PageView = __webpack_require__(104),
-			MapModel = __webpack_require__(317),
+			MapModel = __webpack_require__(281),
 			dom = __webpack_require__(278),
-			gsap = __webpack_require__(281),
-			owlCarousel = __webpack_require__(282),
+			gsap = __webpack_require__(296),
+			owlCarousel = __webpack_require__(297),
 			responsImg = __webpack_require__(280),
-			MapLayers = __webpack_require__(304);
+			MapLayers = __webpack_require__(298);
 	
 	
 	var Content = PageView.extend(MapLayers);
@@ -31815,6 +31815,2294 @@
 /* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// base view for pages
+	var Model = __webpack_require__(282);
+	
+	var Content = Model.extend({
+	    urlRoot: '/',
+	    props: {
+	        source: 'String',
+	        name: 'String',
+	        token: 'String',
+	        style: 'String',
+	        id: 'String',
+	        view: Array,
+	        zoom: Number,
+	        bearing: Number,
+	        pitch: Number,
+	        icons: Object,
+	        layer: Object
+	    },
+	    url: function () {
+	        var url = this.urlRoot + this.source;
+	        return url;
+	    },
+	    ajaxConfig: function () {
+	        return {
+	            xhrFields: {
+	                'withCredentials': true
+	            }
+	        };
+	    }
+	});
+	
+	module.exports = Content;
+
+
+/***/ },
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*$AMPERSAND_VERSION*/
+	var State = __webpack_require__(283);
+	var sync = __webpack_require__(76);
+	var assign = __webpack_require__(285);
+	var isObject = __webpack_require__(64);
+	var clone = __webpack_require__(293);
+	var result = __webpack_require__(291);
+	
+	// Throw an error when a URL is needed, and none is supplied.
+	var urlError = function () {
+	    throw new Error('A "url" property or function must be specified');
+	};
+	
+	// Wrap an optional error callback with a fallback error event.
+	var wrapError = function (model, options) {
+	    var error = options.error;
+	    options.error = function (resp) {
+	        if (error) error(model, resp, options);
+	        model.trigger('error', model, resp, options);
+	    };
+	};
+	
+	var Model = State.extend({
+	    save: function (key, val, options) {
+	        var attrs, method;
+	
+	        // Handle both `"key", value` and `{key: value}` -style arguments.
+	        if (key == null || typeof key === 'object') {
+	            attrs = key;
+	            options = val;
+	        } else {
+	            (attrs = {})[key] = val;
+	        }
+	
+	        options = assign({validate: true}, options);
+	
+	        // If we're not waiting and attributes exist, save acts as
+	        // `set(attr).save(null, opts)` with validation. Otherwise, check if
+	        // the model will be valid when the attributes, if any, are set.
+	        if (attrs && !options.wait) {
+	            if (!this.set(attrs, options)) return false;
+	        } else {
+	            if (!this._validate(attrs, options)) return false;
+	        }
+	
+	        // After a successful server-side save, the client is (optionally)
+	        // updated with the server-side state.
+	        if (options.parse === void 0) options.parse = true;
+	        var model = this;
+	        var success = options.success;
+	        options.success = function (resp) {
+	            var serverAttrs = model.parse(resp, options);
+	            if (options.wait) serverAttrs = assign(attrs || {}, serverAttrs);
+	            if (isObject(serverAttrs) && !model.set(serverAttrs, options)) {
+	                return false;
+	            }
+	            if (success) success(model, resp, options);
+	            model.trigger('sync', model, resp, options);
+	        };
+	        wrapError(this, options);
+	
+	        method = this.isNew() ? 'create' : (options.patch ? 'patch' : 'update');
+	        if (method === 'patch') options.attrs = attrs;
+	        // if we're waiting we haven't actually set our attributes yet so
+	        // we need to do make sure we send right data
+	        if (options.wait && method !== 'patch') options.attrs = assign(model.serialize(), attrs);
+	        var sync = this.sync(method, this, options);
+	
+	        // Make the request available on the options object so it can be accessed
+	        // further down the line by `parse`, attached listeners, etc
+	        // Same thing is done below for fetch and destroy
+	        // https://github.com/AmpersandJS/ampersand-collection-rest-mixin/commit/d32d788aaff912387eb1106f2d7ad183ec39e11a#diff-84c84703169bf5017b1bc323653acaa3R32
+	        options.xhr = sync;
+	        return sync;
+	    },
+	
+	    // Fetch the model from the server. If the server's representation of the
+	    // model differs from its current attributes, they will be overridden,
+	    // triggering a `"change"` event.
+	    fetch: function (options) {
+	        options = options ? clone(options) : {};
+	        if (options.parse === void 0) options.parse = true;
+	        var model = this;
+	        var success = options.success;
+	        options.success = function (resp) {
+	            if (!model.set(model.parse(resp, options), options)) return false;
+	            if (success) success(model, resp, options);
+	            model.trigger('sync', model, resp, options);
+	        };
+	        wrapError(this, options);
+	        var sync = this.sync('read', this, options);
+	        options.xhr = sync;
+	        return sync;
+	    },
+	
+	    // Destroy this model on the server if it was already persisted.
+	    // Optimistically removes the model from its collection, if it has one.
+	    // If `wait: true` is passed, waits for the server to respond before removal.
+	    destroy: function (options) {
+	        options = options ? clone(options) : {};
+	        var model = this;
+	        var success = options.success;
+	
+	        var destroy = function () {
+	            model.trigger('destroy', model, model.collection, options);
+	        };
+	
+	        options.success = function (resp) {
+	            if (options.wait || model.isNew()) destroy();
+	            if (success) success(model, resp, options);
+	            if (!model.isNew()) model.trigger('sync', model, resp, options);
+	        };
+	
+	        if (this.isNew()) {
+	            options.success();
+	            return false;
+	        }
+	        wrapError(this, options);
+	
+	        var sync = this.sync('delete', this, options);
+	        options.xhr = sync;
+	        if (!options.wait) destroy();
+	        return sync;
+	    },
+	
+	    // Proxy `ampersand-sync` by default -- but override this if you need
+	    // custom syncing semantics for *this* particular model.
+	    sync: function () {
+	        return sync.apply(this, arguments);
+	    },
+	
+	    // Default URL for the model's representation on the server -- if you're
+	    // using Backbone's restful methods, override this to change the endpoint
+	    // that will be called.
+	    url: function () {
+	        var base = result(this, 'urlRoot') || result(this.collection, 'url') || urlError();
+	        if (this.isNew()) return base;
+	        return base + (base.charAt(base.length - 1) === '/' ? '' : '/') + encodeURIComponent(this.getId());
+	    }
+	});
+	
+	module.exports = Model;
+
+
+/***/ },
+/* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	/*$AMPERSAND_VERSION*/
+	var uniqueId = __webpack_require__(284);
+	var assign = __webpack_require__(285);
+	var cloneObj = function(obj) { return assign({}, obj); };
+	var omit = __webpack_require__(286);
+	var escape = __webpack_require__(58);
+	var forOwn = __webpack_require__(59);
+	var includes = __webpack_require__(60);
+	var isString = __webpack_require__(289);
+	var isObject = __webpack_require__(64);
+	var isDate = __webpack_require__(65);
+	var isFunction = __webpack_require__(25);
+	var _isEqual = __webpack_require__(290); // to avoid shadowing
+	var has = __webpack_require__(69);
+	var result = __webpack_require__(291);
+	var bind = __webpack_require__(292); // because phantomjs doesn't have Function#bind
+	var union = __webpack_require__(72);
+	var Events = __webpack_require__(18);
+	var KeyTree = __webpack_require__(74);
+	var arrayNext = __webpack_require__(75);
+	var changeRE = /^change:/;
+	var noop = function () {};
+	
+	function Base(attrs, options) {
+	    options || (options = {});
+	    this.cid || (this.cid = uniqueId('state'));
+	    this._events = {};
+	    this._values = {};
+	    this._definition = Object.create(this._definition);
+	    if (options.parse) attrs = this.parse(attrs, options);
+	    this.parent = options.parent;
+	    this.collection = options.collection;
+	    this._keyTree = new KeyTree();
+	    this._initCollections();
+	    this._initChildren();
+	    this._cache = {};
+	    this._previousAttributes = {};
+	    if (attrs) this.set(attrs, assign({silent: true, initial: true}, options));
+	    this._changed = {};
+	    if (this._derived) this._initDerived();
+	    if (options.init !== false) this.initialize.apply(this, arguments);
+	}
+	
+	assign(Base.prototype, Events, {
+	    // can be allow, ignore, reject
+	    extraProperties: 'ignore',
+	
+	    idAttribute: 'id',
+	
+	    namespaceAttribute: 'namespace',
+	
+	    typeAttribute: 'modelType',
+	
+	    // Stubbed out to be overwritten
+	    initialize: function () {
+	        return this;
+	    },
+	
+	    // Get ID of model per configuration.
+	    // Should *always* be how ID is determined by other code.
+	    getId: function () {
+	        return this[this.idAttribute];
+	    },
+	
+	    // Get namespace of model per configuration.
+	    // Should *always* be how namespace is determined by other code.
+	    getNamespace: function () {
+	        return this[this.namespaceAttribute];
+	    },
+	
+	    // Get type of model per configuration.
+	    // Should *always* be how type is determined by other code.
+	    getType: function () {
+	        return this[this.typeAttribute];
+	    },
+	
+	    // A model is new if it has never been saved to the server, and lacks an id.
+	    isNew: function () {
+	        return this.getId() == null;
+	    },
+	
+	    // get HTML-escaped value of attribute
+	    escape: function (attr) {
+	        return escape(this.get(attr));
+	    },
+	
+	    // Check if the model is currently in a valid state.
+	    isValid: function (options) {
+	        return this._validate({}, assign(options || {}, { validate: true }));
+	    },
+	
+	    // Parse can be used remap/restructure/rename incoming properties
+	    // before they are applied to attributes.
+	    parse: function (resp, options) {
+	        //jshint unused:false
+	        return resp;
+	    },
+	
+	    // Serialize is the inverse of `parse` it lets you massage data
+	    // on the way out. Before, sending to server, for example.
+	    serialize: function (options) {
+	        var attrOpts = assign({props: true}, options);
+	        var res = this.getAttributes(attrOpts, true);
+	        forOwn(this._children, function (value, key) {
+	            res[key] = this[key].serialize();
+	        }, this);
+	        forOwn(this._collections, function (value, key) {
+	            res[key] = this[key].serialize();
+	        }, this);
+	        return res;
+	    },
+	
+	    // Main set method used by generated setters/getters and can
+	    // be used directly if you need to pass options or set multiple
+	    // properties at once.
+	    set: function (key, value, options) {
+	        var self = this;
+	        var extraProperties = this.extraProperties;
+	        var wasChanging, changeEvents, newType, newVal, def, cast, err, attr,
+	            attrs, dataType, silent, unset, currentVal, initial, hasChanged, isEqual, onChange;
+	
+	        // Handle both `"key", value` and `{key: value}` -style arguments.
+	        if (isObject(key) || key === null) {
+	            attrs = key;
+	            options = value;
+	        } else {
+	            attrs = {};
+	            attrs[key] = value;
+	        }
+	
+	        options = options || {};
+	
+	        if (!this._validate(attrs, options)) return false;
+	
+	        // Extract attributes and options.
+	        unset = options.unset;
+	        silent = options.silent;
+	        initial = options.initial;
+	
+	        // Initialize change tracking.
+	        wasChanging = this._changing;
+	        this._changing = true;
+	        changeEvents = [];
+	
+	        // if not already changing, store previous
+	        if (initial) {
+	            this._previousAttributes = {};
+	        } else if (!wasChanging) {
+	            this._previousAttributes = this.attributes;
+	            this._changed = {};
+	        }
+	
+	        // For each `set` attribute...
+	        for (var i = 0, keys = Object.keys(attrs), len = keys.length; i < len; i++) {
+	            attr = keys[i];
+	            newVal = attrs[attr];
+	            newType = typeof newVal;
+	            currentVal = this._values[attr];
+	            def = this._definition[attr];
+	
+	            if (!def) {
+	                // if this is a child model or collection
+	                if (this._children[attr] || this._collections[attr]) {
+	                    if (!isObject(newVal)) {
+	                        newVal = {};
+	                    }
+	
+	                    this[attr].set(newVal, options);
+	                    continue;
+	                } else if (extraProperties === 'ignore') {
+	                    continue;
+	                } else if (extraProperties === 'reject') {
+	                    throw new TypeError('No "' + attr + '" property defined on ' + (this.type || 'this') + ' model and extraProperties not set to "ignore" or "allow"');
+	                } else if (extraProperties === 'allow') {
+	                    def = this._createPropertyDefinition(attr, 'any');
+	                } else if (extraProperties) {
+	                    throw new TypeError('Invalid value for extraProperties: "' + extraProperties + '"');
+	                }
+	            }
+	
+	            isEqual = this._getCompareForType(def.type);
+	            onChange = this._getOnChangeForType(def.type);
+	            dataType = this._dataTypes[def.type];
+	
+	            // check type if we have one
+	            if (dataType && dataType.set) {
+	                cast = dataType.set(newVal);
+	                newVal = cast.val;
+	                newType = cast.type;
+	            }
+	
+	            // If we've defined a test, run it
+	            if (def.test) {
+	                err = def.test.call(this, newVal, newType);
+	                if (err) {
+	                    throw new TypeError('Property \'' + attr + '\' failed validation with error: ' + err);
+	                }
+	            }
+	
+	            // If we are required but undefined, throw error.
+	            // If we are null and are not allowing null, throw error
+	            // If we have a defined type and the new type doesn't match, and we are not null, throw error.
+	            // If we require specific value and new one is not one of them, throw error (unless it has default value or we're unsetting it with undefined).
+	
+	            if (newVal === undefined && def.required) {
+	                throw new TypeError('Required property \'' + attr + '\' must be of type ' + def.type + '. Tried to set ' + newVal);
+	            }
+	            if (newVal === null && def.required && !def.allowNull) {
+	                throw new TypeError('Property \'' + attr + '\' must be of type ' + def.type + ' (cannot be null). Tried to set ' + newVal);
+	            }
+	            if ((def.type && def.type !== 'any' && def.type !== newType) && newVal !== null && newVal !== undefined) {
+	                throw new TypeError('Property \'' + attr + '\' must be of type ' + def.type + '. Tried to set ' + newVal);
+	            }
+	            if (def.values && !includes(def.values, newVal)) {
+	                var defaultValue = result(def, 'default');
+	                if (unset && defaultValue !== undefined) {
+	                    newVal = defaultValue;
+	                } else if (!unset || (unset && newVal !== undefined)) {
+	                    throw new TypeError('Property \'' + attr + '\' must be one of values: ' + def.values.join(', ') + '. Tried to set ' + newVal);
+	                }
+	            }
+	
+	            // We know this has 'changed' if it's the initial set, so skip a potentially expensive isEqual check.
+	            hasChanged = initial || !isEqual(currentVal, newVal, attr);
+	
+	            // enforce `setOnce` for properties if set
+	            if (def.setOnce && currentVal !== undefined && hasChanged) {
+	                throw new TypeError('Property \'' + attr + '\' can only be set once.');
+	            }
+	
+	            // set/unset attributes.
+	            // If this is not the initial set, keep track of changed attributes
+	            // and push to changeEvents array so we can fire events.
+	            if (hasChanged) {
+	
+	                // This fires no matter what, even on initial set.
+	                onChange(newVal, currentVal, attr);
+	
+	                // If this is a change (not an initial set), mark the change.
+	                // Note it's impossible to unset on the initial set (it will already be unset),
+	                // so we only include that logic here.
+	                if (!initial) {
+	                    this._changed[attr] = newVal;
+	                    this._previousAttributes[attr] = currentVal;
+	                    if (unset) {
+	                        // FIXME delete is very slow. Can we get away with setting to undefined?
+	                        delete this._values[attr];
+	                    }
+	                    if (!silent) {
+	                        changeEvents.push({prev: currentVal, val: newVal, key: attr});
+	                    }
+	                }
+	                if (!unset) {
+	                    this._values[attr] = newVal;
+	                }
+	            } else {
+	                // Not changed
+	                // FIXME delete is very slow. Can we get away with setting to undefined?
+	                delete this._changed[attr];
+	            }
+	        }
+	
+	        // Fire events. This array is not populated if we are told to be silent.
+	        if (changeEvents.length) this._pending = true;
+	        changeEvents.forEach(function (change) {
+	            self.trigger('change:' + change.key, self, change.val, options);
+	        });
+	
+	        // You might be wondering why there's a `while` loop here. Changes can
+	        // be recursively nested within `"change"` events.
+	        if (wasChanging) return this;
+	        while (this._pending) {
+	            this._pending = false;
+	            this.trigger('change', this, options);
+	        }
+	        this._pending = false;
+	        this._changing = false;
+	        return this;
+	    },
+	
+	    get: function (attr) {
+	        return this[attr];
+	    },
+	
+	    // Toggle boolean properties or properties that have a `values`
+	    // array in its definition.
+	    toggle: function (property) {
+	        var def = this._definition[property];
+	        if (def.type === 'boolean') {
+	            // if it's a bool, just flip it
+	            this[property] = !this[property];
+	        } else if (def && def.values) {
+	            // If it's a property with an array of values
+	            // skip to the next one looping back if at end.
+	            this[property] = arrayNext(def.values, this[property]);
+	        } else {
+	            throw new TypeError('Can only toggle properties that are type `boolean` or have `values` array.');
+	        }
+	        return this;
+	    },
+	
+	    // Get all of the attributes of the model at the time of the previous
+	    // `"change"` event.
+	    previousAttributes: function () {
+	        return cloneObj(this._previousAttributes);
+	    },
+	
+	    // Determine if the model has changed since the last `"change"` event.
+	    // If you specify an attribute name, determine if that attribute has changed.
+	    hasChanged: function (attr) {
+	        if (attr == null) return !!Object.keys(this._changed).length;
+	        if (has(this._derived, attr)) {
+	            return this._derived[attr].depList.some(function (dep) {
+	                return this.hasChanged(dep);
+	            }, this);
+	        }
+	        return has(this._changed, attr);
+	    },
+	
+	    // Return an object containing all the attributes that have changed, or
+	    // false if there are no changed attributes. Useful for determining what
+	    // parts of a view need to be updated and/or what attributes need to be
+	    // persisted to the server. Unset attributes will be set to undefined.
+	    // You can also pass an attributes object to diff against the model,
+	    // determining if there *would be* a change.
+	    changedAttributes: function (diff) {
+	        if (!diff) return this.hasChanged() ? cloneObj(this._changed) : false;
+	        var val, changed = false;
+	        var old = this._changing ? this._previousAttributes : this.attributes;
+	        var def, isEqual;
+	        for (var attr in diff) {
+	            def = this._definition[attr];
+	            if (!def) continue;
+	            isEqual = this._getCompareForType(def.type);
+	            if (isEqual(old[attr], (val = diff[attr]))) continue;
+	            (changed || (changed = {}))[attr] = val;
+	        }
+	        return changed;
+	    },
+	
+	    toJSON: function () {
+	        return this.serialize();
+	    },
+	
+	    unset: function (attrs, options) {
+	        var self = this;
+	        attrs = Array.isArray(attrs) ? attrs : [attrs];
+	        attrs.forEach(function (key) {
+	            var def = self._definition[key];
+	            if (!def) return;
+	            var val;
+	            if (def.required) {
+	                val = result(def, 'default');
+	                return self.set(key, val, options);
+	            } else {
+	                return self.set(key, val, assign({}, options, {unset: true}));
+	            }
+	        });
+	    },
+	
+	    clear: function (options) {
+	        var self = this;
+	        Object.keys(this.attributes).forEach(function (key) {
+	            self.unset(key, options);
+	        });
+	        return this;
+	    },
+	
+	    previous: function (attr) {
+	        if (attr == null || !Object.keys(this._previousAttributes).length) return null;
+	        return this._previousAttributes[attr];
+	    },
+	
+	    // Get default values for a certain type
+	    _getDefaultForType: function (type) {
+	        var dataType = this._dataTypes[type];
+	        return dataType && dataType['default'];
+	    },
+	
+	    // Determine which comparison algorithm to use for comparing a property
+	    _getCompareForType: function (type) {
+	        var dataType = this._dataTypes[type];
+	        if (dataType && dataType.compare) return bind(dataType.compare, this);
+	        return _isEqual; // if no compare function is defined, use _.isEqual
+	    },
+	
+	    _getOnChangeForType : function(type){
+	        var dataType = this._dataTypes[type];
+	        if (dataType && dataType.onChange) return bind(dataType.onChange, this);
+	        return noop;
+	    },
+	
+	    // Run validation against the next complete set of model attributes,
+	    // returning `true` if all is well. Otherwise, fire an `"invalid"` event.
+	    _validate: function (attrs, options) {
+	        if (!options.validate || !this.validate) return true;
+	        attrs = assign({}, this.attributes, attrs);
+	        var error = this.validationError = this.validate(attrs, options) || null;
+	        if (!error) return true;
+	        this.trigger('invalid', this, error, assign(options || {}, {validationError: error}));
+	        return false;
+	    },
+	
+	    _createPropertyDefinition: function (name, desc, isSession) {
+	        return createPropertyDefinition(this, name, desc, isSession);
+	    },
+	
+	    // just makes friendlier errors when trying to define a new model
+	    // only used when setting up original property definitions
+	    _ensureValidType: function (type) {
+	        return includes(['string', 'number', 'boolean', 'array', 'object', 'date', 'state', 'any']
+	            .concat(Object.keys(this._dataTypes)), type) ? type : undefined;
+	    },
+	
+	    getAttributes: function (options, raw) {
+	        options = assign({
+	            session: false,
+	            props: false,
+	            derived: false
+	        }, options || {});
+	        var res = {};
+	        var val, def;
+	        for (var item in this._definition) {
+	            def = this._definition[item];
+	            if ((options.session && def.session) || (options.props && !def.session)) {
+	                val = raw ? this._values[item] : this[item];
+	                if (raw && val && isFunction(val.serialize)) val = val.serialize();
+	                if (typeof val === 'undefined') val = result(def, 'default');
+	                if (typeof val !== 'undefined') res[item] = val;
+	            }
+	        }
+	        if (options.derived) {
+	            for (var derivedItem in this._derived) res[derivedItem] = this[derivedItem];
+	        }
+	        return res;
+	    },
+	
+	    _initDerived: function () {
+	        var self = this;
+	
+	        forOwn(this._derived, function (value, name) {
+	            var def = self._derived[name];
+	            def.deps = def.depList;
+	
+	            var update = function (options) {
+	                options = options || {};
+	
+	                var newVal = def.fn.call(self);
+	
+	                if (self._cache[name] !== newVal || !def.cache) {
+	                    if (def.cache) {
+	                        self._previousAttributes[name] = self._cache[name];
+	                    }
+	                    self._cache[name] = newVal;
+	                    self.trigger('change:' + name, self, self._cache[name]);
+	                }
+	            };
+	
+	            def.deps.forEach(function (propString) {
+	                self._keyTree.add(propString, update);
+	            });
+	        });
+	
+	        this.on('all', function (eventName) {
+	            if (changeRE.test(eventName)) {
+	                self._keyTree.get(eventName.split(':')[1]).forEach(function (fn) {
+	                    fn();
+	                });
+	            }
+	        }, this);
+	    },
+	
+	    _getDerivedProperty: function (name, flushCache) {
+	        // is this a derived property that is cached
+	        if (this._derived[name].cache) {
+	            //set if this is the first time, or flushCache is set
+	            if (flushCache || !this._cache.hasOwnProperty(name)) {
+	                this._cache[name] = this._derived[name].fn.apply(this);
+	            }
+	            return this._cache[name];
+	        } else {
+	            return this._derived[name].fn.apply(this);
+	        }
+	    },
+	
+	    _initCollections: function () {
+	        var coll;
+	        if (!this._collections) return;
+	        for (coll in this._collections) {
+	            this._safeSet(coll, new this._collections[coll](null, {parent: this}));
+	        }
+	    },
+	
+	    _initChildren: function () {
+	        var child;
+	        if (!this._children) return;
+	        for (child in this._children) {
+	            this._safeSet(child, new this._children[child]({}, {parent: this}));
+	            this.listenTo(this[child], 'all', this._getEventBubblingHandler(child));
+	        }
+	    },
+	
+	    // Returns a bound handler for doing event bubbling while
+	    // adding a name to the change string.
+	    _getEventBubblingHandler: function (propertyName) {
+	        return bind(function (name, model, newValue) {
+	            if (changeRE.test(name)) {
+	                this.trigger('change:' + propertyName + '.' + name.split(':')[1], model, newValue);
+	            } else if (name === 'change') {
+	                this.trigger('change', this);
+	            }
+	        }, this);
+	    },
+	
+	    // Check that all required attributes are present
+	    _verifyRequired: function () {
+	        var attrs = this.attributes; // should include session
+	        for (var def in this._definition) {
+	            if (this._definition[def].required && typeof attrs[def] === 'undefined') {
+	                return false;
+	            }
+	        }
+	        return true;
+	    },
+	
+	    // expose safeSet method
+	    _safeSet: function safeSet(property, value) {
+	        if (property in this) {
+	            throw new Error('Encountered namespace collision while setting instance property `' + property + '`');
+	        }
+	        this[property] = value;
+	        return this;
+	    }
+	});
+	
+	// getter for attributes
+	Object.defineProperties(Base.prototype, {
+	    attributes: {
+	        get: function () {
+	            return this.getAttributes({props: true, session: true});
+	        }
+	    },
+	    all: {
+	        get: function () {
+	            return this.getAttributes({
+	                session: true,
+	                props: true,
+	                derived: true
+	            });
+	        }
+	    },
+	    isState: {
+	        get: function () { return true; },
+	        set: function () { }
+	    }
+	});
+	
+	// helper for creating/storing property definitions and creating
+	// appropriate getters/setters
+	function createPropertyDefinition(object, name, desc, isSession) {
+	    var def = object._definition[name] = {};
+	    var type, descArray;
+	
+	    if (isString(desc)) {
+	        // grab our type if all we've got is a string
+	        type = object._ensureValidType(desc);
+	        if (type) def.type = type;
+	    } else {
+	        //Transform array of ['type', required, default] to object form
+	        if (Array.isArray(desc)) {
+	            descArray = desc;
+	            desc = {
+	                type: descArray[0],
+	                required: descArray[1],
+	                'default': descArray[2]
+	            };
+	        }
+	
+	        type = object._ensureValidType(desc.type);
+	        if (type) def.type = type;
+	
+	        if (desc.required) def.required = true;
+	
+	        if (desc['default'] && typeof desc['default'] === 'object') {
+	            throw new TypeError('The default value for ' + name + ' cannot be an object/array, must be a value or a function which returns a value/object/array');
+	        }
+	
+	        def['default'] = desc['default'];
+	
+	        def.allowNull = desc.allowNull ? desc.allowNull : false;
+	        if (desc.setOnce) def.setOnce = true;
+	        if (def.required && def['default'] === undefined && !def.setOnce) def['default'] = object._getDefaultForType(type);
+	        def.test = desc.test;
+	        def.values = desc.values;
+	    }
+	    if (isSession) def.session = true;
+	
+	    if (!type) {
+	        type = isString(desc) ? desc : desc.type;
+	        // TODO: start throwing a TypeError in future major versions instead of warning
+	        console.warn('Invalid data type of `' + type + '` for `' + name + '` property. Use one of the default types or define your own');
+	    }
+	
+	    // define a getter/setter on the prototype
+	    // but they get/set on the instance
+	    Object.defineProperty(object, name, {
+	        set: function (val) {
+	            this.set(name, val);
+	        },
+	        get: function () {
+	            if (!this._values) {
+	                throw Error('You may be trying to `extend` a state object with "' + name + '" which has been defined in `props` on the object being extended');
+	            }
+	            var value = this._values[name];
+	            var typeDef = this._dataTypes[def.type];
+	            if (typeof value !== 'undefined') {
+	                if (typeDef && typeDef.get) {
+	                    value = typeDef.get(value);
+	                }
+	                return value;
+	            }
+	            var defaultValue = result(def, 'default');
+	            this._values[name] = defaultValue;
+	            // If we've set a defaultValue, fire a change handler effectively marking
+	            // its change from undefined to the default value.
+	            if (typeof defaultValue !== 'undefined') {
+	                var onChange = this._getOnChangeForType(def.type);
+	                onChange(defaultValue, value, name);
+	            }
+	            return defaultValue;
+	        }
+	    });
+	
+	    return def;
+	}
+	
+	// helper for creating derived property definitions
+	function createDerivedProperty(modelProto, name, definition) {
+	    var def = modelProto._derived[name] = {
+	        fn: isFunction(definition) ? definition : definition.fn,
+	        cache: (definition.cache !== false),
+	        depList: definition.deps || []
+	    };
+	
+	    // add to our shared dependency list
+	    def.depList.forEach(function (dep) {
+	        modelProto._deps[dep] = union(modelProto._deps[dep] || [], [name]);
+	    });
+	
+	    // defined a top-level getter for derived names
+	    Object.defineProperty(modelProto, name, {
+	        get: function () {
+	            return this._getDerivedProperty(name);
+	        },
+	        set: function () {
+	            throw new TypeError("`" + name + "` is a derived property, it can't be set directly.");
+	        }
+	    });
+	}
+	
+	var dataTypes = {
+	    string: {
+	        'default': function () {
+	            return '';
+	        }
+	    },
+	    date: {
+	        set: function (newVal) {
+	            var newType;
+	            if (newVal == null) {
+	                newType = typeof null;
+	            } else if (!isDate(newVal)) {
+	                var err = null;
+	                var dateVal = new Date(newVal).valueOf();
+	                if (isNaN(dateVal)) {
+	                    // If the newVal cant be parsed, then try parseInt first
+	                    dateVal = new Date(parseInt(newVal, 10)).valueOf();
+	                    if (isNaN(dateVal)) err = true;
+	                }
+	                newVal = dateVal;
+	                newType = 'date';
+	                if (err) {
+	                    newType = typeof newVal;
+	                }
+	            } else {
+	                newType = 'date';
+	                newVal = newVal.valueOf();
+	            }
+	
+	            return {
+	                val: newVal,
+	                type: newType
+	            };
+	        },
+	        get: function (val) {
+	            if (val == null) { return val; }
+	            return new Date(val);
+	        },
+	        'default': function () {
+	            return new Date();
+	        }
+	    },
+	    array: {
+	        set: function (newVal) {
+	            return {
+	                val: newVal,
+	                type: Array.isArray(newVal) ? 'array' : typeof newVal
+	            };
+	        },
+	        'default': function () {
+	            return [];
+	        }
+	    },
+	    object: {
+	        set: function (newVal) {
+	            var newType = typeof newVal;
+	            // we have to have a way of supporting "missing" objects.
+	            // Null is an object, but setting a value to undefined
+	            // should work too, IMO. We just override it, in that case.
+	            if (newType !== 'object' && newVal === undefined) {
+	                newVal = null;
+	                newType = 'object';
+	            }
+	            return {
+	                val: newVal,
+	                type: newType
+	            };
+	        },
+	        'default': function () {
+	            return {};
+	        }
+	    },
+	    // the `state` data type is a bit special in that setting it should
+	    // also bubble events
+	    state: {
+	        set: function (newVal) {
+	            var isInstance = newVal instanceof Base || (newVal && newVal.isState);
+	            if (isInstance) {
+	                return {
+	                    val: newVal,
+	                    type: 'state'
+	                };
+	            } else {
+	                return {
+	                    val: newVal,
+	                    type: typeof newVal
+	                };
+	            }
+	        },
+	        compare: function (currentVal, newVal) {
+	            return currentVal === newVal;
+	        },
+	
+	        onChange : function(newVal, previousVal, attributeName){
+	            // if this has changed we want to also handle
+	            // event propagation
+	            if (previousVal) {
+	                this.stopListening(previousVal);
+	            }
+	
+	            if (newVal != null) {
+	                this.listenTo(newVal, 'all', this._getEventBubblingHandler(attributeName));
+	            }
+	        }
+	    }
+	};
+	
+	// the extend method used to extend prototypes, maintain inheritance chains for instanceof
+	// and allow for additions to the model definitions.
+	function extend(protoProps) {
+	    /*jshint validthis:true*/
+	    var parent = this;
+	    var child;
+	
+	    // The constructor function for the new subclass is either defined by you
+	    // (the "constructor" property in your `extend` definition), or defaulted
+	    // by us to simply call the parent's constructor.
+	    if (protoProps && protoProps.hasOwnProperty('constructor')) {
+	        child = protoProps.constructor;
+	    } else {
+	        child = function () {
+	            return parent.apply(this, arguments);
+	        };
+	    }
+	
+	    // Add static properties to the constructor function from parent
+	    assign(child, parent);
+	
+	    // Set the prototype chain to inherit from `parent`, without calling
+	    // `parent`'s constructor function.
+	    var Surrogate = function () { this.constructor = child; };
+	    Surrogate.prototype = parent.prototype;
+	    child.prototype = new Surrogate();
+	
+	    // set prototype level objects
+	    child.prototype._derived =  assign({}, parent.prototype._derived);
+	    child.prototype._deps = assign({}, parent.prototype._deps);
+	    child.prototype._definition = assign({}, parent.prototype._definition);
+	    child.prototype._collections = assign({}, parent.prototype._collections);
+	    child.prototype._children = assign({}, parent.prototype._children);
+	    child.prototype._dataTypes = assign({}, parent.prototype._dataTypes || dataTypes);
+	
+	    // Mix in all prototype properties to the subclass if supplied.
+	    if (protoProps) {
+	        var omitFromExtend = [
+	            'dataTypes', 'props', 'session', 'derived', 'collections', 'children'
+	        ];
+	        for(var i = 0; i < arguments.length; i++) {
+	            var def = arguments[i];
+	            if (def.dataTypes) {
+	                forOwn(def.dataTypes, function (def, name) {
+	                    child.prototype._dataTypes[name] = def;
+	                });
+	            }
+	            if (def.props) {
+	                forOwn(def.props, function (def, name) {
+	                    createPropertyDefinition(child.prototype, name, def);
+	                });
+	            }
+	            if (def.session) {
+	                forOwn(def.session, function (def, name) {
+	                    createPropertyDefinition(child.prototype, name, def, true);
+	                });
+	            }
+	            if (def.derived) {
+	                forOwn(def.derived, function (def, name) {
+	                    createDerivedProperty(child.prototype, name, def);
+	                });
+	            }
+	            if (def.collections) {
+	                forOwn(def.collections, function (constructor, name) {
+	                    child.prototype._collections[name] = constructor;
+	                });
+	            }
+	            if (def.children) {
+	                forOwn(def.children, function (constructor, name) {
+	                    child.prototype._children[name] = constructor;
+	                });
+	            }
+	            assign(child.prototype, omit(def, omitFromExtend));
+	        }
+	    }
+	
+	    // Set a convenience property in case the parent's prototype is needed
+	    // later.
+	    child.__super__ = parent.prototype;
+	
+	    return child;
+	}
+	
+	Base.extend = extend;
+	
+	// Our main exports
+	module.exports = Base;
+
+
+/***/ },
+/* 284 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.2.0 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modularize exports="npm" -o ./`
+	 * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var root = __webpack_require__(22);
+	
+	/** Used as references for various `Number` constants. */
+	var INFINITY = 1 / 0;
+	
+	/** `Object#toString` result references. */
+	var symbolTag = '[object Symbol]';
+	
+	/** Used for built-in method references. */
+	var objectProto = Object.prototype;
+	
+	/** Used to generate unique IDs. */
+	var idCounter = 0;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objectToString = objectProto.toString;
+	
+	/** Built-in value references. */
+	var Symbol = root.Symbol;
+	
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto = Symbol ? Symbol.prototype : undefined,
+	    symbolToString = Symbol ? symbolProto.toString : undefined;
+	
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+	
+	/**
+	 * Checks if `value` is classified as a `Symbol` primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isSymbol(Symbol.iterator);
+	 * // => true
+	 *
+	 * _.isSymbol('abc');
+	 * // => false
+	 */
+	function isSymbol(value) {
+	  return typeof value == 'symbol' ||
+	    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+	}
+	
+	/**
+	 * Converts `value` to a string if it's not one. An empty string is returned
+	 * for `null` and `undefined` values. The sign of `-0` is preserved.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to process.
+	 * @returns {string} Returns the string.
+	 * @example
+	 *
+	 * _.toString(null);
+	 * // => ''
+	 *
+	 * _.toString(-0);
+	 * // => '-0'
+	 *
+	 * _.toString([1, 2, 3]);
+	 * // => '1,2,3'
+	 */
+	function toString(value) {
+	  // Exit early for strings to avoid a performance hit in some environments.
+	  if (typeof value == 'string') {
+	    return value;
+	  }
+	  if (value == null) {
+	    return '';
+	  }
+	  if (isSymbol(value)) {
+	    return Symbol ? symbolToString.call(value) : '';
+	  }
+	  var result = (value + '');
+	  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+	}
+	
+	/**
+	 * Generates a unique ID. If `prefix` is provided the ID is appended to it.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Util
+	 * @param {string} [prefix] The value to prefix the ID with.
+	 * @returns {string} Returns the unique ID.
+	 * @example
+	 *
+	 * _.uniqueId('contact_');
+	 * // => 'contact_104'
+	 *
+	 * _.uniqueId();
+	 * // => '105'
+	 */
+	function uniqueId(prefix) {
+	  var id = ++idCounter;
+	  return toString(prefix) + id;
+	}
+	
+	module.exports = uniqueId;
+
+
+/***/ },
+/* 285 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.2.0 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var baseAssign = __webpack_require__(8),
+	    createAssigner = __webpack_require__(14),
+	    keys = __webpack_require__(10);
+	
+	/**
+	 * A specialized version of `_.assign` for customizing assigned values without
+	 * support for argument juggling, multiple sources, and `this` binding `customizer`
+	 * functions.
+	 *
+	 * @private
+	 * @param {Object} object The destination object.
+	 * @param {Object} source The source object.
+	 * @param {Function} customizer The function to customize assigned values.
+	 * @returns {Object} Returns `object`.
+	 */
+	function assignWith(object, source, customizer) {
+	  var index = -1,
+	      props = keys(source),
+	      length = props.length;
+	
+	  while (++index < length) {
+	    var key = props[index],
+	        value = object[key],
+	        result = customizer(value, source[key], key, object, source);
+	
+	    if ((result === result ? (result !== value) : (value === value)) ||
+	        (value === undefined && !(key in object))) {
+	      object[key] = result;
+	    }
+	  }
+	  return object;
+	}
+	
+	/**
+	 * Assigns own enumerable properties of source object(s) to the destination
+	 * object. Subsequent sources overwrite property assignments of previous sources.
+	 * If `customizer` is provided it is invoked to produce the assigned values.
+	 * The `customizer` is bound to `thisArg` and invoked with five arguments:
+	 * (objectValue, sourceValue, key, object, source).
+	 *
+	 * **Note:** This method mutates `object` and is based on
+	 * [`Object.assign`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.assign).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @alias extend
+	 * @category Object
+	 * @param {Object} object The destination object.
+	 * @param {...Object} [sources] The source objects.
+	 * @param {Function} [customizer] The function to customize assigned values.
+	 * @param {*} [thisArg] The `this` binding of `customizer`.
+	 * @returns {Object} Returns `object`.
+	 * @example
+	 *
+	 * _.assign({ 'user': 'barney' }, { 'age': 40 }, { 'user': 'fred' });
+	 * // => { 'user': 'fred', 'age': 40 }
+	 *
+	 * // using a customizer callback
+	 * var defaults = _.partialRight(_.assign, function(value, other) {
+	 *   return _.isUndefined(value) ? other : value;
+	 * });
+	 *
+	 * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
+	 * // => { 'user': 'barney', 'age': 36 }
+	 */
+	var assign = createAssigner(function(object, source, customizer) {
+	  return customizer
+	    ? assignWith(object, source, customizer)
+	    : baseAssign(object, source);
+	});
+	
+	module.exports = assign;
+
+
+/***/ },
+/* 286 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.1.0 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.2 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var arrayMap = __webpack_require__(47),
+	    baseDifference = __webpack_require__(287),
+	    baseFlatten = __webpack_require__(52),
+	    bindCallback = __webpack_require__(15),
+	    pickByArray = __webpack_require__(53),
+	    pickByCallback = __webpack_require__(54),
+	    keysIn = __webpack_require__(288),
+	    restParam = __webpack_require__(17);
+	
+	/**
+	 * The opposite of `_.pick`; this method creates an object composed of the
+	 * own and inherited enumerable properties of `object` that are not omitted.
+	 * Property names may be specified as individual arguments or as arrays of
+	 * property names. If `predicate` is provided it is invoked for each property
+	 * of `object` omitting the properties `predicate` returns truthy for. The
+	 * predicate is bound to `thisArg` and invoked with three arguments:
+	 * (value, key, object).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The source object.
+	 * @param {Function|...(string|string[])} [predicate] The function invoked per
+	 *  iteration or property names to omit, specified as individual property
+	 *  names or arrays of property names.
+	 * @param {*} [thisArg] The `this` binding of `predicate`.
+	 * @returns {Object} Returns the new object.
+	 * @example
+	 *
+	 * var object = { 'user': 'fred', 'age': 40 };
+	 *
+	 * _.omit(object, 'age');
+	 * // => { 'user': 'fred' }
+	 *
+	 * _.omit(object, _.isNumber);
+	 * // => { 'user': 'fred' }
+	 */
+	var omit = restParam(function(object, props) {
+	  if (object == null) {
+	    return {};
+	  }
+	  if (typeof props[0] != 'function') {
+	    var props = arrayMap(baseFlatten(props), String);
+	    return pickByArray(object, baseDifference(keysIn(object), props));
+	  }
+	  var predicate = bindCallback(props[0], props[1], 3);
+	  return pickByCallback(object, function(value, key, object) {
+	    return !predicate(value, key, object);
+	  });
+	});
+	
+	module.exports = omit;
+
+
+/***/ },
+/* 287 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.0.3 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var baseIndexOf = __webpack_require__(49),
+	    cacheIndexOf = __webpack_require__(50),
+	    createCache = __webpack_require__(51);
+	
+	/** Used as the size to enable large array optimizations. */
+	var LARGE_ARRAY_SIZE = 200;
+	
+	/**
+	 * The base implementation of `_.difference` which accepts a single array
+	 * of values to exclude.
+	 *
+	 * @private
+	 * @param {Array} array The array to inspect.
+	 * @param {Array} values The values to exclude.
+	 * @returns {Array} Returns the new array of filtered values.
+	 */
+	function baseDifference(array, values) {
+	  var length = array ? array.length : 0,
+	      result = [];
+	
+	  if (!length) {
+	    return result;
+	  }
+	  var index = -1,
+	      indexOf = baseIndexOf,
+	      isCommon = true,
+	      cache = (isCommon && values.length >= LARGE_ARRAY_SIZE) ? createCache(values) : null,
+	      valuesLength = values.length;
+	
+	  if (cache) {
+	    indexOf = cacheIndexOf;
+	    isCommon = false;
+	    values = cache;
+	  }
+	  outer:
+	  while (++index < length) {
+	    var value = array[index];
+	
+	    if (isCommon && value === value) {
+	      var valuesIndex = valuesLength;
+	      while (valuesIndex--) {
+	        if (values[valuesIndex] === value) {
+	          continue outer;
+	        }
+	      }
+	      result.push(value);
+	    }
+	    else if (indexOf(values, value, 0) < 0) {
+	      result.push(value);
+	    }
+	  }
+	  return result;
+	}
+	
+	module.exports = baseDifference;
+
+
+/***/ },
+/* 288 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.0.8 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var isArguments = __webpack_require__(12),
+	    isArray = __webpack_require__(13);
+	
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^\d+$/;
+	
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
+	 * of an array-like value.
+	 */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+	
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return value > -1 && value % 1 == 0 && value < length;
+	}
+	
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This function is based on [`ToLength`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength).
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+	
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(1);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	/**
+	 * Creates an array of the own and inherited enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keysIn(new Foo);
+	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+	 */
+	function keysIn(object) {
+	  if (object == null) {
+	    return [];
+	  }
+	  if (!isObject(object)) {
+	    object = Object(object);
+	  }
+	  var length = object.length;
+	  length = (length && isLength(length) &&
+	    (isArray(object) || isArguments(object)) && length) || 0;
+	
+	  var Ctor = object.constructor,
+	      index = -1,
+	      isProto = typeof Ctor == 'function' && Ctor.prototype === object,
+	      result = Array(length),
+	      skipIndexes = length > 0;
+	
+	  while (++index < length) {
+	    result[index] = (index + '');
+	  }
+	  for (var key in object) {
+	    if (!(skipIndexes && isIndex(key, length)) &&
+	        !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+	
+	module.exports = keysIn;
+
+
+/***/ },
+/* 289 */
+/***/ function(module, exports) {
+
+	/**
+	 * lodash 3.0.1 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.2 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	
+	/** `Object#toString` result references. */
+	var stringTag = '[object String]';
+	
+	/**
+	 * Checks if `value` is object-like.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+	
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objToString = objectProto.toString;
+	
+	/**
+	 * Checks if `value` is classified as a `String` primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isString('abc');
+	 * // => true
+	 *
+	 * _.isString(1);
+	 * // => false
+	 */
+	function isString(value) {
+	  return typeof value == 'string' || (isObjectLike(value) && objToString.call(value) == stringTag);
+	}
+	
+	module.exports = isString;
+
+
+/***/ },
+/* 290 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.0.4 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var baseIsEqual = __webpack_require__(67),
+	    bindCallback = __webpack_require__(15);
+	
+	/**
+	 * Performs a deep comparison between two values to determine if they are
+	 * equivalent. If `customizer` is provided it is invoked to compare values.
+	 * If `customizer` returns `undefined` comparisons are handled by the method
+	 * instead. The `customizer` is bound to `thisArg` and invoked with three
+	 * arguments: (value, other [, index|key]).
+	 *
+	 * **Note:** This method supports comparing arrays, booleans, `Date` objects,
+	 * numbers, `Object` objects, regexes, and strings. Objects are compared by
+	 * their own, not inherited, enumerable properties. Functions and DOM nodes
+	 * are **not** supported. Provide a customizer function to extend support
+	 * for comparing other values.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @alias eq
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @param {Function} [customizer] The function to customize value comparisons.
+	 * @param {*} [thisArg] The `this` binding of `customizer`.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'user': 'fred' };
+	 * var other = { 'user': 'fred' };
+	 *
+	 * object == other;
+	 * // => false
+	 *
+	 * _.isEqual(object, other);
+	 * // => true
+	 *
+	 * // using a customizer callback
+	 * var array = ['hello', 'goodbye'];
+	 * var other = ['hi', 'goodbye'];
+	 *
+	 * _.isEqual(array, other, function(value, other) {
+	 *   if (_.every([value, other], RegExp.prototype.test, /^h(?:i|ello)$/)) {
+	 *     return true;
+	 *   }
+	 * });
+	 * // => true
+	 */
+	function isEqual(value, other, customizer, thisArg) {
+	  customizer = typeof customizer == 'function' ? bindCallback(customizer, thisArg, 3) : undefined;
+	  var result = customizer ? customizer(value, other) : undefined;
+	  return  result === undefined ? baseIsEqual(value, other, customizer) : !!result;
+	}
+	
+	module.exports = isEqual;
+
+
+/***/ },
+/* 291 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.1.2 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var baseGet = __webpack_require__(37),
+	    baseSlice = __webpack_require__(38),
+	    toPath = __webpack_require__(39),
+	    isArray = __webpack_require__(13),
+	    isFunction = __webpack_require__(25);
+	
+	/** Used to match property names within property paths. */
+	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\n\\]|\\.)*?\1)\]/,
+	    reIsPlainProp = /^\w*$/;
+	
+	/**
+	 * Checks if `value` is a property name and not a property path.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {Object} [object] The object to query keys on.
+	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+	 */
+	function isKey(value, object) {
+	  var type = typeof value;
+	  if ((type == 'string' && reIsPlainProp.test(value)) || type == 'number') {
+	    return true;
+	  }
+	  if (isArray(value)) {
+	    return false;
+	  }
+	  var result = !reIsDeepProp.test(value);
+	  return result || (object != null && value in toObject(object));
+	}
+	
+	/**
+	 * Converts `value` to an object if it's not one.
+	 *
+	 * @private
+	 * @param {*} value The value to process.
+	 * @returns {Object} Returns the object.
+	 */
+	function toObject(value) {
+	  return isObject(value) ? value : Object(value);
+	}
+	
+	/**
+	 * Gets the last element of `array`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Array
+	 * @param {Array} array The array to query.
+	 * @returns {*} Returns the last element of `array`.
+	 * @example
+	 *
+	 * _.last([1, 2, 3]);
+	 * // => 3
+	 */
+	function last(array) {
+	  var length = array ? array.length : 0;
+	  return length ? array[length - 1] : undefined;
+	}
+	
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(1);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	/**
+	 * This method is like `_.get` except that if the resolved value is a function
+	 * it is invoked with the `this` binding of its parent object and its result
+	 * is returned.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to resolve.
+	 * @param {*} [defaultValue] The value returned if the resolved value is `undefined`.
+	 * @returns {*} Returns the resolved value.
+	 * @example
+	 *
+	 * var object = { 'a': [{ 'b': { 'c1': 3, 'c2': _.constant(4) } }] };
+	 *
+	 * _.result(object, 'a[0].b.c1');
+	 * // => 3
+	 *
+	 * _.result(object, 'a[0].b.c2');
+	 * // => 4
+	 *
+	 * _.result(object, 'a.b.c', 'default');
+	 * // => 'default'
+	 *
+	 * _.result(object, 'a.b.c', _.constant('default'));
+	 * // => 'default'
+	 */
+	function result(object, path, defaultValue) {
+	  var result = object == null ? undefined : object[path];
+	  if (result === undefined) {
+	    if (object != null && !isKey(path, object)) {
+	      path = toPath(path);
+	      object = path.length == 1 ? object : baseGet(object, baseSlice(path, 0, -1));
+	      result = object == null ? undefined : object[last(path)];
+	    }
+	    result = result === undefined ? defaultValue : result;
+	  }
+	  return isFunction(result) ? result.call(object) : result;
+	}
+	
+	module.exports = result;
+
+
+/***/ },
+/* 292 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.1.0 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.2 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var createWrapper = __webpack_require__(31),
+	    replaceHolders = __webpack_require__(32),
+	    restParam = __webpack_require__(17);
+	
+	/** Used to compose bitmasks for wrapper metadata. */
+	var BIND_FLAG = 1,
+	    PARTIAL_FLAG = 32;
+	
+	/**
+	 * Creates a function that invokes `func` with the `this` binding of `thisArg`
+	 * and prepends any additional `_.bind` arguments to those provided to the
+	 * bound function.
+	 *
+	 * The `_.bind.placeholder` value, which defaults to `_` in monolithic builds,
+	 * may be used as a placeholder for partially applied arguments.
+	 *
+	 * **Note:** Unlike native `Function#bind` this method does not set the `length`
+	 * property of bound functions.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Function
+	 * @param {Function} func The function to bind.
+	 * @param {*} thisArg The `this` binding of `func`.
+	 * @param {...*} [partials] The arguments to be partially applied.
+	 * @returns {Function} Returns the new bound function.
+	 * @example
+	 *
+	 * var greet = function(greeting, punctuation) {
+	 *   return greeting + ' ' + this.user + punctuation;
+	 * };
+	 *
+	 * var object = { 'user': 'fred' };
+	 *
+	 * var bound = _.bind(greet, object, 'hi');
+	 * bound('!');
+	 * // => 'hi fred!'
+	 *
+	 * // using placeholders
+	 * var bound = _.bind(greet, object, _, '!');
+	 * bound('hi');
+	 * // => 'hi fred!'
+	 */
+	var bind = restParam(function(func, thisArg, partials) {
+	  var bitmask = BIND_FLAG;
+	  if (partials.length) {
+	    var holders = replaceHolders(partials, bind.placeholder);
+	    bitmask |= PARTIAL_FLAG;
+	  }
+	  return createWrapper(func, bitmask, thisArg, partials, holders);
+	});
+	
+	// Assign default placeholders.
+	bind.placeholder = {};
+	
+	module.exports = bind;
+
+
+/***/ },
+/* 293 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * lodash 3.0.3 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var baseClone = __webpack_require__(294),
+	    bindCallback = __webpack_require__(15),
+	    isIterateeCall = __webpack_require__(16);
+	
+	/**
+	 * Creates a clone of `value`. If `isDeep` is `true` nested objects are cloned,
+	 * otherwise they are assigned by reference. If `customizer` is provided it's
+	 * invoked to produce the cloned values. If `customizer` returns `undefined`
+	 * cloning is handled by the method instead. The `customizer` is bound to
+	 * `thisArg` and invoked with up to three argument; (value [, index|key, object]).
+	 *
+	 * **Note:** This method is loosely based on the
+	 * [structured clone algorithm](http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm).
+	 * The enumerable properties of `arguments` objects and objects created by
+	 * constructors other than `Object` are cloned to plain `Object` objects. An
+	 * empty object is returned for uncloneable values such as functions, DOM nodes,
+	 * Maps, Sets, and WeakMaps.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to clone.
+	 * @param {boolean} [isDeep] Specify a deep clone.
+	 * @param {Function} [customizer] The function to customize cloning values.
+	 * @param {*} [thisArg] The `this` binding of `customizer`.
+	 * @returns {*} Returns the cloned value.
+	 * @example
+	 *
+	 * var users = [
+	 *   { 'user': 'barney' },
+	 *   { 'user': 'fred' }
+	 * ];
+	 *
+	 * var shallow = _.clone(users);
+	 * shallow[0] === users[0];
+	 * // => true
+	 *
+	 * var deep = _.clone(users, true);
+	 * deep[0] === users[0];
+	 * // => false
+	 *
+	 * // using a customizer callback
+	 * var el = _.clone(document.body, function(value) {
+	 *   if (_.isElement(value)) {
+	 *     return value.cloneNode(false);
+	 *   }
+	 * });
+	 *
+	 * el === document.body
+	 * // => false
+	 * el.nodeName
+	 * // => BODY
+	 * el.childNodes.length;
+	 * // => 0
+	 */
+	function clone(value, isDeep, customizer, thisArg) {
+	  if (isDeep && typeof isDeep != 'boolean' && isIterateeCall(value, isDeep, customizer)) {
+	    isDeep = false;
+	  }
+	  else if (typeof isDeep == 'function') {
+	    thisArg = customizer;
+	    customizer = isDeep;
+	    isDeep = false;
+	  }
+	  return typeof customizer == 'function'
+	    ? baseClone(value, isDeep, bindCallback(customizer, thisArg, 3))
+	    : baseClone(value, isDeep);
+	}
+	
+	module.exports = clone;
+
+
+/***/ },
+/* 294 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/**
+	 * lodash 3.3.0 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	var arrayCopy = __webpack_require__(295),
+	    arrayEach = __webpack_require__(28),
+	    baseAssign = __webpack_require__(8),
+	    baseFor = __webpack_require__(55),
+	    isArray = __webpack_require__(13),
+	    keys = __webpack_require__(10);
+	
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]',
+	    arrayTag = '[object Array]',
+	    boolTag = '[object Boolean]',
+	    dateTag = '[object Date]',
+	    errorTag = '[object Error]',
+	    funcTag = '[object Function]',
+	    mapTag = '[object Map]',
+	    numberTag = '[object Number]',
+	    objectTag = '[object Object]',
+	    regexpTag = '[object RegExp]',
+	    setTag = '[object Set]',
+	    stringTag = '[object String]',
+	    weakMapTag = '[object WeakMap]';
+	
+	var arrayBufferTag = '[object ArrayBuffer]',
+	    float32Tag = '[object Float32Array]',
+	    float64Tag = '[object Float64Array]',
+	    int8Tag = '[object Int8Array]',
+	    int16Tag = '[object Int16Array]',
+	    int32Tag = '[object Int32Array]',
+	    uint8Tag = '[object Uint8Array]',
+	    uint8ClampedTag = '[object Uint8ClampedArray]',
+	    uint16Tag = '[object Uint16Array]',
+	    uint32Tag = '[object Uint32Array]';
+	
+	/** Used to match `RegExp` flags from their coerced string values. */
+	var reFlags = /\w*$/;
+	
+	/** Used to identify `toStringTag` values supported by `_.clone`. */
+	var cloneableTags = {};
+	cloneableTags[argsTag] = cloneableTags[arrayTag] =
+	cloneableTags[arrayBufferTag] = cloneableTags[boolTag] =
+	cloneableTags[dateTag] = cloneableTags[float32Tag] =
+	cloneableTags[float64Tag] = cloneableTags[int8Tag] =
+	cloneableTags[int16Tag] = cloneableTags[int32Tag] =
+	cloneableTags[numberTag] = cloneableTags[objectTag] =
+	cloneableTags[regexpTag] = cloneableTags[stringTag] =
+	cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
+	cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
+	cloneableTags[errorTag] = cloneableTags[funcTag] =
+	cloneableTags[mapTag] = cloneableTags[setTag] =
+	cloneableTags[weakMapTag] = false;
+	
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+	
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objToString = objectProto.toString;
+	
+	/** Native method references. */
+	var ArrayBuffer = global.ArrayBuffer,
+	    Uint8Array = global.Uint8Array;
+	
+	/**
+	 * The base implementation of `_.clone` without support for argument juggling
+	 * and `this` binding `customizer` functions.
+	 *
+	 * @private
+	 * @param {*} value The value to clone.
+	 * @param {boolean} [isDeep] Specify a deep clone.
+	 * @param {Function} [customizer] The function to customize cloning values.
+	 * @param {string} [key] The key of `value`.
+	 * @param {Object} [object] The object `value` belongs to.
+	 * @param {Array} [stackA=[]] Tracks traversed source objects.
+	 * @param {Array} [stackB=[]] Associates clones with source counterparts.
+	 * @returns {*} Returns the cloned value.
+	 */
+	function baseClone(value, isDeep, customizer, key, object, stackA, stackB) {
+	  var result;
+	  if (customizer) {
+	    result = object ? customizer(value, key, object) : customizer(value);
+	  }
+	  if (result !== undefined) {
+	    return result;
+	  }
+	  if (!isObject(value)) {
+	    return value;
+	  }
+	  var isArr = isArray(value);
+	  if (isArr) {
+	    result = initCloneArray(value);
+	    if (!isDeep) {
+	      return arrayCopy(value, result);
+	    }
+	  } else {
+	    var tag = objToString.call(value),
+	        isFunc = tag == funcTag;
+	
+	    if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
+	      result = initCloneObject(isFunc ? {} : value);
+	      if (!isDeep) {
+	        return baseAssign(result, value);
+	      }
+	    } else {
+	      return cloneableTags[tag]
+	        ? initCloneByTag(value, tag, isDeep)
+	        : (object ? value : {});
+	    }
+	  }
+	  // Check for circular references and return its corresponding clone.
+	  stackA || (stackA = []);
+	  stackB || (stackB = []);
+	
+	  var length = stackA.length;
+	  while (length--) {
+	    if (stackA[length] == value) {
+	      return stackB[length];
+	    }
+	  }
+	  // Add the source value to the stack of traversed objects and associate it with its clone.
+	  stackA.push(value);
+	  stackB.push(result);
+	
+	  // Recursively populate clone (susceptible to call stack limits).
+	  (isArr ? arrayEach : baseForOwn)(value, function(subValue, key) {
+	    result[key] = baseClone(subValue, isDeep, customizer, key, value, stackA, stackB);
+	  });
+	  return result;
+	}
+	
+	/**
+	 * The base implementation of `_.forOwn` without support for callback
+	 * shorthands and `this` binding.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseForOwn(object, iteratee) {
+	  return baseFor(object, iteratee, keys);
+	}
+	
+	/**
+	 * Creates a clone of the given array buffer.
+	 *
+	 * @private
+	 * @param {ArrayBuffer} buffer The array buffer to clone.
+	 * @returns {ArrayBuffer} Returns the cloned array buffer.
+	 */
+	function bufferClone(buffer) {
+	  var result = new ArrayBuffer(buffer.byteLength),
+	      view = new Uint8Array(result);
+	
+	  view.set(new Uint8Array(buffer));
+	  return result;
+	}
+	
+	/**
+	 * Initializes an array clone.
+	 *
+	 * @private
+	 * @param {Array} array The array to clone.
+	 * @returns {Array} Returns the initialized clone.
+	 */
+	function initCloneArray(array) {
+	  var length = array.length,
+	      result = new array.constructor(length);
+	
+	  // Add array properties assigned by `RegExp#exec`.
+	  if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {
+	    result.index = array.index;
+	    result.input = array.input;
+	  }
+	  return result;
+	}
+	
+	/**
+	 * Initializes an object clone.
+	 *
+	 * @private
+	 * @param {Object} object The object to clone.
+	 * @returns {Object} Returns the initialized clone.
+	 */
+	function initCloneObject(object) {
+	  var Ctor = object.constructor;
+	  if (!(typeof Ctor == 'function' && Ctor instanceof Ctor)) {
+	    Ctor = Object;
+	  }
+	  return new Ctor;
+	}
+	
+	/**
+	 * Initializes an object clone based on its `toStringTag`.
+	 *
+	 * **Note:** This function only supports cloning values with tags of
+	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+	 *
+	 * @private
+	 * @param {Object} object The object to clone.
+	 * @param {string} tag The `toStringTag` of the object to clone.
+	 * @param {boolean} [isDeep] Specify a deep clone.
+	 * @returns {Object} Returns the initialized clone.
+	 */
+	function initCloneByTag(object, tag, isDeep) {
+	  var Ctor = object.constructor;
+	  switch (tag) {
+	    case arrayBufferTag:
+	      return bufferClone(object);
+	
+	    case boolTag:
+	    case dateTag:
+	      return new Ctor(+object);
+	
+	    case float32Tag: case float64Tag:
+	    case int8Tag: case int16Tag: case int32Tag:
+	    case uint8Tag: case uint8ClampedTag: case uint16Tag: case uint32Tag:
+	      var buffer = object.buffer;
+	      return new Ctor(isDeep ? bufferClone(buffer) : buffer, object.byteOffset, object.length);
+	
+	    case numberTag:
+	    case stringTag:
+	      return new Ctor(object);
+	
+	    case regexpTag:
+	      var result = new Ctor(object.source, reFlags.exec(object));
+	      result.lastIndex = object.lastIndex;
+	  }
+	  return result;
+	}
+	
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(1);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+	
+	module.exports = baseClone;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 295 */
+/***/ function(module, exports) {
+
+	/**
+	 * lodash 3.0.0 (Custom Build) <https://lodash.com/>
+	 * Build: `lodash modern modularize exports="npm" -o ./`
+	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.7.0 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <https://lodash.com/license>
+	 */
+	
+	/**
+	 * Copies the values of `source` to `array`.
+	 *
+	 * @private
+	 * @param {Array} source The array to copy values from.
+	 * @param {Array} [array=[]] The array to copy values to.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayCopy(source, array) {
+	  var index = -1,
+	      length = source.length;
+	
+	  array || (array = Array(length));
+	  while (++index < length) {
+	    array[index] = source[index];
+	  }
+	  return array;
+	}
+	
+	module.exports = arrayCopy;
+
+
+/***/ },
+/* 296 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {/*!
 	 * VERSION: 1.17.0
 	 * DATE: 2015-05-27
@@ -39167,7 +41455,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 282 */
+/* 297 */
 /***/ function(module, exports) {
 
 	/**
@@ -42242,3093 +44530,12 @@
 
 
 /***/ },
-/* 283 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*global $*/
-	// base view for pages
-	var Model = __webpack_require__(284);
-	//var _ = require('underscore');
-	//var key = require('keymaster');
-	
-	
-	var Content = Model.extend({
-	    urlRoot: '/'
-	});
-	
-	module.exports = Content;
-
-/***/ },
-/* 284 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*global $*/
-	// base view for pages
-	var $ = __webpack_require__(2);
-	var Model = __webpack_require__(285);
-	var _ = __webpack_require__(3);
-	//var key = require('keymaster');
-	
-	
-	var Content = Model.extend({
-	    urlRoot: '/',
-	    props: {
-	        id: 'string',
-	        pageContent: 'object',
-	        pageTitle: 'string',
-	        pageTopMenu: 'string',
-	        pageBottomMenu: 'string',
-	        i18nSwitcher: 'object',
-	        lang: 'string'
-	    },
-	    parse:function (resp, options) {
-	        var dom = $(resp);
-	        this.pageTitle = resp.split("<title>")[1].split("</title>")[0];
-	        this.pageContent = dom.find('.Application-view')[0];
-	        return resp;
-	    },
-	
-	    ajaxConfig: function () {
-	        return {
-	            xhrFields: {
-	                'withCredentials': true
-	            },
-	            headers: {
-	                'accept': 'application/html'
-	            }
-	
-	        };
-	    },
-	    url: function () {
-	        var base = _.result(this, 'urlRoot') || _.result(this.collection, 'url') || urlError();
-	        var url;
-	        if (this.isNew()) url = base;
-	        else url = base + (base.charAt(base.length - 1) === '/' ? '' : '/') + this.getId() ;
-	        return url;
-	    }
-	});
-	
-	
-	module.exports = Content;
-
-
-/***/ },
-/* 285 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*$AMPERSAND_VERSION*/
-	var State = __webpack_require__(286);
-	var sync = __webpack_require__(76);
-	var assign = __webpack_require__(288);
-	var isObject = __webpack_require__(64);
-	var clone = __webpack_require__(296);
-	var result = __webpack_require__(294);
-	
-	// Throw an error when a URL is needed, and none is supplied.
-	var urlError = function () {
-	    throw new Error('A "url" property or function must be specified');
-	};
-	
-	// Wrap an optional error callback with a fallback error event.
-	var wrapError = function (model, options) {
-	    var error = options.error;
-	    options.error = function (resp) {
-	        if (error) error(model, resp, options);
-	        model.trigger('error', model, resp, options);
-	    };
-	};
-	
-	var Model = State.extend({
-	    save: function (key, val, options) {
-	        var attrs, method;
-	
-	        // Handle both `"key", value` and `{key: value}` -style arguments.
-	        if (key == null || typeof key === 'object') {
-	            attrs = key;
-	            options = val;
-	        } else {
-	            (attrs = {})[key] = val;
-	        }
-	
-	        options = assign({validate: true}, options);
-	
-	        // If we're not waiting and attributes exist, save acts as
-	        // `set(attr).save(null, opts)` with validation. Otherwise, check if
-	        // the model will be valid when the attributes, if any, are set.
-	        if (attrs && !options.wait) {
-	            if (!this.set(attrs, options)) return false;
-	        } else {
-	            if (!this._validate(attrs, options)) return false;
-	        }
-	
-	        // After a successful server-side save, the client is (optionally)
-	        // updated with the server-side state.
-	        if (options.parse === void 0) options.parse = true;
-	        var model = this;
-	        var success = options.success;
-	        options.success = function (resp) {
-	            var serverAttrs = model.parse(resp, options);
-	            if (options.wait) serverAttrs = assign(attrs || {}, serverAttrs);
-	            if (isObject(serverAttrs) && !model.set(serverAttrs, options)) {
-	                return false;
-	            }
-	            if (success) success(model, resp, options);
-	            model.trigger('sync', model, resp, options);
-	        };
-	        wrapError(this, options);
-	
-	        method = this.isNew() ? 'create' : (options.patch ? 'patch' : 'update');
-	        if (method === 'patch') options.attrs = attrs;
-	        // if we're waiting we haven't actually set our attributes yet so
-	        // we need to do make sure we send right data
-	        if (options.wait && method !== 'patch') options.attrs = assign(model.serialize(), attrs);
-	        var sync = this.sync(method, this, options);
-	
-	        // Make the request available on the options object so it can be accessed
-	        // further down the line by `parse`, attached listeners, etc
-	        // Same thing is done below for fetch and destroy
-	        // https://github.com/AmpersandJS/ampersand-collection-rest-mixin/commit/d32d788aaff912387eb1106f2d7ad183ec39e11a#diff-84c84703169bf5017b1bc323653acaa3R32
-	        options.xhr = sync;
-	        return sync;
-	    },
-	
-	    // Fetch the model from the server. If the server's representation of the
-	    // model differs from its current attributes, they will be overridden,
-	    // triggering a `"change"` event.
-	    fetch: function (options) {
-	        options = options ? clone(options) : {};
-	        if (options.parse === void 0) options.parse = true;
-	        var model = this;
-	        var success = options.success;
-	        options.success = function (resp) {
-	            if (!model.set(model.parse(resp, options), options)) return false;
-	            if (success) success(model, resp, options);
-	            model.trigger('sync', model, resp, options);
-	        };
-	        wrapError(this, options);
-	        var sync = this.sync('read', this, options);
-	        options.xhr = sync;
-	        return sync;
-	    },
-	
-	    // Destroy this model on the server if it was already persisted.
-	    // Optimistically removes the model from its collection, if it has one.
-	    // If `wait: true` is passed, waits for the server to respond before removal.
-	    destroy: function (options) {
-	        options = options ? clone(options) : {};
-	        var model = this;
-	        var success = options.success;
-	
-	        var destroy = function () {
-	            model.trigger('destroy', model, model.collection, options);
-	        };
-	
-	        options.success = function (resp) {
-	            if (options.wait || model.isNew()) destroy();
-	            if (success) success(model, resp, options);
-	            if (!model.isNew()) model.trigger('sync', model, resp, options);
-	        };
-	
-	        if (this.isNew()) {
-	            options.success();
-	            return false;
-	        }
-	        wrapError(this, options);
-	
-	        var sync = this.sync('delete', this, options);
-	        options.xhr = sync;
-	        if (!options.wait) destroy();
-	        return sync;
-	    },
-	
-	    // Proxy `ampersand-sync` by default -- but override this if you need
-	    // custom syncing semantics for *this* particular model.
-	    sync: function () {
-	        return sync.apply(this, arguments);
-	    },
-	
-	    // Default URL for the model's representation on the server -- if you're
-	    // using Backbone's restful methods, override this to change the endpoint
-	    // that will be called.
-	    url: function () {
-	        var base = result(this, 'urlRoot') || result(this.collection, 'url') || urlError();
-	        if (this.isNew()) return base;
-	        return base + (base.charAt(base.length - 1) === '/' ? '' : '/') + encodeURIComponent(this.getId());
-	    }
-	});
-	
-	module.exports = Model;
-
-
-/***/ },
-/* 286 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	/*$AMPERSAND_VERSION*/
-	var uniqueId = __webpack_require__(287);
-	var assign = __webpack_require__(288);
-	var cloneObj = function(obj) { return assign({}, obj); };
-	var omit = __webpack_require__(289);
-	var escape = __webpack_require__(58);
-	var forOwn = __webpack_require__(59);
-	var includes = __webpack_require__(60);
-	var isString = __webpack_require__(292);
-	var isObject = __webpack_require__(64);
-	var isDate = __webpack_require__(65);
-	var isFunction = __webpack_require__(25);
-	var _isEqual = __webpack_require__(293); // to avoid shadowing
-	var has = __webpack_require__(69);
-	var result = __webpack_require__(294);
-	var bind = __webpack_require__(295); // because phantomjs doesn't have Function#bind
-	var union = __webpack_require__(72);
-	var Events = __webpack_require__(18);
-	var KeyTree = __webpack_require__(74);
-	var arrayNext = __webpack_require__(75);
-	var changeRE = /^change:/;
-	var noop = function () {};
-	
-	function Base(attrs, options) {
-	    options || (options = {});
-	    this.cid || (this.cid = uniqueId('state'));
-	    this._events = {};
-	    this._values = {};
-	    this._definition = Object.create(this._definition);
-	    if (options.parse) attrs = this.parse(attrs, options);
-	    this.parent = options.parent;
-	    this.collection = options.collection;
-	    this._keyTree = new KeyTree();
-	    this._initCollections();
-	    this._initChildren();
-	    this._cache = {};
-	    this._previousAttributes = {};
-	    if (attrs) this.set(attrs, assign({silent: true, initial: true}, options));
-	    this._changed = {};
-	    if (this._derived) this._initDerived();
-	    if (options.init !== false) this.initialize.apply(this, arguments);
-	}
-	
-	assign(Base.prototype, Events, {
-	    // can be allow, ignore, reject
-	    extraProperties: 'ignore',
-	
-	    idAttribute: 'id',
-	
-	    namespaceAttribute: 'namespace',
-	
-	    typeAttribute: 'modelType',
-	
-	    // Stubbed out to be overwritten
-	    initialize: function () {
-	        return this;
-	    },
-	
-	    // Get ID of model per configuration.
-	    // Should *always* be how ID is determined by other code.
-	    getId: function () {
-	        return this[this.idAttribute];
-	    },
-	
-	    // Get namespace of model per configuration.
-	    // Should *always* be how namespace is determined by other code.
-	    getNamespace: function () {
-	        return this[this.namespaceAttribute];
-	    },
-	
-	    // Get type of model per configuration.
-	    // Should *always* be how type is determined by other code.
-	    getType: function () {
-	        return this[this.typeAttribute];
-	    },
-	
-	    // A model is new if it has never been saved to the server, and lacks an id.
-	    isNew: function () {
-	        return this.getId() == null;
-	    },
-	
-	    // get HTML-escaped value of attribute
-	    escape: function (attr) {
-	        return escape(this.get(attr));
-	    },
-	
-	    // Check if the model is currently in a valid state.
-	    isValid: function (options) {
-	        return this._validate({}, assign(options || {}, { validate: true }));
-	    },
-	
-	    // Parse can be used remap/restructure/rename incoming properties
-	    // before they are applied to attributes.
-	    parse: function (resp, options) {
-	        //jshint unused:false
-	        return resp;
-	    },
-	
-	    // Serialize is the inverse of `parse` it lets you massage data
-	    // on the way out. Before, sending to server, for example.
-	    serialize: function (options) {
-	        var attrOpts = assign({props: true}, options);
-	        var res = this.getAttributes(attrOpts, true);
-	        forOwn(this._children, function (value, key) {
-	            res[key] = this[key].serialize();
-	        }, this);
-	        forOwn(this._collections, function (value, key) {
-	            res[key] = this[key].serialize();
-	        }, this);
-	        return res;
-	    },
-	
-	    // Main set method used by generated setters/getters and can
-	    // be used directly if you need to pass options or set multiple
-	    // properties at once.
-	    set: function (key, value, options) {
-	        var self = this;
-	        var extraProperties = this.extraProperties;
-	        var wasChanging, changeEvents, newType, newVal, def, cast, err, attr,
-	            attrs, dataType, silent, unset, currentVal, initial, hasChanged, isEqual, onChange;
-	
-	        // Handle both `"key", value` and `{key: value}` -style arguments.
-	        if (isObject(key) || key === null) {
-	            attrs = key;
-	            options = value;
-	        } else {
-	            attrs = {};
-	            attrs[key] = value;
-	        }
-	
-	        options = options || {};
-	
-	        if (!this._validate(attrs, options)) return false;
-	
-	        // Extract attributes and options.
-	        unset = options.unset;
-	        silent = options.silent;
-	        initial = options.initial;
-	
-	        // Initialize change tracking.
-	        wasChanging = this._changing;
-	        this._changing = true;
-	        changeEvents = [];
-	
-	        // if not already changing, store previous
-	        if (initial) {
-	            this._previousAttributes = {};
-	        } else if (!wasChanging) {
-	            this._previousAttributes = this.attributes;
-	            this._changed = {};
-	        }
-	
-	        // For each `set` attribute...
-	        for (var i = 0, keys = Object.keys(attrs), len = keys.length; i < len; i++) {
-	            attr = keys[i];
-	            newVal = attrs[attr];
-	            newType = typeof newVal;
-	            currentVal = this._values[attr];
-	            def = this._definition[attr];
-	
-	            if (!def) {
-	                // if this is a child model or collection
-	                if (this._children[attr] || this._collections[attr]) {
-	                    if (!isObject(newVal)) {
-	                        newVal = {};
-	                    }
-	
-	                    this[attr].set(newVal, options);
-	                    continue;
-	                } else if (extraProperties === 'ignore') {
-	                    continue;
-	                } else if (extraProperties === 'reject') {
-	                    throw new TypeError('No "' + attr + '" property defined on ' + (this.type || 'this') + ' model and extraProperties not set to "ignore" or "allow"');
-	                } else if (extraProperties === 'allow') {
-	                    def = this._createPropertyDefinition(attr, 'any');
-	                } else if (extraProperties) {
-	                    throw new TypeError('Invalid value for extraProperties: "' + extraProperties + '"');
-	                }
-	            }
-	
-	            isEqual = this._getCompareForType(def.type);
-	            onChange = this._getOnChangeForType(def.type);
-	            dataType = this._dataTypes[def.type];
-	
-	            // check type if we have one
-	            if (dataType && dataType.set) {
-	                cast = dataType.set(newVal);
-	                newVal = cast.val;
-	                newType = cast.type;
-	            }
-	
-	            // If we've defined a test, run it
-	            if (def.test) {
-	                err = def.test.call(this, newVal, newType);
-	                if (err) {
-	                    throw new TypeError('Property \'' + attr + '\' failed validation with error: ' + err);
-	                }
-	            }
-	
-	            // If we are required but undefined, throw error.
-	            // If we are null and are not allowing null, throw error
-	            // If we have a defined type and the new type doesn't match, and we are not null, throw error.
-	            // If we require specific value and new one is not one of them, throw error (unless it has default value or we're unsetting it with undefined).
-	
-	            if (newVal === undefined && def.required) {
-	                throw new TypeError('Required property \'' + attr + '\' must be of type ' + def.type + '. Tried to set ' + newVal);
-	            }
-	            if (newVal === null && def.required && !def.allowNull) {
-	                throw new TypeError('Property \'' + attr + '\' must be of type ' + def.type + ' (cannot be null). Tried to set ' + newVal);
-	            }
-	            if ((def.type && def.type !== 'any' && def.type !== newType) && newVal !== null && newVal !== undefined) {
-	                throw new TypeError('Property \'' + attr + '\' must be of type ' + def.type + '. Tried to set ' + newVal);
-	            }
-	            if (def.values && !includes(def.values, newVal)) {
-	                var defaultValue = result(def, 'default');
-	                if (unset && defaultValue !== undefined) {
-	                    newVal = defaultValue;
-	                } else if (!unset || (unset && newVal !== undefined)) {
-	                    throw new TypeError('Property \'' + attr + '\' must be one of values: ' + def.values.join(', ') + '. Tried to set ' + newVal);
-	                }
-	            }
-	
-	            // We know this has 'changed' if it's the initial set, so skip a potentially expensive isEqual check.
-	            hasChanged = initial || !isEqual(currentVal, newVal, attr);
-	
-	            // enforce `setOnce` for properties if set
-	            if (def.setOnce && currentVal !== undefined && hasChanged) {
-	                throw new TypeError('Property \'' + attr + '\' can only be set once.');
-	            }
-	
-	            // set/unset attributes.
-	            // If this is not the initial set, keep track of changed attributes
-	            // and push to changeEvents array so we can fire events.
-	            if (hasChanged) {
-	
-	                // This fires no matter what, even on initial set.
-	                onChange(newVal, currentVal, attr);
-	
-	                // If this is a change (not an initial set), mark the change.
-	                // Note it's impossible to unset on the initial set (it will already be unset),
-	                // so we only include that logic here.
-	                if (!initial) {
-	                    this._changed[attr] = newVal;
-	                    this._previousAttributes[attr] = currentVal;
-	                    if (unset) {
-	                        // FIXME delete is very slow. Can we get away with setting to undefined?
-	                        delete this._values[attr];
-	                    }
-	                    if (!silent) {
-	                        changeEvents.push({prev: currentVal, val: newVal, key: attr});
-	                    }
-	                }
-	                if (!unset) {
-	                    this._values[attr] = newVal;
-	                }
-	            } else {
-	                // Not changed
-	                // FIXME delete is very slow. Can we get away with setting to undefined?
-	                delete this._changed[attr];
-	            }
-	        }
-	
-	        // Fire events. This array is not populated if we are told to be silent.
-	        if (changeEvents.length) this._pending = true;
-	        changeEvents.forEach(function (change) {
-	            self.trigger('change:' + change.key, self, change.val, options);
-	        });
-	
-	        // You might be wondering why there's a `while` loop here. Changes can
-	        // be recursively nested within `"change"` events.
-	        if (wasChanging) return this;
-	        while (this._pending) {
-	            this._pending = false;
-	            this.trigger('change', this, options);
-	        }
-	        this._pending = false;
-	        this._changing = false;
-	        return this;
-	    },
-	
-	    get: function (attr) {
-	        return this[attr];
-	    },
-	
-	    // Toggle boolean properties or properties that have a `values`
-	    // array in its definition.
-	    toggle: function (property) {
-	        var def = this._definition[property];
-	        if (def.type === 'boolean') {
-	            // if it's a bool, just flip it
-	            this[property] = !this[property];
-	        } else if (def && def.values) {
-	            // If it's a property with an array of values
-	            // skip to the next one looping back if at end.
-	            this[property] = arrayNext(def.values, this[property]);
-	        } else {
-	            throw new TypeError('Can only toggle properties that are type `boolean` or have `values` array.');
-	        }
-	        return this;
-	    },
-	
-	    // Get all of the attributes of the model at the time of the previous
-	    // `"change"` event.
-	    previousAttributes: function () {
-	        return cloneObj(this._previousAttributes);
-	    },
-	
-	    // Determine if the model has changed since the last `"change"` event.
-	    // If you specify an attribute name, determine if that attribute has changed.
-	    hasChanged: function (attr) {
-	        if (attr == null) return !!Object.keys(this._changed).length;
-	        if (has(this._derived, attr)) {
-	            return this._derived[attr].depList.some(function (dep) {
-	                return this.hasChanged(dep);
-	            }, this);
-	        }
-	        return has(this._changed, attr);
-	    },
-	
-	    // Return an object containing all the attributes that have changed, or
-	    // false if there are no changed attributes. Useful for determining what
-	    // parts of a view need to be updated and/or what attributes need to be
-	    // persisted to the server. Unset attributes will be set to undefined.
-	    // You can also pass an attributes object to diff against the model,
-	    // determining if there *would be* a change.
-	    changedAttributes: function (diff) {
-	        if (!diff) return this.hasChanged() ? cloneObj(this._changed) : false;
-	        var val, changed = false;
-	        var old = this._changing ? this._previousAttributes : this.attributes;
-	        var def, isEqual;
-	        for (var attr in diff) {
-	            def = this._definition[attr];
-	            if (!def) continue;
-	            isEqual = this._getCompareForType(def.type);
-	            if (isEqual(old[attr], (val = diff[attr]))) continue;
-	            (changed || (changed = {}))[attr] = val;
-	        }
-	        return changed;
-	    },
-	
-	    toJSON: function () {
-	        return this.serialize();
-	    },
-	
-	    unset: function (attrs, options) {
-	        var self = this;
-	        attrs = Array.isArray(attrs) ? attrs : [attrs];
-	        attrs.forEach(function (key) {
-	            var def = self._definition[key];
-	            if (!def) return;
-	            var val;
-	            if (def.required) {
-	                val = result(def, 'default');
-	                return self.set(key, val, options);
-	            } else {
-	                return self.set(key, val, assign({}, options, {unset: true}));
-	            }
-	        });
-	    },
-	
-	    clear: function (options) {
-	        var self = this;
-	        Object.keys(this.attributes).forEach(function (key) {
-	            self.unset(key, options);
-	        });
-	        return this;
-	    },
-	
-	    previous: function (attr) {
-	        if (attr == null || !Object.keys(this._previousAttributes).length) return null;
-	        return this._previousAttributes[attr];
-	    },
-	
-	    // Get default values for a certain type
-	    _getDefaultForType: function (type) {
-	        var dataType = this._dataTypes[type];
-	        return dataType && dataType['default'];
-	    },
-	
-	    // Determine which comparison algorithm to use for comparing a property
-	    _getCompareForType: function (type) {
-	        var dataType = this._dataTypes[type];
-	        if (dataType && dataType.compare) return bind(dataType.compare, this);
-	        return _isEqual; // if no compare function is defined, use _.isEqual
-	    },
-	
-	    _getOnChangeForType : function(type){
-	        var dataType = this._dataTypes[type];
-	        if (dataType && dataType.onChange) return bind(dataType.onChange, this);
-	        return noop;
-	    },
-	
-	    // Run validation against the next complete set of model attributes,
-	    // returning `true` if all is well. Otherwise, fire an `"invalid"` event.
-	    _validate: function (attrs, options) {
-	        if (!options.validate || !this.validate) return true;
-	        attrs = assign({}, this.attributes, attrs);
-	        var error = this.validationError = this.validate(attrs, options) || null;
-	        if (!error) return true;
-	        this.trigger('invalid', this, error, assign(options || {}, {validationError: error}));
-	        return false;
-	    },
-	
-	    _createPropertyDefinition: function (name, desc, isSession) {
-	        return createPropertyDefinition(this, name, desc, isSession);
-	    },
-	
-	    // just makes friendlier errors when trying to define a new model
-	    // only used when setting up original property definitions
-	    _ensureValidType: function (type) {
-	        return includes(['string', 'number', 'boolean', 'array', 'object', 'date', 'state', 'any']
-	            .concat(Object.keys(this._dataTypes)), type) ? type : undefined;
-	    },
-	
-	    getAttributes: function (options, raw) {
-	        options = assign({
-	            session: false,
-	            props: false,
-	            derived: false
-	        }, options || {});
-	        var res = {};
-	        var val, def;
-	        for (var item in this._definition) {
-	            def = this._definition[item];
-	            if ((options.session && def.session) || (options.props && !def.session)) {
-	                val = raw ? this._values[item] : this[item];
-	                if (raw && val && isFunction(val.serialize)) val = val.serialize();
-	                if (typeof val === 'undefined') val = result(def, 'default');
-	                if (typeof val !== 'undefined') res[item] = val;
-	            }
-	        }
-	        if (options.derived) {
-	            for (var derivedItem in this._derived) res[derivedItem] = this[derivedItem];
-	        }
-	        return res;
-	    },
-	
-	    _initDerived: function () {
-	        var self = this;
-	
-	        forOwn(this._derived, function (value, name) {
-	            var def = self._derived[name];
-	            def.deps = def.depList;
-	
-	            var update = function (options) {
-	                options = options || {};
-	
-	                var newVal = def.fn.call(self);
-	
-	                if (self._cache[name] !== newVal || !def.cache) {
-	                    if (def.cache) {
-	                        self._previousAttributes[name] = self._cache[name];
-	                    }
-	                    self._cache[name] = newVal;
-	                    self.trigger('change:' + name, self, self._cache[name]);
-	                }
-	            };
-	
-	            def.deps.forEach(function (propString) {
-	                self._keyTree.add(propString, update);
-	            });
-	        });
-	
-	        this.on('all', function (eventName) {
-	            if (changeRE.test(eventName)) {
-	                self._keyTree.get(eventName.split(':')[1]).forEach(function (fn) {
-	                    fn();
-	                });
-	            }
-	        }, this);
-	    },
-	
-	    _getDerivedProperty: function (name, flushCache) {
-	        // is this a derived property that is cached
-	        if (this._derived[name].cache) {
-	            //set if this is the first time, or flushCache is set
-	            if (flushCache || !this._cache.hasOwnProperty(name)) {
-	                this._cache[name] = this._derived[name].fn.apply(this);
-	            }
-	            return this._cache[name];
-	        } else {
-	            return this._derived[name].fn.apply(this);
-	        }
-	    },
-	
-	    _initCollections: function () {
-	        var coll;
-	        if (!this._collections) return;
-	        for (coll in this._collections) {
-	            this._safeSet(coll, new this._collections[coll](null, {parent: this}));
-	        }
-	    },
-	
-	    _initChildren: function () {
-	        var child;
-	        if (!this._children) return;
-	        for (child in this._children) {
-	            this._safeSet(child, new this._children[child]({}, {parent: this}));
-	            this.listenTo(this[child], 'all', this._getEventBubblingHandler(child));
-	        }
-	    },
-	
-	    // Returns a bound handler for doing event bubbling while
-	    // adding a name to the change string.
-	    _getEventBubblingHandler: function (propertyName) {
-	        return bind(function (name, model, newValue) {
-	            if (changeRE.test(name)) {
-	                this.trigger('change:' + propertyName + '.' + name.split(':')[1], model, newValue);
-	            } else if (name === 'change') {
-	                this.trigger('change', this);
-	            }
-	        }, this);
-	    },
-	
-	    // Check that all required attributes are present
-	    _verifyRequired: function () {
-	        var attrs = this.attributes; // should include session
-	        for (var def in this._definition) {
-	            if (this._definition[def].required && typeof attrs[def] === 'undefined') {
-	                return false;
-	            }
-	        }
-	        return true;
-	    },
-	
-	    // expose safeSet method
-	    _safeSet: function safeSet(property, value) {
-	        if (property in this) {
-	            throw new Error('Encountered namespace collision while setting instance property `' + property + '`');
-	        }
-	        this[property] = value;
-	        return this;
-	    }
-	});
-	
-	// getter for attributes
-	Object.defineProperties(Base.prototype, {
-	    attributes: {
-	        get: function () {
-	            return this.getAttributes({props: true, session: true});
-	        }
-	    },
-	    all: {
-	        get: function () {
-	            return this.getAttributes({
-	                session: true,
-	                props: true,
-	                derived: true
-	            });
-	        }
-	    },
-	    isState: {
-	        get: function () { return true; },
-	        set: function () { }
-	    }
-	});
-	
-	// helper for creating/storing property definitions and creating
-	// appropriate getters/setters
-	function createPropertyDefinition(object, name, desc, isSession) {
-	    var def = object._definition[name] = {};
-	    var type, descArray;
-	
-	    if (isString(desc)) {
-	        // grab our type if all we've got is a string
-	        type = object._ensureValidType(desc);
-	        if (type) def.type = type;
-	    } else {
-	        //Transform array of ['type', required, default] to object form
-	        if (Array.isArray(desc)) {
-	            descArray = desc;
-	            desc = {
-	                type: descArray[0],
-	                required: descArray[1],
-	                'default': descArray[2]
-	            };
-	        }
-	
-	        type = object._ensureValidType(desc.type);
-	        if (type) def.type = type;
-	
-	        if (desc.required) def.required = true;
-	
-	        if (desc['default'] && typeof desc['default'] === 'object') {
-	            throw new TypeError('The default value for ' + name + ' cannot be an object/array, must be a value or a function which returns a value/object/array');
-	        }
-	
-	        def['default'] = desc['default'];
-	
-	        def.allowNull = desc.allowNull ? desc.allowNull : false;
-	        if (desc.setOnce) def.setOnce = true;
-	        if (def.required && def['default'] === undefined && !def.setOnce) def['default'] = object._getDefaultForType(type);
-	        def.test = desc.test;
-	        def.values = desc.values;
-	    }
-	    if (isSession) def.session = true;
-	
-	    if (!type) {
-	        type = isString(desc) ? desc : desc.type;
-	        // TODO: start throwing a TypeError in future major versions instead of warning
-	        console.warn('Invalid data type of `' + type + '` for `' + name + '` property. Use one of the default types or define your own');
-	    }
-	
-	    // define a getter/setter on the prototype
-	    // but they get/set on the instance
-	    Object.defineProperty(object, name, {
-	        set: function (val) {
-	            this.set(name, val);
-	        },
-	        get: function () {
-	            if (!this._values) {
-	                throw Error('You may be trying to `extend` a state object with "' + name + '" which has been defined in `props` on the object being extended');
-	            }
-	            var value = this._values[name];
-	            var typeDef = this._dataTypes[def.type];
-	            if (typeof value !== 'undefined') {
-	                if (typeDef && typeDef.get) {
-	                    value = typeDef.get(value);
-	                }
-	                return value;
-	            }
-	            var defaultValue = result(def, 'default');
-	            this._values[name] = defaultValue;
-	            // If we've set a defaultValue, fire a change handler effectively marking
-	            // its change from undefined to the default value.
-	            if (typeof defaultValue !== 'undefined') {
-	                var onChange = this._getOnChangeForType(def.type);
-	                onChange(defaultValue, value, name);
-	            }
-	            return defaultValue;
-	        }
-	    });
-	
-	    return def;
-	}
-	
-	// helper for creating derived property definitions
-	function createDerivedProperty(modelProto, name, definition) {
-	    var def = modelProto._derived[name] = {
-	        fn: isFunction(definition) ? definition : definition.fn,
-	        cache: (definition.cache !== false),
-	        depList: definition.deps || []
-	    };
-	
-	    // add to our shared dependency list
-	    def.depList.forEach(function (dep) {
-	        modelProto._deps[dep] = union(modelProto._deps[dep] || [], [name]);
-	    });
-	
-	    // defined a top-level getter for derived names
-	    Object.defineProperty(modelProto, name, {
-	        get: function () {
-	            return this._getDerivedProperty(name);
-	        },
-	        set: function () {
-	            throw new TypeError("`" + name + "` is a derived property, it can't be set directly.");
-	        }
-	    });
-	}
-	
-	var dataTypes = {
-	    string: {
-	        'default': function () {
-	            return '';
-	        }
-	    },
-	    date: {
-	        set: function (newVal) {
-	            var newType;
-	            if (newVal == null) {
-	                newType = typeof null;
-	            } else if (!isDate(newVal)) {
-	                var err = null;
-	                var dateVal = new Date(newVal).valueOf();
-	                if (isNaN(dateVal)) {
-	                    // If the newVal cant be parsed, then try parseInt first
-	                    dateVal = new Date(parseInt(newVal, 10)).valueOf();
-	                    if (isNaN(dateVal)) err = true;
-	                }
-	                newVal = dateVal;
-	                newType = 'date';
-	                if (err) {
-	                    newType = typeof newVal;
-	                }
-	            } else {
-	                newType = 'date';
-	                newVal = newVal.valueOf();
-	            }
-	
-	            return {
-	                val: newVal,
-	                type: newType
-	            };
-	        },
-	        get: function (val) {
-	            if (val == null) { return val; }
-	            return new Date(val);
-	        },
-	        'default': function () {
-	            return new Date();
-	        }
-	    },
-	    array: {
-	        set: function (newVal) {
-	            return {
-	                val: newVal,
-	                type: Array.isArray(newVal) ? 'array' : typeof newVal
-	            };
-	        },
-	        'default': function () {
-	            return [];
-	        }
-	    },
-	    object: {
-	        set: function (newVal) {
-	            var newType = typeof newVal;
-	            // we have to have a way of supporting "missing" objects.
-	            // Null is an object, but setting a value to undefined
-	            // should work too, IMO. We just override it, in that case.
-	            if (newType !== 'object' && newVal === undefined) {
-	                newVal = null;
-	                newType = 'object';
-	            }
-	            return {
-	                val: newVal,
-	                type: newType
-	            };
-	        },
-	        'default': function () {
-	            return {};
-	        }
-	    },
-	    // the `state` data type is a bit special in that setting it should
-	    // also bubble events
-	    state: {
-	        set: function (newVal) {
-	            var isInstance = newVal instanceof Base || (newVal && newVal.isState);
-	            if (isInstance) {
-	                return {
-	                    val: newVal,
-	                    type: 'state'
-	                };
-	            } else {
-	                return {
-	                    val: newVal,
-	                    type: typeof newVal
-	                };
-	            }
-	        },
-	        compare: function (currentVal, newVal) {
-	            return currentVal === newVal;
-	        },
-	
-	        onChange : function(newVal, previousVal, attributeName){
-	            // if this has changed we want to also handle
-	            // event propagation
-	            if (previousVal) {
-	                this.stopListening(previousVal);
-	            }
-	
-	            if (newVal != null) {
-	                this.listenTo(newVal, 'all', this._getEventBubblingHandler(attributeName));
-	            }
-	        }
-	    }
-	};
-	
-	// the extend method used to extend prototypes, maintain inheritance chains for instanceof
-	// and allow for additions to the model definitions.
-	function extend(protoProps) {
-	    /*jshint validthis:true*/
-	    var parent = this;
-	    var child;
-	
-	    // The constructor function for the new subclass is either defined by you
-	    // (the "constructor" property in your `extend` definition), or defaulted
-	    // by us to simply call the parent's constructor.
-	    if (protoProps && protoProps.hasOwnProperty('constructor')) {
-	        child = protoProps.constructor;
-	    } else {
-	        child = function () {
-	            return parent.apply(this, arguments);
-	        };
-	    }
-	
-	    // Add static properties to the constructor function from parent
-	    assign(child, parent);
-	
-	    // Set the prototype chain to inherit from `parent`, without calling
-	    // `parent`'s constructor function.
-	    var Surrogate = function () { this.constructor = child; };
-	    Surrogate.prototype = parent.prototype;
-	    child.prototype = new Surrogate();
-	
-	    // set prototype level objects
-	    child.prototype._derived =  assign({}, parent.prototype._derived);
-	    child.prototype._deps = assign({}, parent.prototype._deps);
-	    child.prototype._definition = assign({}, parent.prototype._definition);
-	    child.prototype._collections = assign({}, parent.prototype._collections);
-	    child.prototype._children = assign({}, parent.prototype._children);
-	    child.prototype._dataTypes = assign({}, parent.prototype._dataTypes || dataTypes);
-	
-	    // Mix in all prototype properties to the subclass if supplied.
-	    if (protoProps) {
-	        var omitFromExtend = [
-	            'dataTypes', 'props', 'session', 'derived', 'collections', 'children'
-	        ];
-	        for(var i = 0; i < arguments.length; i++) {
-	            var def = arguments[i];
-	            if (def.dataTypes) {
-	                forOwn(def.dataTypes, function (def, name) {
-	                    child.prototype._dataTypes[name] = def;
-	                });
-	            }
-	            if (def.props) {
-	                forOwn(def.props, function (def, name) {
-	                    createPropertyDefinition(child.prototype, name, def);
-	                });
-	            }
-	            if (def.session) {
-	                forOwn(def.session, function (def, name) {
-	                    createPropertyDefinition(child.prototype, name, def, true);
-	                });
-	            }
-	            if (def.derived) {
-	                forOwn(def.derived, function (def, name) {
-	                    createDerivedProperty(child.prototype, name, def);
-	                });
-	            }
-	            if (def.collections) {
-	                forOwn(def.collections, function (constructor, name) {
-	                    child.prototype._collections[name] = constructor;
-	                });
-	            }
-	            if (def.children) {
-	                forOwn(def.children, function (constructor, name) {
-	                    child.prototype._children[name] = constructor;
-	                });
-	            }
-	            assign(child.prototype, omit(def, omitFromExtend));
-	        }
-	    }
-	
-	    // Set a convenience property in case the parent's prototype is needed
-	    // later.
-	    child.__super__ = parent.prototype;
-	
-	    return child;
-	}
-	
-	Base.extend = extend;
-	
-	// Our main exports
-	module.exports = Base;
-
-
-/***/ },
-/* 287 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.2.0 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modularize exports="npm" -o ./`
-	 * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var root = __webpack_require__(22);
-	
-	/** Used as references for various `Number` constants. */
-	var INFINITY = 1 / 0;
-	
-	/** `Object#toString` result references. */
-	var symbolTag = '[object Symbol]';
-	
-	/** Used for built-in method references. */
-	var objectProto = Object.prototype;
-	
-	/** Used to generate unique IDs. */
-	var idCounter = 0;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objectToString = objectProto.toString;
-	
-	/** Built-in value references. */
-	var Symbol = root.Symbol;
-	
-	/** Used to convert symbols to primitives and strings. */
-	var symbolProto = Symbol ? Symbol.prototype : undefined,
-	    symbolToString = Symbol ? symbolProto.toString : undefined;
-	
-	/**
-	 * Checks if `value` is object-like. A value is object-like if it's not `null`
-	 * and has a `typeof` result of "object".
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 * @example
-	 *
-	 * _.isObjectLike({});
-	 * // => true
-	 *
-	 * _.isObjectLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObjectLike(_.noop);
-	 * // => false
-	 *
-	 * _.isObjectLike(null);
-	 * // => false
-	 */
-	function isObjectLike(value) {
-	  return !!value && typeof value == 'object';
-	}
-	
-	/**
-	 * Checks if `value` is classified as a `Symbol` primitive or object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isSymbol(Symbol.iterator);
-	 * // => true
-	 *
-	 * _.isSymbol('abc');
-	 * // => false
-	 */
-	function isSymbol(value) {
-	  return typeof value == 'symbol' ||
-	    (isObjectLike(value) && objectToString.call(value) == symbolTag);
-	}
-	
-	/**
-	 * Converts `value` to a string if it's not one. An empty string is returned
-	 * for `null` and `undefined` values. The sign of `-0` is preserved.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to process.
-	 * @returns {string} Returns the string.
-	 * @example
-	 *
-	 * _.toString(null);
-	 * // => ''
-	 *
-	 * _.toString(-0);
-	 * // => '-0'
-	 *
-	 * _.toString([1, 2, 3]);
-	 * // => '1,2,3'
-	 */
-	function toString(value) {
-	  // Exit early for strings to avoid a performance hit in some environments.
-	  if (typeof value == 'string') {
-	    return value;
-	  }
-	  if (value == null) {
-	    return '';
-	  }
-	  if (isSymbol(value)) {
-	    return Symbol ? symbolToString.call(value) : '';
-	  }
-	  var result = (value + '');
-	  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-	}
-	
-	/**
-	 * Generates a unique ID. If `prefix` is provided the ID is appended to it.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Util
-	 * @param {string} [prefix] The value to prefix the ID with.
-	 * @returns {string} Returns the unique ID.
-	 * @example
-	 *
-	 * _.uniqueId('contact_');
-	 * // => 'contact_104'
-	 *
-	 * _.uniqueId();
-	 * // => '105'
-	 */
-	function uniqueId(prefix) {
-	  var id = ++idCounter;
-	  return toString(prefix) + id;
-	}
-	
-	module.exports = uniqueId;
-
-
-/***/ },
-/* 288 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.2.0 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var baseAssign = __webpack_require__(8),
-	    createAssigner = __webpack_require__(14),
-	    keys = __webpack_require__(10);
-	
-	/**
-	 * A specialized version of `_.assign` for customizing assigned values without
-	 * support for argument juggling, multiple sources, and `this` binding `customizer`
-	 * functions.
-	 *
-	 * @private
-	 * @param {Object} object The destination object.
-	 * @param {Object} source The source object.
-	 * @param {Function} customizer The function to customize assigned values.
-	 * @returns {Object} Returns `object`.
-	 */
-	function assignWith(object, source, customizer) {
-	  var index = -1,
-	      props = keys(source),
-	      length = props.length;
-	
-	  while (++index < length) {
-	    var key = props[index],
-	        value = object[key],
-	        result = customizer(value, source[key], key, object, source);
-	
-	    if ((result === result ? (result !== value) : (value === value)) ||
-	        (value === undefined && !(key in object))) {
-	      object[key] = result;
-	    }
-	  }
-	  return object;
-	}
-	
-	/**
-	 * Assigns own enumerable properties of source object(s) to the destination
-	 * object. Subsequent sources overwrite property assignments of previous sources.
-	 * If `customizer` is provided it is invoked to produce the assigned values.
-	 * The `customizer` is bound to `thisArg` and invoked with five arguments:
-	 * (objectValue, sourceValue, key, object, source).
-	 *
-	 * **Note:** This method mutates `object` and is based on
-	 * [`Object.assign`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.assign).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @alias extend
-	 * @category Object
-	 * @param {Object} object The destination object.
-	 * @param {...Object} [sources] The source objects.
-	 * @param {Function} [customizer] The function to customize assigned values.
-	 * @param {*} [thisArg] The `this` binding of `customizer`.
-	 * @returns {Object} Returns `object`.
-	 * @example
-	 *
-	 * _.assign({ 'user': 'barney' }, { 'age': 40 }, { 'user': 'fred' });
-	 * // => { 'user': 'fred', 'age': 40 }
-	 *
-	 * // using a customizer callback
-	 * var defaults = _.partialRight(_.assign, function(value, other) {
-	 *   return _.isUndefined(value) ? other : value;
-	 * });
-	 *
-	 * defaults({ 'user': 'barney' }, { 'age': 36 }, { 'user': 'fred' });
-	 * // => { 'user': 'barney', 'age': 36 }
-	 */
-	var assign = createAssigner(function(object, source, customizer) {
-	  return customizer
-	    ? assignWith(object, source, customizer)
-	    : baseAssign(object, source);
-	});
-	
-	module.exports = assign;
-
-
-/***/ },
-/* 289 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.1.0 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.2 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var arrayMap = __webpack_require__(47),
-	    baseDifference = __webpack_require__(290),
-	    baseFlatten = __webpack_require__(52),
-	    bindCallback = __webpack_require__(15),
-	    pickByArray = __webpack_require__(53),
-	    pickByCallback = __webpack_require__(54),
-	    keysIn = __webpack_require__(291),
-	    restParam = __webpack_require__(17);
-	
-	/**
-	 * The opposite of `_.pick`; this method creates an object composed of the
-	 * own and inherited enumerable properties of `object` that are not omitted.
-	 * Property names may be specified as individual arguments or as arrays of
-	 * property names. If `predicate` is provided it is invoked for each property
-	 * of `object` omitting the properties `predicate` returns truthy for. The
-	 * predicate is bound to `thisArg` and invoked with three arguments:
-	 * (value, key, object).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The source object.
-	 * @param {Function|...(string|string[])} [predicate] The function invoked per
-	 *  iteration or property names to omit, specified as individual property
-	 *  names or arrays of property names.
-	 * @param {*} [thisArg] The `this` binding of `predicate`.
-	 * @returns {Object} Returns the new object.
-	 * @example
-	 *
-	 * var object = { 'user': 'fred', 'age': 40 };
-	 *
-	 * _.omit(object, 'age');
-	 * // => { 'user': 'fred' }
-	 *
-	 * _.omit(object, _.isNumber);
-	 * // => { 'user': 'fred' }
-	 */
-	var omit = restParam(function(object, props) {
-	  if (object == null) {
-	    return {};
-	  }
-	  if (typeof props[0] != 'function') {
-	    var props = arrayMap(baseFlatten(props), String);
-	    return pickByArray(object, baseDifference(keysIn(object), props));
-	  }
-	  var predicate = bindCallback(props[0], props[1], 3);
-	  return pickByCallback(object, function(value, key, object) {
-	    return !predicate(value, key, object);
-	  });
-	});
-	
-	module.exports = omit;
-
-
-/***/ },
-/* 290 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.0.3 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var baseIndexOf = __webpack_require__(49),
-	    cacheIndexOf = __webpack_require__(50),
-	    createCache = __webpack_require__(51);
-	
-	/** Used as the size to enable large array optimizations. */
-	var LARGE_ARRAY_SIZE = 200;
-	
-	/**
-	 * The base implementation of `_.difference` which accepts a single array
-	 * of values to exclude.
-	 *
-	 * @private
-	 * @param {Array} array The array to inspect.
-	 * @param {Array} values The values to exclude.
-	 * @returns {Array} Returns the new array of filtered values.
-	 */
-	function baseDifference(array, values) {
-	  var length = array ? array.length : 0,
-	      result = [];
-	
-	  if (!length) {
-	    return result;
-	  }
-	  var index = -1,
-	      indexOf = baseIndexOf,
-	      isCommon = true,
-	      cache = (isCommon && values.length >= LARGE_ARRAY_SIZE) ? createCache(values) : null,
-	      valuesLength = values.length;
-	
-	  if (cache) {
-	    indexOf = cacheIndexOf;
-	    isCommon = false;
-	    values = cache;
-	  }
-	  outer:
-	  while (++index < length) {
-	    var value = array[index];
-	
-	    if (isCommon && value === value) {
-	      var valuesIndex = valuesLength;
-	      while (valuesIndex--) {
-	        if (values[valuesIndex] === value) {
-	          continue outer;
-	        }
-	      }
-	      result.push(value);
-	    }
-	    else if (indexOf(values, value, 0) < 0) {
-	      result.push(value);
-	    }
-	  }
-	  return result;
-	}
-	
-	module.exports = baseDifference;
-
-
-/***/ },
-/* 291 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.0.8 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var isArguments = __webpack_require__(12),
-	    isArray = __webpack_require__(13);
-	
-	/** Used to detect unsigned integer values. */
-	var reIsUint = /^\d+$/;
-	
-	/** Used for native method references. */
-	var objectProto = Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/**
-	 * Used as the [maximum length](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.max_safe_integer)
-	 * of an array-like value.
-	 */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-	
-	/**
-	 * Checks if `value` is a valid array-like index.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-	 */
-	function isIndex(value, length) {
-	  value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
-	  length = length == null ? MAX_SAFE_INTEGER : length;
-	  return value > -1 && value % 1 == 0 && value < length;
-	}
-	
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This function is based on [`ToLength`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength).
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-	
-	/**
-	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(1);
-	 * // => false
-	 */
-	function isObject(value) {
-	  // Avoid a V8 JIT bug in Chrome 19-20.
-	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-	  var type = typeof value;
-	  return !!value && (type == 'object' || type == 'function');
-	}
-	
-	/**
-	 * Creates an array of the own and inherited enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keysIn(new Foo);
-	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
-	 */
-	function keysIn(object) {
-	  if (object == null) {
-	    return [];
-	  }
-	  if (!isObject(object)) {
-	    object = Object(object);
-	  }
-	  var length = object.length;
-	  length = (length && isLength(length) &&
-	    (isArray(object) || isArguments(object)) && length) || 0;
-	
-	  var Ctor = object.constructor,
-	      index = -1,
-	      isProto = typeof Ctor == 'function' && Ctor.prototype === object,
-	      result = Array(length),
-	      skipIndexes = length > 0;
-	
-	  while (++index < length) {
-	    result[index] = (index + '');
-	  }
-	  for (var key in object) {
-	    if (!(skipIndexes && isIndex(key, length)) &&
-	        !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-	
-	module.exports = keysIn;
-
-
-/***/ },
-/* 292 */
-/***/ function(module, exports) {
-
-	/**
-	 * lodash 3.0.1 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.2 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	
-	/** `Object#toString` result references. */
-	var stringTag = '[object String]';
-	
-	/**
-	 * Checks if `value` is object-like.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 */
-	function isObjectLike(value) {
-	  return !!value && typeof value == 'object';
-	}
-	
-	/** Used for native method references. */
-	var objectProto = Object.prototype;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objToString = objectProto.toString;
-	
-	/**
-	 * Checks if `value` is classified as a `String` primitive or object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	 * @example
-	 *
-	 * _.isString('abc');
-	 * // => true
-	 *
-	 * _.isString(1);
-	 * // => false
-	 */
-	function isString(value) {
-	  return typeof value == 'string' || (isObjectLike(value) && objToString.call(value) == stringTag);
-	}
-	
-	module.exports = isString;
-
-
-/***/ },
-/* 293 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.0.4 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var baseIsEqual = __webpack_require__(67),
-	    bindCallback = __webpack_require__(15);
-	
-	/**
-	 * Performs a deep comparison between two values to determine if they are
-	 * equivalent. If `customizer` is provided it is invoked to compare values.
-	 * If `customizer` returns `undefined` comparisons are handled by the method
-	 * instead. The `customizer` is bound to `thisArg` and invoked with three
-	 * arguments: (value, other [, index|key]).
-	 *
-	 * **Note:** This method supports comparing arrays, booleans, `Date` objects,
-	 * numbers, `Object` objects, regexes, and strings. Objects are compared by
-	 * their own, not inherited, enumerable properties. Functions and DOM nodes
-	 * are **not** supported. Provide a customizer function to extend support
-	 * for comparing other values.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @alias eq
-	 * @category Lang
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @param {Function} [customizer] The function to customize value comparisons.
-	 * @param {*} [thisArg] The `this` binding of `customizer`.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 * @example
-	 *
-	 * var object = { 'user': 'fred' };
-	 * var other = { 'user': 'fred' };
-	 *
-	 * object == other;
-	 * // => false
-	 *
-	 * _.isEqual(object, other);
-	 * // => true
-	 *
-	 * // using a customizer callback
-	 * var array = ['hello', 'goodbye'];
-	 * var other = ['hi', 'goodbye'];
-	 *
-	 * _.isEqual(array, other, function(value, other) {
-	 *   if (_.every([value, other], RegExp.prototype.test, /^h(?:i|ello)$/)) {
-	 *     return true;
-	 *   }
-	 * });
-	 * // => true
-	 */
-	function isEqual(value, other, customizer, thisArg) {
-	  customizer = typeof customizer == 'function' ? bindCallback(customizer, thisArg, 3) : undefined;
-	  var result = customizer ? customizer(value, other) : undefined;
-	  return  result === undefined ? baseIsEqual(value, other, customizer) : !!result;
-	}
-	
-	module.exports = isEqual;
-
-
-/***/ },
-/* 294 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.1.2 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var baseGet = __webpack_require__(37),
-	    baseSlice = __webpack_require__(38),
-	    toPath = __webpack_require__(39),
-	    isArray = __webpack_require__(13),
-	    isFunction = __webpack_require__(25);
-	
-	/** Used to match property names within property paths. */
-	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\n\\]|\\.)*?\1)\]/,
-	    reIsPlainProp = /^\w*$/;
-	
-	/**
-	 * Checks if `value` is a property name and not a property path.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {Object} [object] The object to query keys on.
-	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
-	 */
-	function isKey(value, object) {
-	  var type = typeof value;
-	  if ((type == 'string' && reIsPlainProp.test(value)) || type == 'number') {
-	    return true;
-	  }
-	  if (isArray(value)) {
-	    return false;
-	  }
-	  var result = !reIsDeepProp.test(value);
-	  return result || (object != null && value in toObject(object));
-	}
-	
-	/**
-	 * Converts `value` to an object if it's not one.
-	 *
-	 * @private
-	 * @param {*} value The value to process.
-	 * @returns {Object} Returns the object.
-	 */
-	function toObject(value) {
-	  return isObject(value) ? value : Object(value);
-	}
-	
-	/**
-	 * Gets the last element of `array`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Array
-	 * @param {Array} array The array to query.
-	 * @returns {*} Returns the last element of `array`.
-	 * @example
-	 *
-	 * _.last([1, 2, 3]);
-	 * // => 3
-	 */
-	function last(array) {
-	  var length = array ? array.length : 0;
-	  return length ? array[length - 1] : undefined;
-	}
-	
-	/**
-	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(1);
-	 * // => false
-	 */
-	function isObject(value) {
-	  // Avoid a V8 JIT bug in Chrome 19-20.
-	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-	  var type = typeof value;
-	  return !!value && (type == 'object' || type == 'function');
-	}
-	
-	/**
-	 * This method is like `_.get` except that if the resolved value is a function
-	 * it is invoked with the `this` binding of its parent object and its result
-	 * is returned.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path of the property to resolve.
-	 * @param {*} [defaultValue] The value returned if the resolved value is `undefined`.
-	 * @returns {*} Returns the resolved value.
-	 * @example
-	 *
-	 * var object = { 'a': [{ 'b': { 'c1': 3, 'c2': _.constant(4) } }] };
-	 *
-	 * _.result(object, 'a[0].b.c1');
-	 * // => 3
-	 *
-	 * _.result(object, 'a[0].b.c2');
-	 * // => 4
-	 *
-	 * _.result(object, 'a.b.c', 'default');
-	 * // => 'default'
-	 *
-	 * _.result(object, 'a.b.c', _.constant('default'));
-	 * // => 'default'
-	 */
-	function result(object, path, defaultValue) {
-	  var result = object == null ? undefined : object[path];
-	  if (result === undefined) {
-	    if (object != null && !isKey(path, object)) {
-	      path = toPath(path);
-	      object = path.length == 1 ? object : baseGet(object, baseSlice(path, 0, -1));
-	      result = object == null ? undefined : object[last(path)];
-	    }
-	    result = result === undefined ? defaultValue : result;
-	  }
-	  return isFunction(result) ? result.call(object) : result;
-	}
-	
-	module.exports = result;
-
-
-/***/ },
-/* 295 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.1.0 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.2 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var createWrapper = __webpack_require__(31),
-	    replaceHolders = __webpack_require__(32),
-	    restParam = __webpack_require__(17);
-	
-	/** Used to compose bitmasks for wrapper metadata. */
-	var BIND_FLAG = 1,
-	    PARTIAL_FLAG = 32;
-	
-	/**
-	 * Creates a function that invokes `func` with the `this` binding of `thisArg`
-	 * and prepends any additional `_.bind` arguments to those provided to the
-	 * bound function.
-	 *
-	 * The `_.bind.placeholder` value, which defaults to `_` in monolithic builds,
-	 * may be used as a placeholder for partially applied arguments.
-	 *
-	 * **Note:** Unlike native `Function#bind` this method does not set the `length`
-	 * property of bound functions.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Function
-	 * @param {Function} func The function to bind.
-	 * @param {*} thisArg The `this` binding of `func`.
-	 * @param {...*} [partials] The arguments to be partially applied.
-	 * @returns {Function} Returns the new bound function.
-	 * @example
-	 *
-	 * var greet = function(greeting, punctuation) {
-	 *   return greeting + ' ' + this.user + punctuation;
-	 * };
-	 *
-	 * var object = { 'user': 'fred' };
-	 *
-	 * var bound = _.bind(greet, object, 'hi');
-	 * bound('!');
-	 * // => 'hi fred!'
-	 *
-	 * // using placeholders
-	 * var bound = _.bind(greet, object, _, '!');
-	 * bound('hi');
-	 * // => 'hi fred!'
-	 */
-	var bind = restParam(function(func, thisArg, partials) {
-	  var bitmask = BIND_FLAG;
-	  if (partials.length) {
-	    var holders = replaceHolders(partials, bind.placeholder);
-	    bitmask |= PARTIAL_FLAG;
-	  }
-	  return createWrapper(func, bitmask, thisArg, partials, holders);
-	});
-	
-	// Assign default placeholders.
-	bind.placeholder = {};
-	
-	module.exports = bind;
-
-
-/***/ },
-/* 296 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * lodash 3.0.3 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var baseClone = __webpack_require__(297),
-	    bindCallback = __webpack_require__(15),
-	    isIterateeCall = __webpack_require__(16);
-	
-	/**
-	 * Creates a clone of `value`. If `isDeep` is `true` nested objects are cloned,
-	 * otherwise they are assigned by reference. If `customizer` is provided it's
-	 * invoked to produce the cloned values. If `customizer` returns `undefined`
-	 * cloning is handled by the method instead. The `customizer` is bound to
-	 * `thisArg` and invoked with up to three argument; (value [, index|key, object]).
-	 *
-	 * **Note:** This method is loosely based on the
-	 * [structured clone algorithm](http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm).
-	 * The enumerable properties of `arguments` objects and objects created by
-	 * constructors other than `Object` are cloned to plain `Object` objects. An
-	 * empty object is returned for uncloneable values such as functions, DOM nodes,
-	 * Maps, Sets, and WeakMaps.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to clone.
-	 * @param {boolean} [isDeep] Specify a deep clone.
-	 * @param {Function} [customizer] The function to customize cloning values.
-	 * @param {*} [thisArg] The `this` binding of `customizer`.
-	 * @returns {*} Returns the cloned value.
-	 * @example
-	 *
-	 * var users = [
-	 *   { 'user': 'barney' },
-	 *   { 'user': 'fred' }
-	 * ];
-	 *
-	 * var shallow = _.clone(users);
-	 * shallow[0] === users[0];
-	 * // => true
-	 *
-	 * var deep = _.clone(users, true);
-	 * deep[0] === users[0];
-	 * // => false
-	 *
-	 * // using a customizer callback
-	 * var el = _.clone(document.body, function(value) {
-	 *   if (_.isElement(value)) {
-	 *     return value.cloneNode(false);
-	 *   }
-	 * });
-	 *
-	 * el === document.body
-	 * // => false
-	 * el.nodeName
-	 * // => BODY
-	 * el.childNodes.length;
-	 * // => 0
-	 */
-	function clone(value, isDeep, customizer, thisArg) {
-	  if (isDeep && typeof isDeep != 'boolean' && isIterateeCall(value, isDeep, customizer)) {
-	    isDeep = false;
-	  }
-	  else if (typeof isDeep == 'function') {
-	    thisArg = customizer;
-	    customizer = isDeep;
-	    isDeep = false;
-	  }
-	  return typeof customizer == 'function'
-	    ? baseClone(value, isDeep, bindCallback(customizer, thisArg, 3))
-	    : baseClone(value, isDeep);
-	}
-	
-	module.exports = clone;
-
-
-/***/ },
-/* 297 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * lodash 3.3.0 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	var arrayCopy = __webpack_require__(298),
-	    arrayEach = __webpack_require__(28),
-	    baseAssign = __webpack_require__(8),
-	    baseFor = __webpack_require__(55),
-	    isArray = __webpack_require__(13),
-	    keys = __webpack_require__(10);
-	
-	/** `Object#toString` result references. */
-	var argsTag = '[object Arguments]',
-	    arrayTag = '[object Array]',
-	    boolTag = '[object Boolean]',
-	    dateTag = '[object Date]',
-	    errorTag = '[object Error]',
-	    funcTag = '[object Function]',
-	    mapTag = '[object Map]',
-	    numberTag = '[object Number]',
-	    objectTag = '[object Object]',
-	    regexpTag = '[object RegExp]',
-	    setTag = '[object Set]',
-	    stringTag = '[object String]',
-	    weakMapTag = '[object WeakMap]';
-	
-	var arrayBufferTag = '[object ArrayBuffer]',
-	    float32Tag = '[object Float32Array]',
-	    float64Tag = '[object Float64Array]',
-	    int8Tag = '[object Int8Array]',
-	    int16Tag = '[object Int16Array]',
-	    int32Tag = '[object Int32Array]',
-	    uint8Tag = '[object Uint8Array]',
-	    uint8ClampedTag = '[object Uint8ClampedArray]',
-	    uint16Tag = '[object Uint16Array]',
-	    uint32Tag = '[object Uint32Array]';
-	
-	/** Used to match `RegExp` flags from their coerced string values. */
-	var reFlags = /\w*$/;
-	
-	/** Used to identify `toStringTag` values supported by `_.clone`. */
-	var cloneableTags = {};
-	cloneableTags[argsTag] = cloneableTags[arrayTag] =
-	cloneableTags[arrayBufferTag] = cloneableTags[boolTag] =
-	cloneableTags[dateTag] = cloneableTags[float32Tag] =
-	cloneableTags[float64Tag] = cloneableTags[int8Tag] =
-	cloneableTags[int16Tag] = cloneableTags[int32Tag] =
-	cloneableTags[numberTag] = cloneableTags[objectTag] =
-	cloneableTags[regexpTag] = cloneableTags[stringTag] =
-	cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
-	cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
-	cloneableTags[errorTag] = cloneableTags[funcTag] =
-	cloneableTags[mapTag] = cloneableTags[setTag] =
-	cloneableTags[weakMapTag] = false;
-	
-	/** Used for native method references. */
-	var objectProto = Object.prototype;
-	
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	
-	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var objToString = objectProto.toString;
-	
-	/** Native method references. */
-	var ArrayBuffer = global.ArrayBuffer,
-	    Uint8Array = global.Uint8Array;
-	
-	/**
-	 * The base implementation of `_.clone` without support for argument juggling
-	 * and `this` binding `customizer` functions.
-	 *
-	 * @private
-	 * @param {*} value The value to clone.
-	 * @param {boolean} [isDeep] Specify a deep clone.
-	 * @param {Function} [customizer] The function to customize cloning values.
-	 * @param {string} [key] The key of `value`.
-	 * @param {Object} [object] The object `value` belongs to.
-	 * @param {Array} [stackA=[]] Tracks traversed source objects.
-	 * @param {Array} [stackB=[]] Associates clones with source counterparts.
-	 * @returns {*} Returns the cloned value.
-	 */
-	function baseClone(value, isDeep, customizer, key, object, stackA, stackB) {
-	  var result;
-	  if (customizer) {
-	    result = object ? customizer(value, key, object) : customizer(value);
-	  }
-	  if (result !== undefined) {
-	    return result;
-	  }
-	  if (!isObject(value)) {
-	    return value;
-	  }
-	  var isArr = isArray(value);
-	  if (isArr) {
-	    result = initCloneArray(value);
-	    if (!isDeep) {
-	      return arrayCopy(value, result);
-	    }
-	  } else {
-	    var tag = objToString.call(value),
-	        isFunc = tag == funcTag;
-	
-	    if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
-	      result = initCloneObject(isFunc ? {} : value);
-	      if (!isDeep) {
-	        return baseAssign(result, value);
-	      }
-	    } else {
-	      return cloneableTags[tag]
-	        ? initCloneByTag(value, tag, isDeep)
-	        : (object ? value : {});
-	    }
-	  }
-	  // Check for circular references and return its corresponding clone.
-	  stackA || (stackA = []);
-	  stackB || (stackB = []);
-	
-	  var length = stackA.length;
-	  while (length--) {
-	    if (stackA[length] == value) {
-	      return stackB[length];
-	    }
-	  }
-	  // Add the source value to the stack of traversed objects and associate it with its clone.
-	  stackA.push(value);
-	  stackB.push(result);
-	
-	  // Recursively populate clone (susceptible to call stack limits).
-	  (isArr ? arrayEach : baseForOwn)(value, function(subValue, key) {
-	    result[key] = baseClone(subValue, isDeep, customizer, key, value, stackA, stackB);
-	  });
-	  return result;
-	}
-	
-	/**
-	 * The base implementation of `_.forOwn` without support for callback
-	 * shorthands and `this` binding.
-	 *
-	 * @private
-	 * @param {Object} object The object to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Object} Returns `object`.
-	 */
-	function baseForOwn(object, iteratee) {
-	  return baseFor(object, iteratee, keys);
-	}
-	
-	/**
-	 * Creates a clone of the given array buffer.
-	 *
-	 * @private
-	 * @param {ArrayBuffer} buffer The array buffer to clone.
-	 * @returns {ArrayBuffer} Returns the cloned array buffer.
-	 */
-	function bufferClone(buffer) {
-	  var result = new ArrayBuffer(buffer.byteLength),
-	      view = new Uint8Array(result);
-	
-	  view.set(new Uint8Array(buffer));
-	  return result;
-	}
-	
-	/**
-	 * Initializes an array clone.
-	 *
-	 * @private
-	 * @param {Array} array The array to clone.
-	 * @returns {Array} Returns the initialized clone.
-	 */
-	function initCloneArray(array) {
-	  var length = array.length,
-	      result = new array.constructor(length);
-	
-	  // Add array properties assigned by `RegExp#exec`.
-	  if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {
-	    result.index = array.index;
-	    result.input = array.input;
-	  }
-	  return result;
-	}
-	
-	/**
-	 * Initializes an object clone.
-	 *
-	 * @private
-	 * @param {Object} object The object to clone.
-	 * @returns {Object} Returns the initialized clone.
-	 */
-	function initCloneObject(object) {
-	  var Ctor = object.constructor;
-	  if (!(typeof Ctor == 'function' && Ctor instanceof Ctor)) {
-	    Ctor = Object;
-	  }
-	  return new Ctor;
-	}
-	
-	/**
-	 * Initializes an object clone based on its `toStringTag`.
-	 *
-	 * **Note:** This function only supports cloning values with tags of
-	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
-	 *
-	 * @private
-	 * @param {Object} object The object to clone.
-	 * @param {string} tag The `toStringTag` of the object to clone.
-	 * @param {boolean} [isDeep] Specify a deep clone.
-	 * @returns {Object} Returns the initialized clone.
-	 */
-	function initCloneByTag(object, tag, isDeep) {
-	  var Ctor = object.constructor;
-	  switch (tag) {
-	    case arrayBufferTag:
-	      return bufferClone(object);
-	
-	    case boolTag:
-	    case dateTag:
-	      return new Ctor(+object);
-	
-	    case float32Tag: case float64Tag:
-	    case int8Tag: case int16Tag: case int32Tag:
-	    case uint8Tag: case uint8ClampedTag: case uint16Tag: case uint32Tag:
-	      var buffer = object.buffer;
-	      return new Ctor(isDeep ? bufferClone(buffer) : buffer, object.byteOffset, object.length);
-	
-	    case numberTag:
-	    case stringTag:
-	      return new Ctor(object);
-	
-	    case regexpTag:
-	      var result = new Ctor(object.source, reFlags.exec(object));
-	      result.lastIndex = object.lastIndex;
-	  }
-	  return result;
-	}
-	
-	/**
-	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(1);
-	 * // => false
-	 */
-	function isObject(value) {
-	  // Avoid a V8 JIT bug in Chrome 19-20.
-	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-	  var type = typeof value;
-	  return !!value && (type == 'object' || type == 'function');
-	}
-	
-	module.exports = baseClone;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
 /* 298 */
-/***/ function(module, exports) {
-
-	/**
-	 * lodash 3.0.0 (Custom Build) <https://lodash.com/>
-	 * Build: `lodash modern modularize exports="npm" -o ./`
-	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.7.0 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <https://lodash.com/license>
-	 */
-	
-	/**
-	 * Copies the values of `source` to `array`.
-	 *
-	 * @private
-	 * @param {Array} source The array to copy values from.
-	 * @param {Array} [array=[]] The array to copy values to.
-	 * @returns {Array} Returns `array`.
-	 */
-	function arrayCopy(source, array) {
-	  var index = -1,
-	      length = source.length;
-	
-	  array || (array = Array(length));
-	  while (++index < length) {
-	    array[index] = source[index];
-	  }
-	  return array;
-	}
-	
-	module.exports = arrayCopy;
-
-
-/***/ },
-/* 299 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $ = __webpack_require__(2);
-	var _ = __webpack_require__(3);
-	var PageView = __webpack_require__(104);
-	var dom = __webpack_require__(278);
-	var gsap = __webpack_require__(281);
-	
-	
-	var Contact = PageView.extend({
-		
-		props:{
-			isinitial: false,
-			container: Object,
-			form: '',
-			formavalues: '',
-	
-			reachable: '',
-	
-			required: '',
-			resetValues: [Boolean, true, false],
-			emailReg: [RegExp, true, ""]
-		},
-	    
-	    events: {
-	    	'click .togglemenu': 'handleTogglemenu',
-	        'click #generalcontact-form-submit': 'handleSubmitClick'
-	        // 'click .checkboxselection': 'handleCheckboxClick',
-	        // 'click .radioboxselection': 'handleRadioClick',
-	        // 'click .handle-dropdown': 'handleDropdownClick'
-	    },
-	
-	    template: function(){
-			var content = this.model.pageContent;
-			return content;
-		},
-	
-	    hookBeforeHide: function(){
-	    },
-	
-		hookInRender: function () {
-			
-			this.container = $(this.el);
-			
-			this.cacheElements({ });
-			this.bindFormular();
-			this.handleFooterStyle();
-		},
-	
-		hookAfterRender: function(){
-		},
-	
-		handleTogglemenu: function(e){
-			window.app.view.handleTogglemenu(e);
-		},
-	
-		handleFooterStyle: function (){
-			footerstyle = $(this.el).find('#footerstyle');
-			$('#footer').removeClass('light');
-			if( footerstyle.length >= 1 ){
-				style = footerstyle.data('footerstyle');
-				$('#footer').addClass(style);
-			}
-		},
-		handleDropdownClick: function (e){
-			// console.log(e);
-			
-			// console.log("handleDropdownClick");
-			target = $(e.target);
-			alldropdown = $(this.el).find('.selection-dropdown');
-			dropdown = target.parent().find('.selection-dropdown');
-			input = dropdown.find('input');
-	
-			if( alldropdown.hasClass('active') && !dropdown.hasClass('active') ){
-				alldropdown.removeClass('active');
-			}
-	
-			if( dropdown.hasClass('active') ){
-				dropdown.removeClass('active');
-			}else{
-				dropdown.addClass('active');
-			}
-			dropdown.find('.dropdownlayerselection').on('click',function(){
-				input.val('');
-				value = $(this).find('input').data('value');
-				$(this).find('input').val(value);
-				target.text(value);
-				dropdown.removeClass('active');
-			});
-		},
-		handleRadioClick: function (e){
-			// console.log(e);
-			target = $(e.target);
-			input = target.find('input');
-			group = input.data('group');
-	
-			// reset
-			$('.'+group).removeClass('active');
-			$('.'+group).find('input').val('');
-	
-			if( target.hasClass('active') ){
-				target.removeClass('active');
-				input.val('');
-			}else{
-				target.addClass('active');
-				value = input.attr('data-value');
-				input.val(value);
-			}
-		},
-		handleCheckboxClick: function (e){
-			// console.log(e);
-			target = $(e.target);
-			input = target.find('input');
-			if( target.hasClass('active') ){
-				target.removeClass('active');
-				input.val('');
-			}else{
-				target.addClass('active');
-				value = input.attr('data-value');
-				input.val(value);
-			}
-		},
-	
-		bindFormular: function (){
-			if ($(this.el).find('form').length >= 1 ){
-				this.cacheElements({
-					submitButton: '#generalcontact-form-submit',
-					formDom: '#generalcontact-form',
-					validationInput: '#generalcontact-form-email-confirmation'
-				});
-	
-				this.resetValues = true;
-				this.isScrollTop = false;
-				this.formavalues = this.queryAll('.value');
-				// reset checkboxes
-				this.checkboxselection = this.queryAll('.checkboxselection');
-				this.required = this.queryAll('.required');
-	
-				this.newsletter = this.query('#newsletter');
-	
-				this.emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-	
-			}
-		},
-	
-		handleSubmitClick: function(e){
-			//console.log("click form");
-			e.preventDefault();
-			var self = this;
-			
-			if(this.validationInput.value != ""){
-				// Honey Pot = Robot
-				return;
-			}
-			
-			// reset 
-			_.each(this.required, function(element, index, list){
-				dom.removeClass(this.formDom, "invalid");
-				dom.removeClass(element, "input-error");
-			}, this);
-	
-			var invalideObjects = [];
-			invalideObjects = _.filter(this.required, function(element, index, list){
-					var isval = false;
-	
-					// push data in model
-					if(element.type == "email"){
-						if(element.value != ""){
-							isval = this.emailReg.test(element.value);
-						}
-					}
-					if(element.type == "text" || element.type == "textarea"){
-						isval = (element.value != "");
-					}
-	
-					if(!isval){
-						dom.addClass(element, "input-error");
-					}
-	
-					return !isval;
-			}, this);
-	
-	
-			if(invalideObjects.length == 0){
-	
-				// push data in form model:
-				_.each(this.formavalues, function(element, index, list){
-					this.form[element.name] = element.value;
-				}, this);
-	
-				_.each(this.checkboxselection, function(element, index, list){
-					dom.removeClass(element,"active");
-				}, this);
-	
-				this.form.send(this.form._values).then(function(success){
-					dom.addClass(self.formDom, "issent");
-					dom.removeClass(self.formDom, "haserror");
-					dom.removeClass(self.formDom, "invalid");
-	
-					// reset
-					if(self.resetValues){
-						_.each(self.formavalues, function(element, index, list){
-							element.value = '';
-						}, this);
-					}
-					if(self.isScrollTop){
-						TweenMax.to(window, 1, {scrollTo:{y:0, x:0}, ease:Power2.easeInOut});
-					}
-				}, function(error){
-					dom.addClass(self.formDom, "haserror");
-					if(self.isScrollTop){
-						TweenMax.to(window, 1, {scrollTo:{y:0, x:0}, ease:Power2.easeInOut});
-					}
-				});
-	
-			} 
-			else {
-				dom.removeClass(this.formDom, "issent");
-				dom.removeClass(this.formDom, "invalid-groups");
-				dom.addClass(this.formDom, "invalid");
-	
-				if(self.isScrollTop){
-					TweenMax.to(window, 1, {scrollTo:{y:0, x:0}, ease:Power2.easeInOut});
-				}
-			}
-			
-	
-			
-		},
-	
-		handleScroll: function(value){
-		},
-	
-	});
-	
-	module.exports = Contact;
-
-/***/ },
-/* 300 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*!
-	  * domready (c) Dustin Diaz 2014 - License MIT
-	  */
-	!function (name, definition) {
-	
-	  if (true) module.exports = definition()
-	  else if (typeof define == 'function' && typeof define.amd == 'object') define(definition)
-	  else this[name] = definition()
-	
-	}('domready', function () {
-	
-	  var fns = [], listener
-	    , doc = document
-	    , hack = doc.documentElement.doScroll
-	    , domContentLoaded = 'DOMContentLoaded'
-	    , loaded = (hack ? /^loaded|^c/ : /^loaded|^i|^c/).test(doc.readyState)
-	
-	
-	  if (!loaded)
-	  doc.addEventListener(domContentLoaded, listener = function () {
-	    doc.removeEventListener(domContentLoaded, listener)
-	    loaded = 1
-	    while (listener = fns.shift()) listener()
-	  })
-	
-	  return function (fn) {
-	    loaded ? setTimeout(fn, 0) : fns.push(fn)
-	  }
-	
-	});
-
-
-/***/ },
-/* 301 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*global me, app*/
-	var $ = __webpack_require__(2);
-	var _ = __webpack_require__(3);
-	var View = __webpack_require__(105);
-	var dom = __webpack_require__(278);
-	var ViewSwitcher = __webpack_require__(302);
-	var gsap = __webpack_require__(281);
-	var gsap = __webpack_require__(303);
-	
-	var MainView = View.extend({
-	
-	    props: {
-	        isMobile: false,
-	        pageTitle: [String, true, 'iAmbulanz']
-	    },
-	
-	    events: {
-	        'click a[href]': 'handleLinkClick',
-	        'click .Header-toggle': 'handleTogglemenu',
-	        'click .nav-holder #close': 'handleTogglemenu'
-	    },
-	
-	    render: function () {
-	        var self = this;
-	
-	        // cache elements
-	        this.cacheElements({
-	            page: '#page',
-	            main: '#main',
-	            footer: '#footer',
-	            header: '.Header',
-	            headerBody: '.Header-body',
-	            nav: '.nav',
-	            navmain: '.nav-main',
-	            togglemenu: '.togglemenu'
-	        });
-	
-	        // initial view
-	
-	         // init and configure our page switcher
-	        this.pageSwitcher = new ViewSwitcher(this.queryByHook('switcher'), {
-	            waitForRemove: true,
-	            hide: function (oldView, cb) {
-	                if(oldView && oldView.el){
-	                    oldView.hookBeforeHide();
-	                    TweenMax.to(oldView.el, 0.8, { opacity:0, delay:0.2 });
-	                    TweenMax.to(window, 1, {scrollTo:{y:0}});
-	                }
-	                setTimeout(cb, 1000);
-	            },
-	
-	            show: function (newView) {
-	
-	                document.title = _.result(newView.model, 'pageTitle');
-	
-	                TweenMax.set(newView.el, { opacity:0 });
-	                TweenMax.to(newView.el, 1.2, {opacity:1, delay:0.5, onComplete:function(){
-	                    newView.el.setAttribute("style", " ");
-	                    newView.hookAfterRender();
-	                }});
-	
-	            }
-	        });
-	
-	        // setting a favicon for fun (note, it's dynamic)
-	        // setFavicon('/images/ampersand.png');
-	
-	        return this;
-	    },
-	
-	    handleNewPage: function (view) {
-	
-	        // TRACKING
-	        if(typeof ga != 'undefined'){
-	            ga('send', 'pageview', {
-	                'page': app.router.history.location.pathname,
-	                'title': view.model.pageTitle
-	            });
-	        }
-	
-	        // SWICTH THE VIEW
-	        this.pageSwitcher.set(view);
-	
-	        // UPDATE PAG NAV
-	        this.updateActiveNav();
-	    },
-	
-	    handleInitialPage: function (view) {
-	        var self = this;
-	        view.handleInitialPage();
-	
-	        view.el = this.query('.Application-view');
-	        view.render();
-	
-	        this.pageSwitcher.current = view;
-	
-	        // mark the correct nav item selected
-	        this.updateActiveNav();
-	    },
-	
-	    handleTogglemenu: function (e){
-	        if( dom.hasClass(this.header, 'Header--open') || e == undefined){
-	            this._closeToggleMenu();
-	        } else {
-	            this._openToggleMenu();
-	        }
-	    },
-	    _openToggleMenu: function(){
-	        dom.setAttribute(this.header, 'style', 'margin-top:'+this.headerBody.offsetHeight+'px');
-	        dom.addClass(this.header, 'Header--open');
-	    },
-	    _closeToggleMenu: function(){
-	        dom.setAttribute(this.header, 'style', '');
-	        dom.removeClass(this.header, 'Header--open');
-	        TweenMax.to(window, 1, {scrollTo:{y:0}});
-	    },
-	
-	    handleLinkClick: function (e) {
-	        var aTag = e.delegateTarget,
-	            self = this,
-	            hash = '',
-	            path = '';
-	
-	        if (aTag.hash !== undefined && aTag.hash.length >= 1){
-	            hash = aTag.hash;
-	        }
-	
-	        path =  aTag.hash !== undefined
-	                ? aTag.pathname+hash
-	                : aTag.getAttribute('xlink:href');
-	
-	        this._doLinkClick(path, e, aTag);
-	
-	        this._closeToggleMenu()
-	    },
-	
-	    _doLinkClick: function(path, e, tag){
-	        var local = tag.host === window.location.host,
-	            link = this.query(e.delegateTarget),
-	            href = window.location.href,
-	            aUrl = e.delegateTarget.href,
-	            attr = e.delegateTarget.getAttribute('data-value') || undefined;
-	
-	        if ( $(tag).data('animation') != undefined ){
-	            app.pageAnimation = $(tag).data('animation');
-	        } else {
-	            app.pageAnimation = "scroll";
-	        }
-	        // console.log("pageHash: ",  window.location.pathname +" - "+ tag.pathname );
-	
-	        if (local && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && tag.getAttribute("target") !== "_blank") {
-	            e.preventDefault();
-	
-	            app.pageHash = tag.hash;
-	            if(dom.hasClass(tag, 'anchor') && window.location.pathname == tag.pathname ){
-	                // console.log(app);
-	                this._scrollToSection();
-	                if(dom.hasClass(tag, 'anchor-close') )
-	                    this.handleTogglemenu();
-	            } else {
-	                // this.closeMainMenu();
-	                app.navigate(path);
-	                // close menu container
-	                this.handleTogglemenu();
-	            }
-	        }
-	    },
-	
-	    _scrollToSection: function(){
-	        if (app.pageHash.length >= 1){
-	            var id = this.query(app.pageHash);
-	            TweenMax.to(window, 1.2, {scrollTo:{y:id.offsetTop}, ease:Power2.easeOut});
-	        }
-	    },
-	
-	
-	    updateActiveNav: function () {
-	        var path = window.location.pathname.slice(1);
-	        console.log(path);
-	
-	        this.queryAll('.Header a[href]').forEach(function (aTag) {
-	
-	            var aPath = aTag.pathname.slice(1);
-	
-	            if ((!aPath && !path) || (aPath && path.indexOf(aPath) === 0)) {
-	                // start film nicht aktiv !!
-	                if(aPath != ''){
-	                    dom.addClass(aTag.parentNode, 'active');
-	                }
-	            } else {
-	                dom.removeClass(aTag.parentNode, 'active');
-	            }
-	        });
-	    },
-	
-	    mobile: function (){
-	        isMobile = {
-	            Android: function() {
-	                return navigator.userAgent.match(/Android/i);
-	            },
-	            BlackBerry: function() {
-	                return navigator.userAgent.match(/BlackBerry/i);
-	            },
-	            iOS: function() {
-	                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-	            },
-	            Opera: function() {
-	                return navigator.userAgent.match(/Opera Mini/i);
-	            },
-	            Windows: function() {
-	                return navigator.userAgent.match(/IEMobile/i);
-	            },
-	            any: function() {
-	                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-	            }
-	        };
-	        if ( isMobile.any() === null ){
-	            return false;
-	        } else{
-	            return true;
-	        }
-	    }
-	
-	
-	});
-	
-	module.exports = MainView;
-
-
-/***/ },
-/* 302 */
-/***/ function(module, exports) {
-
-	/*$AMPERSAND_VERSION*/
-	function ViewSwitcher(el, options) {
-	    options || (options = {});
-	    this.el = el;
-	    this.config = {
-	        hide: null,
-	        show: null,
-	        empty: null,
-	        prepend: false,
-	        waitForRemove: false
-	    };
-	    for (var item in options) {
-	        if (this.config.hasOwnProperty(item)) {
-	            this.config[item] = options[item];
-	        }
-	    }
-	    if (options.view) {
-	        this._setCurrent(options.view);
-	        this._render(options.view);
-	    } else {
-	        // call this so the empty callback gets called
-	        this._onViewRemove();
-	    }
-	}
-	
-	ViewSwitcher.prototype.set = function (view) {
-	    var self = this;
-	    var prev = this.previous = this.current;
-	
-	    if (prev === view) {
-	        return;
-	    }
-	
-	    if (this.config.waitForRemove) {
-	        this.next = view;
-	        this._hide(prev, function () {
-	            if (self.next === view) {
-	                delete self.next;
-	                self._show(view);
-	            }
-	        });
-	    } else {
-	        this._hide(prev);
-	        this._show(view);
-	    }
-	};
-	
-	ViewSwitcher.prototype._setCurrent = function (view) {
-	    this.current = view;
-	    if (view) this._registerRemoveListener(view);
-	    var emptyCb = this.config.empty;
-	    if (emptyCb && !this.current) {
-	        emptyCb();
-	    }
-	    return view;
-	};
-	
-	ViewSwitcher.prototype.clear = function (cb) {
-	    this._hide(this.current, cb);
-	};
-	
-	// If the view switcher itself is removed, remove its child to avoid memory leaks
-	ViewSwitcher.prototype.remove = function () {
-	    if (this.current) this.current.remove();
-	};
-	
-	ViewSwitcher.prototype._show = function (view) {
-	    var customShow = this.config.show;
-	    this._setCurrent(view);
-	    this._render(view);
-	    if (customShow) customShow(view);
-	};
-	
-	ViewSwitcher.prototype._registerRemoveListener = function (view) {
-	    if (view) view.once('remove', this._onViewRemove, this);
-	};
-	
-	ViewSwitcher.prototype._onViewRemove = function (view) {
-	    var emptyCb = this.config.empty;
-	    if (this.current === view) {
-	        this.current = null;
-	    }
-	    if (emptyCb && !this.current) {
-	        emptyCb();
-	    }
-	};
-	
-	ViewSwitcher.prototype._render = function (view) {
-	    if (!view.rendered) view.render({containerEl: this.el});
-	    if (!view.insertSelf) {
-	        if (this.config.prepend) {
-	            this.el.insertBefore(view.el, this.el.firstChild);
-	        } else {
-	            this.el.appendChild(view.el);
-	        }
-	    }
-	};
-	
-	ViewSwitcher.prototype._hide = function (view, cb) {
-	    var customHide = this.config.hide;
-	    if (!view) return cb && cb();
-	    if (customHide) {
-	        if (customHide.length === 2) {
-	            customHide(view, function () {
-	                view.remove();
-	                if (cb) cb();
-	            });
-	        } else {
-	            customHide(view);
-	            view.remove();
-	            if (cb) cb();
-	        }
-	    } else {
-	        view.remove();
-	        if (cb) cb();
-	    }
-	};
-	
-	
-	module.exports = ViewSwitcher;
-
-
-/***/ },
-/* 303 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {/*!
-	 * VERSION: 1.7.5
-	 * DATE: 2015-02-26
-	 * UPDATES AND DOCS AT: http://greensock.com
-	 *
-	 * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
-	 * This work is subject to the terms at http://greensock.com/standard-license or for
-	 * Club GreenSock members, the software agreement that was issued with your membership.
-	 * 
-	 * @author: Jack Doyle, jack@greensock.com
-	 **/
-	var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window; //helps ensure compatibility with AMD/RequireJS and CommonJS/Node
-	(_gsScope._gsQueue || (_gsScope._gsQueue = [])).push( function() {
-	
-		"use strict";
-	
-		var _doc = document.documentElement,
-			_window = window,
-			_max = function(element, axis) {
-				var dim = (axis === "x") ? "Width" : "Height",
-					scroll = "scroll" + dim,
-					client = "client" + dim,
-					body = document.body;
-				return (element === _window || element === _doc || element === body) ? Math.max(_doc[scroll], body[scroll]) - (_window["inner" + dim] || _doc[client] || body[client]) : element[scroll] - element["offset" + dim];
-			},
-	
-			ScrollToPlugin = _gsScope._gsDefine.plugin({
-				propName: "scrollTo",
-				API: 2,
-				version:"1.7.5",
-	
-				//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
-				init: function(target, value, tween) {
-					this._wdw = (target === _window);
-					this._target = target;
-					this._tween = tween;
-					if (typeof(value) !== "object") {
-						value = {y:value}; //if we don't receive an object as the parameter, assume the user intends "y".
-					}
-					this.vars = value;
-					this._autoKill = (value.autoKill !== false);
-					this.x = this.xPrev = this.getX();
-					this.y = this.yPrev = this.getY();
-					if (value.x != null) {
-						this._addTween(this, "x", this.x, (value.x === "max") ? _max(target, "x") : value.x, "scrollTo_x", true);
-						this._overwriteProps.push("scrollTo_x");
-					} else {
-						this.skipX = true;
-					}
-					if (value.y != null) {
-						this._addTween(this, "y", this.y, (value.y === "max") ? _max(target, "y") : value.y, "scrollTo_y", true);
-						this._overwriteProps.push("scrollTo_y");
-					} else {
-						this.skipY = true;
-					}
-					return true;
-				},
-	
-				//called each time the values should be updated, and the ratio gets passed as the only parameter (typically it's a value between 0 and 1, but it can exceed those when using an ease like Elastic.easeOut or Back.easeOut, etc.)
-				set: function(v) {
-					this._super.setRatio.call(this, v);
-	
-					var x = (this._wdw || !this.skipX) ? this.getX() : this.xPrev,
-						y = (this._wdw || !this.skipY) ? this.getY() : this.yPrev,
-						yDif = y - this.yPrev,
-						xDif = x - this.xPrev;
-	
-					if (this._autoKill) {
-						//note: iOS has a bug that throws off the scroll by several pixels, so we need to check if it's within 7 pixels of the previous one that we set instead of just looking for an exact match.
-						if (!this.skipX && (xDif > 7 || xDif < -7) && x < _max(this._target, "x")) {
-							this.skipX = true; //if the user scrolls separately, we should stop tweening!
-						}
-						if (!this.skipY && (yDif > 7 || yDif < -7) && y < _max(this._target, "y")) {
-							this.skipY = true; //if the user scrolls separately, we should stop tweening!
-						}
-						if (this.skipX && this.skipY) {
-							this._tween.kill();
-							if (this.vars.onAutoKill) {
-								this.vars.onAutoKill.apply(this.vars.onAutoKillScope || this._tween, this.vars.onAutoKillParams || []);
-							}
-						}
-					}
-					if (this._wdw) {
-						_window.scrollTo((!this.skipX) ? this.x : x, (!this.skipY) ? this.y : y);
-					} else {
-						if (!this.skipY) {
-							this._target.scrollTop = this.y;
-						}
-						if (!this.skipX) {
-							this._target.scrollLeft = this.x;
-						}
-					}
-					this.xPrev = this.x;
-					this.yPrev = this.y;
-				}
-	
-			}),
-			p = ScrollToPlugin.prototype;
-	
-		ScrollToPlugin.max = _max;
-	
-		p.getX = function() {
-			return (!this._wdw) ? this._target.scrollLeft : (_window.pageXOffset != null) ? _window.pageXOffset : (_doc.scrollLeft != null) ? _doc.scrollLeft : document.body.scrollLeft;
-		};
-	
-		p.getY = function() {
-			return (!this._wdw) ? this._target.scrollTop : (_window.pageYOffset != null) ? _window.pageYOffset : (_doc.scrollTop != null) ? _doc.scrollTop : document.body.scrollTop;
-		};
-	
-		p._kill = function(lookup) {
-			if (lookup.scrollTo_x) {
-				this.skipX = true;
-			}
-			if (lookup.scrollTo_y) {
-				this.skipY = true;
-			}
-			return this._super._kill.call(this, lookup);
-		};
-	
-	}); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// var mapboxgl = require('mapbox-gl');
-	var mapboxgl = __webpack_require__(312);
-	var each = __webpack_require__(305);
+	var mapboxgl = __webpack_require__(299);
+	var each = __webpack_require__(304);
 	
 	var layers = {
 	
@@ -45531,148 +44738,7 @@
 
 
 /***/ },
-/* 305 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var objKeys = __webpack_require__(306);
-	var createCallback = __webpack_require__(311);
-	
-	
-	module.exports = function each(obj, iteratee, context) {
-	    if (obj == null) return obj;
-	    iteratee = createCallback(iteratee, context);
-	    var i, length = obj.length;
-	    if (length === +length) {
-	        for (i = 0; i < length; i++) {
-	            iteratee(obj[i], i, obj);
-	        }
-	    } else {
-	        var keys = objKeys(obj);
-	        for (i = 0, length = keys.length; i < length; i++) {
-	            iteratee(obj[keys[i]], keys[i], obj);
-	        }
-	    }
-	    return obj;
-	};
-
-
-/***/ },
-/* 306 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var has = __webpack_require__(307);
-	var indexOf = __webpack_require__(308);
-	var isObject = __webpack_require__(310);
-	var nativeKeys = Object.keys;
-	var hasEnumBug = !({toString: null}).propertyIsEnumerable('toString');
-	var nonEnumerableProps = ['constructor', 'valueOf', 'isPrototypeOf', 'toString', 'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
-	
-	
-	module.exports = function keys(obj) {
-	    if (!isObject(obj)) return [];
-	    if (nativeKeys) {
-	        return nativeKeys(obj);
-	    }
-	    var result = [];
-	    for (var key in obj) if (has(obj, key)) result.push(key);
-	    // IE < 9
-	    if (hasEnumBug) {
-	        var nonEnumIdx = nonEnumerableProps.length;
-	        while (nonEnumIdx--) {
-	            var prop = nonEnumerableProps[nonEnumIdx];
-	            if (has(obj, prop) && indexOf(result, prop) === -1) result.push(prop);
-	        }
-	    }
-	    return result;
-	};
-
-
-/***/ },
-/* 307 */
-/***/ function(module, exports) {
-
-	var hasOwn = Object.prototype.hasOwnProperty;
-	
-	
-	module.exports = function has(obj, key) {
-	    return obj != null && hasOwn.call(obj, key);
-	};
-
-
-/***/ },
-/* 308 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isNumber = __webpack_require__(309);
-	
-	
-	module.exports = function indexOf(arr, item, from) {
-	    var i = 0;
-	    var l = arr && arr.length;
-	    if (isNumber(from)) {
-	        i = from < 0 ? Math.max(0, l + from) : from;
-	    }
-	    for (; i < l; i++) {
-	        if (arr[i] === item) return i;
-	    }
-	    return -1;
-	};
-
-
-/***/ },
-/* 309 */
-/***/ function(module, exports) {
-
-	var toString = Object.prototype.toString;
-	
-	
-	module.exports = function isNumber(obj) {
-	    return toString.call(obj) === '[object Number]';
-	};
-
-
-/***/ },
-/* 310 */
-/***/ function(module, exports) {
-
-	module.exports = function isObject(obj) {
-	    var type = typeof obj;
-	    return !!obj && (type === 'function' || type === 'object');
-	};
-
-
-/***/ },
-/* 311 */
-/***/ function(module, exports) {
-
-	module.exports = function createCallback(func, context, argCount) {
-	    if (context === void 0) return func;
-	    switch (argCount) {
-	    case 1: 
-	        return function(value) {
-	            return func.call(context, value);
-	        };
-	    case 2: 
-	        return function(value, other) {
-	            return func.call(context, value, other);
-	        };
-	    case 3: 
-	        return function(value, index, collection) {
-	            return func.call(context, value, index, collection);
-	        };
-	    case 4: 
-	        return function(accumulator, value, index, collection) {
-	            return func.call(context, accumulator, value, index, collection);
-	        };
-	    }
-	    return function() {
-	        return func.apply(context, arguments);
-	    };
-	};
-
-
-/***/ },
-/* 312 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;var require;/* WEBPACK VAR INJECTION */(function(Buffer, global) {(function(f){if(true){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.mapboxgl = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
@@ -46010,10 +45076,10 @@
 	var bundleFn=arguments[3],sources=arguments[4],cache=arguments[5],stringify=JSON.stringify;module.exports=function(r){for(var e,t=Object.keys(cache),n=0,o=t.length;o>n;n++){var a=t[n],i=cache[a].exports;if(i===r||i["default"]===r){e=a;break}}if(!e){e=Math.floor(Math.pow(16,8)*Math.random()).toString(16);for(var s={},n=0,o=t.length;o>n;n++){var a=t[n];s[a]=a}sources[e]=[Function(["require","module","exports"],"("+r+")(self)"),s]}var u=Math.floor(Math.pow(16,8)*Math.random()).toString(16),f={};f[e]=e,sources[u]=[Function(["require"],"var f = require("+stringify(e)+");(f.default ? f.default : f)(self);"),f];var c="("+bundleFn+")({"+Object.keys(sources).map(function(r){return stringify(r)+":["+sources[r][0]+","+stringify(sources[r][1])+"]"}).join(",")+"},{},["+stringify(u)+"])",l=window.URL||window.webkitURL||window.mozURL||window.msURL;return new Worker(l.createObjectURL(new Blob([c],{type:"text/javascript"})))};
 	},{}]},{},[14])(14)
 	});
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(313).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(300).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 313 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -46026,9 +45092,9 @@
 	
 	'use strict'
 	
-	var base64 = __webpack_require__(314)
-	var ieee754 = __webpack_require__(315)
-	var isArray = __webpack_require__(316)
+	var base64 = __webpack_require__(301)
+	var ieee754 = __webpack_require__(302)
+	var isArray = __webpack_require__(303)
 	
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -47565,10 +46631,10 @@
 	  return i
 	}
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(313).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(300).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 314 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -47698,7 +46764,7 @@
 
 
 /***/ },
-/* 315 */
+/* 302 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -47788,7 +46854,7 @@
 
 
 /***/ },
-/* 316 */
+/* 303 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -47799,42 +46865,988 @@
 
 
 /***/ },
-/* 317 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// base view for pages
-	var Model = __webpack_require__(285);
+	var objKeys = __webpack_require__(305);
+	var createCallback = __webpack_require__(310);
 	
-	var Content = Model.extend({
-	    urlRoot: '/',
-	    props: {
-	        source: 'String',
-	        name: 'String',
-	        token: 'String',
-	        style: 'String',
-	        id: 'String',
-	        view: Array,
-	        zoom: Number,
-	        bearing: Number,
-	        pitch: Number,
-	        icons: Object,
-	        layer: Object
-	    },
-	    url: function () {
-	        var url = this.urlRoot + this.source;
-	        return url;
-	    },
-	    ajaxConfig: function () {
-	        return {
-	            xhrFields: {
-	                'withCredentials': true
-	            }
+	
+	module.exports = function each(obj, iteratee, context) {
+	    if (obj == null) return obj;
+	    iteratee = createCallback(iteratee, context);
+	    var i, length = obj.length;
+	    if (length === +length) {
+	        for (i = 0; i < length; i++) {
+	            iteratee(obj[i], i, obj);
+	        }
+	    } else {
+	        var keys = objKeys(obj);
+	        for (i = 0, length = keys.length; i < length; i++) {
+	            iteratee(obj[keys[i]], keys[i], obj);
+	        }
+	    }
+	    return obj;
+	};
+
+
+/***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var has = __webpack_require__(306);
+	var indexOf = __webpack_require__(307);
+	var isObject = __webpack_require__(309);
+	var nativeKeys = Object.keys;
+	var hasEnumBug = !({toString: null}).propertyIsEnumerable('toString');
+	var nonEnumerableProps = ['constructor', 'valueOf', 'isPrototypeOf', 'toString', 'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+	
+	
+	module.exports = function keys(obj) {
+	    if (!isObject(obj)) return [];
+	    if (nativeKeys) {
+	        return nativeKeys(obj);
+	    }
+	    var result = [];
+	    for (var key in obj) if (has(obj, key)) result.push(key);
+	    // IE < 9
+	    if (hasEnumBug) {
+	        var nonEnumIdx = nonEnumerableProps.length;
+	        while (nonEnumIdx--) {
+	            var prop = nonEnumerableProps[nonEnumIdx];
+	            if (has(obj, prop) && indexOf(result, prop) === -1) result.push(prop);
+	        }
+	    }
+	    return result;
+	};
+
+
+/***/ },
+/* 306 */
+/***/ function(module, exports) {
+
+	var hasOwn = Object.prototype.hasOwnProperty;
+	
+	
+	module.exports = function has(obj, key) {
+	    return obj != null && hasOwn.call(obj, key);
+	};
+
+
+/***/ },
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isNumber = __webpack_require__(308);
+	
+	
+	module.exports = function indexOf(arr, item, from) {
+	    var i = 0;
+	    var l = arr && arr.length;
+	    if (isNumber(from)) {
+	        i = from < 0 ? Math.max(0, l + from) : from;
+	    }
+	    for (; i < l; i++) {
+	        if (arr[i] === item) return i;
+	    }
+	    return -1;
+	};
+
+
+/***/ },
+/* 308 */
+/***/ function(module, exports) {
+
+	var toString = Object.prototype.toString;
+	
+	
+	module.exports = function isNumber(obj) {
+	    return toString.call(obj) === '[object Number]';
+	};
+
+
+/***/ },
+/* 309 */
+/***/ function(module, exports) {
+
+	module.exports = function isObject(obj) {
+	    var type = typeof obj;
+	    return !!obj && (type === 'function' || type === 'object');
+	};
+
+
+/***/ },
+/* 310 */
+/***/ function(module, exports) {
+
+	module.exports = function createCallback(func, context, argCount) {
+	    if (context === void 0) return func;
+	    switch (argCount) {
+	    case 1: 
+	        return function(value) {
+	            return func.call(context, value);
+	        };
+	    case 2: 
+	        return function(value, other) {
+	            return func.call(context, value, other);
+	        };
+	    case 3: 
+	        return function(value, index, collection) {
+	            return func.call(context, value, index, collection);
+	        };
+	    case 4: 
+	        return function(accumulator, value, index, collection) {
+	            return func.call(context, accumulator, value, index, collection);
 	        };
 	    }
+	    return function() {
+	        return func.apply(context, arguments);
+	    };
+	};
+
+
+/***/ },
+/* 311 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*global $*/
+	// base view for pages
+	var Model = __webpack_require__(312);
+	//var _ = require('underscore');
+	//var key = require('keymaster');
+	
+	
+	var Content = Model.extend({
+	    urlRoot: '/'
 	});
 	
 	module.exports = Content;
 
+/***/ },
+/* 312 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*global $*/
+	// base view for pages
+	var $ = __webpack_require__(2);
+	var Model = __webpack_require__(282);
+	var _ = __webpack_require__(3);
+	//var key = require('keymaster');
+	
+	
+	var Content = Model.extend({
+	    urlRoot: '/',
+	    props: {
+	        id: 'string',
+	        pageContent: 'object',
+	        pageTitle: 'string',
+	        pageTopMenu: 'string',
+	        pageBottomMenu: 'string',
+	        i18nSwitcher: 'object',
+	        lang: 'string'
+	    },
+	    parse:function (resp, options) {
+	        var dom = $(resp);
+	        this.pageTitle = resp.split("<title>")[1].split("</title>")[0];
+	        this.pageContent = dom.find('.Application-view')[0];
+	        return resp;
+	    },
+	
+	    ajaxConfig: function () {
+	        return {
+	            xhrFields: {
+	                'withCredentials': true
+	            },
+	            headers: {
+	                'accept': 'application/html'
+	            }
+	
+	        };
+	    },
+	    url: function () {
+	        var base = _.result(this, 'urlRoot') || _.result(this.collection, 'url') || urlError();
+	        var url;
+	        if (this.isNew()) url = base;
+	        else url = base + (base.charAt(base.length - 1) === '/' ? '' : '/') + this.getId() ;
+	        return url;
+	    }
+	});
+	
+	
+	module.exports = Content;
+
+
+/***/ },
+/* 313 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $ = __webpack_require__(2);
+	var _ = __webpack_require__(3);
+	var PageView = __webpack_require__(104);
+	var dom = __webpack_require__(278);
+	var gsap = __webpack_require__(296);
+	
+	
+	var Contact = PageView.extend({
+		
+		props:{
+			isinitial: false,
+			container: Object,
+			form: '',
+			formavalues: '',
+	
+			reachable: '',
+	
+			required: '',
+			resetValues: [Boolean, true, false],
+			emailReg: [RegExp, true, ""]
+		},
+	    
+	    events: {
+	    	'click .togglemenu': 'handleTogglemenu',
+	        'click #generalcontact-form-submit': 'handleSubmitClick'
+	        // 'click .checkboxselection': 'handleCheckboxClick',
+	        // 'click .radioboxselection': 'handleRadioClick',
+	        // 'click .handle-dropdown': 'handleDropdownClick'
+	    },
+	
+	    template: function(){
+			var content = this.model.pageContent;
+			return content;
+		},
+	
+	    hookBeforeHide: function(){
+	    },
+	
+		hookInRender: function () {
+			
+			this.container = $(this.el);
+			
+			this.cacheElements({ });
+			this.bindFormular();
+			this.handleFooterStyle();
+		},
+	
+		hookAfterRender: function(){
+		},
+	
+		handleTogglemenu: function(e){
+			window.app.view.handleTogglemenu(e);
+		},
+	
+		handleFooterStyle: function (){
+			footerstyle = $(this.el).find('#footerstyle');
+			$('#footer').removeClass('light');
+			if( footerstyle.length >= 1 ){
+				style = footerstyle.data('footerstyle');
+				$('#footer').addClass(style);
+			}
+		},
+		handleDropdownClick: function (e){
+			// console.log(e);
+			
+			// console.log("handleDropdownClick");
+			target = $(e.target);
+			alldropdown = $(this.el).find('.selection-dropdown');
+			dropdown = target.parent().find('.selection-dropdown');
+			input = dropdown.find('input');
+	
+			if( alldropdown.hasClass('active') && !dropdown.hasClass('active') ){
+				alldropdown.removeClass('active');
+			}
+	
+			if( dropdown.hasClass('active') ){
+				dropdown.removeClass('active');
+			}else{
+				dropdown.addClass('active');
+			}
+			dropdown.find('.dropdownlayerselection').on('click',function(){
+				input.val('');
+				value = $(this).find('input').data('value');
+				$(this).find('input').val(value);
+				target.text(value);
+				dropdown.removeClass('active');
+			});
+		},
+		handleRadioClick: function (e){
+			// console.log(e);
+			target = $(e.target);
+			input = target.find('input');
+			group = input.data('group');
+	
+			// reset
+			$('.'+group).removeClass('active');
+			$('.'+group).find('input').val('');
+	
+			if( target.hasClass('active') ){
+				target.removeClass('active');
+				input.val('');
+			}else{
+				target.addClass('active');
+				value = input.attr('data-value');
+				input.val(value);
+			}
+		},
+		handleCheckboxClick: function (e){
+			// console.log(e);
+			target = $(e.target);
+			input = target.find('input');
+			if( target.hasClass('active') ){
+				target.removeClass('active');
+				input.val('');
+			}else{
+				target.addClass('active');
+				value = input.attr('data-value');
+				input.val(value);
+			}
+		},
+	
+		bindFormular: function (){
+			if ($(this.el).find('form').length >= 1 ){
+				this.cacheElements({
+					submitButton: '#generalcontact-form-submit',
+					formDom: '#generalcontact-form',
+					validationInput: '#generalcontact-form-email-confirmation'
+				});
+	
+				this.resetValues = true;
+				this.isScrollTop = false;
+				this.formavalues = this.queryAll('.value');
+				// reset checkboxes
+				this.checkboxselection = this.queryAll('.checkboxselection');
+				this.required = this.queryAll('.required');
+	
+				this.newsletter = this.query('#newsletter');
+	
+				this.emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+	
+			}
+		},
+	
+		handleSubmitClick: function(e){
+			//console.log("click form");
+			e.preventDefault();
+			var self = this;
+			
+			if(this.validationInput.value != ""){
+				// Honey Pot = Robot
+				return;
+			}
+			
+			// reset 
+			_.each(this.required, function(element, index, list){
+				dom.removeClass(this.formDom, "invalid");
+				dom.removeClass(element, "input-error");
+			}, this);
+	
+			var invalideObjects = [];
+			invalideObjects = _.filter(this.required, function(element, index, list){
+					var isval = false;
+	
+					// push data in model
+					if(element.type == "email"){
+						if(element.value != ""){
+							isval = this.emailReg.test(element.value);
+						}
+					}
+					if(element.type == "text" || element.type == "textarea"){
+						isval = (element.value != "");
+					}
+	
+					if(!isval){
+						dom.addClass(element, "input-error");
+					}
+	
+					return !isval;
+			}, this);
+	
+	
+			if(invalideObjects.length == 0){
+	
+				// push data in form model:
+				_.each(this.formavalues, function(element, index, list){
+					this.form[element.name] = element.value;
+				}, this);
+	
+				_.each(this.checkboxselection, function(element, index, list){
+					dom.removeClass(element,"active");
+				}, this);
+	
+				this.form.send(this.form._values).then(function(success){
+					dom.addClass(self.formDom, "issent");
+					dom.removeClass(self.formDom, "haserror");
+					dom.removeClass(self.formDom, "invalid");
+	
+					// reset
+					if(self.resetValues){
+						_.each(self.formavalues, function(element, index, list){
+							element.value = '';
+						}, this);
+					}
+					if(self.isScrollTop){
+						TweenMax.to(window, 1, {scrollTo:{y:0, x:0}, ease:Power2.easeInOut});
+					}
+				}, function(error){
+					dom.addClass(self.formDom, "haserror");
+					if(self.isScrollTop){
+						TweenMax.to(window, 1, {scrollTo:{y:0, x:0}, ease:Power2.easeInOut});
+					}
+				});
+	
+			} 
+			else {
+				dom.removeClass(this.formDom, "issent");
+				dom.removeClass(this.formDom, "invalid-groups");
+				dom.addClass(this.formDom, "invalid");
+	
+				if(self.isScrollTop){
+					TweenMax.to(window, 1, {scrollTo:{y:0, x:0}, ease:Power2.easeInOut});
+				}
+			}
+			
+	
+			
+		},
+	
+		handleScroll: function(value){
+		},
+	
+	});
+	
+	module.exports = Contact;
+
+/***/ },
+/* 314 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*!
+	  * domready (c) Dustin Diaz 2014 - License MIT
+	  */
+	!function (name, definition) {
+	
+	  if (true) module.exports = definition()
+	  else if (typeof define == 'function' && typeof define.amd == 'object') define(definition)
+	  else this[name] = definition()
+	
+	}('domready', function () {
+	
+	  var fns = [], listener
+	    , doc = document
+	    , hack = doc.documentElement.doScroll
+	    , domContentLoaded = 'DOMContentLoaded'
+	    , loaded = (hack ? /^loaded|^c/ : /^loaded|^i|^c/).test(doc.readyState)
+	
+	
+	  if (!loaded)
+	  doc.addEventListener(domContentLoaded, listener = function () {
+	    doc.removeEventListener(domContentLoaded, listener)
+	    loaded = 1
+	    while (listener = fns.shift()) listener()
+	  })
+	
+	  return function (fn) {
+	    loaded ? setTimeout(fn, 0) : fns.push(fn)
+	  }
+	
+	});
+
+
+/***/ },
+/* 315 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*global me, app*/
+	var $ = __webpack_require__(2);
+	var _ = __webpack_require__(3);
+	var View = __webpack_require__(105);
+	var dom = __webpack_require__(278);
+	var ViewSwitcher = __webpack_require__(316);
+	var gsap = __webpack_require__(296);
+	var gsap = __webpack_require__(317);
+	
+	var MainView = View.extend({
+	
+	    props: {
+	        isMobile: false,
+	        pageTitle: [String, true, 'iAmbulanz'],
+	        isStickyOff: false,
+	        isSticky: false,
+	    },
+	
+	    events: {
+	        'click a[href]': 'handleLinkClick',
+	        'click .Header-toggle': 'handleTogglemenu',
+	        'click .nav-holder #close': 'handleTogglemenu'
+	    },
+	
+	    render: function () {
+	        var self = this;
+	
+	        // cache elements
+	        this.cacheElements({
+	            page: '#page',
+	            main: '#main',
+	            footer: '#footer',
+	            header: '.Header',
+	            headerBody: '.Header-body',
+	            nav: '.nav',
+	            navmain: '.nav-main',
+	            togglemenu: '.togglemenu'
+	        });
+	
+	        // initial view
+	
+	         // init and configure our page switcher
+	        this.pageSwitcher = new ViewSwitcher(this.queryByHook('switcher'), {
+	            waitForRemove: true,
+	            hide: function (oldView, cb) {
+	                if(oldView && oldView.el){
+	                    oldView.hookBeforeHide();
+	                    TweenMax.to(oldView.el, 0.8, { opacity:0, delay:0.2 });
+	                    TweenMax.to(window, 1, {scrollTo:{y:0}});
+	                }
+	                setTimeout(cb, 1000);
+	            },
+	
+	            show: function (newView) {
+	
+	                document.title = _.result(newView.model, 'pageTitle');
+	
+	                TweenMax.set(newView.el, { opacity:0 });
+	                TweenMax.to(newView.el, 1.2, {opacity:1, delay:0.5, onComplete:function(){
+	                    newView.el.setAttribute("style", " ");
+	                    newView.hookAfterRender();
+	                }});
+	
+	            }
+	        });
+	
+	        window.addEventListener('scroll', function() {
+	          if(window.scrollY > self.header.offsetHeight && !self.isStickyOff && !self.isSticky){
+	            self.isSticky = true;
+	            dom.addClass(document.body, 'Header--sticky');
+	          } else if(window.scrollY < self.header.offsetHeight && self.isSticky){
+	            self.isSticky = false;
+	            dom.removeClass(document.body, 'Header--sticky');
+	          }
+	        });
+	
+	        // setting a favicon for fun (note, it's dynamic)
+	        // setFavicon('/images/ampersand.png');
+	
+	        return this;
+	    },
+	
+	    handleNewPage: function (view) {
+	
+	        // TRACKING
+	        if(typeof ga != 'undefined'){
+	            ga('send', 'pageview', {
+	                'page': app.router.history.location.pathname,
+	                'title': view.model.pageTitle
+	            });
+	        }
+	
+	        // SWITCH THE VIEW
+	        this.pageSwitcher.set(view);
+	
+	        // UPDATE PAG NAV
+	        this.updateActiveNav();
+	    },
+	
+	    handleInitialPage: function (view) {
+	        var self = this;
+	        view.handleInitialPage();
+	
+	        view.el = this.query('.Application-view');
+	        view.render();
+	
+	        this.pageSwitcher.current = view;
+	
+	        // mark the correct nav item selected
+	        this.updateActiveNav();
+	    },
+	
+	    handleTogglemenu: function (e){
+	        if( dom.hasClass(this.header, 'Header--open') || e === undefined){
+	            this._closeToggleMenu();
+	        } else {
+	            this._openToggleMenu();
+	        }
+	    },
+	
+	    _openToggleMenu: function(){
+	        dom.setAttribute(this.header, 'style', 'margin-top:'+this.headerBody.offsetHeight+'px');
+	        dom.addClass(this.header, 'Header--open');
+	    },
+	
+	    _closeToggleMenu: function(){
+	        dom.setAttribute(this.header, 'style', '');
+	        dom.removeClass(this.header, 'Header--open');
+	        TweenMax.to(window, 1, {scrollTo:{y:0}});
+	    },
+	
+	    handleLinkClick: function (e) {
+	        var aTag = e.delegateTarget,
+	            self = this,
+	            hash = '',
+	            path = '';
+	
+	        if (aTag.hash !== undefined && aTag.hash.length >= 1){
+	            hash = aTag.hash;
+	        }
+	
+	        path =  aTag.hash !== undefined ? aTag.pathname+hash : aTag.getAttribute('xlink:href');
+	
+	        this._doLinkClick(path, e, aTag);
+	
+	        this._closeToggleMenu();
+	    },
+	
+	    _doLinkClick: function(path, e, tag){
+	        var local = tag.host === window.location.host,
+	            link = this.query(e.delegateTarget),
+	            href = window.location.href,
+	            aUrl = e.delegateTarget.href,
+	            attr = e.delegateTarget.getAttribute('data-value') || undefined;
+	
+	        if ( $(tag).data('animation') !== undefined ){
+	            app.pageAnimation = $(tag).data('animation');
+	        } else {
+	            app.pageAnimation = "scroll";
+	        }
+	        // console.log("pageHash: ",  window.location.pathname +" - "+ tag.pathname );
+	
+	        if (local && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && tag.getAttribute("target") !== "_blank") {
+	            e.preventDefault();
+	
+	            app.pageHash = tag.hash;
+	            if(dom.hasClass(tag, 'anchor') && window.location.pathname == tag.pathname ){
+	                // console.log(app);
+	                this._scrollToSection();
+	                if(dom.hasClass(tag, 'anchor-close') )
+	                    this.handleTogglemenu();
+	            } else {
+	                // this.closeMainMenu();
+	                app.navigate(path);
+	                // close menu container
+	                this.handleTogglemenu();
+	            }
+	        }
+	    },
+	
+	    _scrollToSection: function(){
+	        if (app.pageHash.length >= 1){
+	            var id = this.query(app.pageHash);
+	            TweenMax.to(window, 1.2, {scrollTo:{y:id.offsetTop}, ease:Power2.easeOut});
+	        }
+	    },
+	
+	
+	    updateActiveNav: function () {
+	        var path = window.location.pathname.slice(1);
+	        console.log(path);
+	
+	        this.queryAll('.Header a[href]').forEach(function (aTag) {
+	
+	            var aPath = aTag.pathname.slice(1);
+	
+	            if ((!aPath && !path) || (aPath && path.indexOf(aPath) === 0)) {
+	                // start film nicht aktiv !!
+	                if(aPath !== ''){
+	                    dom.addClass(aTag.parentNode, 'active');
+	                }
+	            } else {
+	                dom.removeClass(aTag.parentNode, 'active');
+	            }
+	        });
+	    },
+	
+	    mobile: function (){
+	        isMobile = {
+	            Android: function() {
+	                return navigator.userAgent.match(/Android/i);
+	            },
+	            BlackBerry: function() {
+	                return navigator.userAgent.match(/BlackBerry/i);
+	            },
+	            iOS: function() {
+	                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+	            },
+	            Opera: function() {
+	                return navigator.userAgent.match(/Opera Mini/i);
+	            },
+	            Windows: function() {
+	                return navigator.userAgent.match(/IEMobile/i);
+	            },
+	            any: function() {
+	                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+	            }
+	        };
+	        if ( isMobile.any() === null ){
+	            return false;
+	        } else{
+	            return true;
+	        }
+	    }
+	
+	
+	});
+	
+	module.exports = MainView;
+
+
+/***/ },
+/* 316 */
+/***/ function(module, exports) {
+
+	/*$AMPERSAND_VERSION*/
+	function ViewSwitcher(el, options) {
+	    options || (options = {});
+	    this.el = el;
+	    this.config = {
+	        hide: null,
+	        show: null,
+	        empty: null,
+	        prepend: false,
+	        waitForRemove: false
+	    };
+	    for (var item in options) {
+	        if (this.config.hasOwnProperty(item)) {
+	            this.config[item] = options[item];
+	        }
+	    }
+	    if (options.view) {
+	        this._setCurrent(options.view);
+	        this._render(options.view);
+	    } else {
+	        // call this so the empty callback gets called
+	        this._onViewRemove();
+	    }
+	}
+	
+	ViewSwitcher.prototype.set = function (view) {
+	    var self = this;
+	    var prev = this.previous = this.current;
+	
+	    if (prev === view) {
+	        return;
+	    }
+	
+	    if (this.config.waitForRemove) {
+	        this.next = view;
+	        this._hide(prev, function () {
+	            if (self.next === view) {
+	                delete self.next;
+	                self._show(view);
+	            }
+	        });
+	    } else {
+	        this._hide(prev);
+	        this._show(view);
+	    }
+	};
+	
+	ViewSwitcher.prototype._setCurrent = function (view) {
+	    this.current = view;
+	    if (view) this._registerRemoveListener(view);
+	    var emptyCb = this.config.empty;
+	    if (emptyCb && !this.current) {
+	        emptyCb();
+	    }
+	    return view;
+	};
+	
+	ViewSwitcher.prototype.clear = function (cb) {
+	    this._hide(this.current, cb);
+	};
+	
+	// If the view switcher itself is removed, remove its child to avoid memory leaks
+	ViewSwitcher.prototype.remove = function () {
+	    if (this.current) this.current.remove();
+	};
+	
+	ViewSwitcher.prototype._show = function (view) {
+	    var customShow = this.config.show;
+	    this._setCurrent(view);
+	    this._render(view);
+	    if (customShow) customShow(view);
+	};
+	
+	ViewSwitcher.prototype._registerRemoveListener = function (view) {
+	    if (view) view.once('remove', this._onViewRemove, this);
+	};
+	
+	ViewSwitcher.prototype._onViewRemove = function (view) {
+	    var emptyCb = this.config.empty;
+	    if (this.current === view) {
+	        this.current = null;
+	    }
+	    if (emptyCb && !this.current) {
+	        emptyCb();
+	    }
+	};
+	
+	ViewSwitcher.prototype._render = function (view) {
+	    if (!view.rendered) view.render({containerEl: this.el});
+	    if (!view.insertSelf) {
+	        if (this.config.prepend) {
+	            this.el.insertBefore(view.el, this.el.firstChild);
+	        } else {
+	            this.el.appendChild(view.el);
+	        }
+	    }
+	};
+	
+	ViewSwitcher.prototype._hide = function (view, cb) {
+	    var customHide = this.config.hide;
+	    if (!view) return cb && cb();
+	    if (customHide) {
+	        if (customHide.length === 2) {
+	            customHide(view, function () {
+	                view.remove();
+	                if (cb) cb();
+	            });
+	        } else {
+	            customHide(view);
+	            view.remove();
+	            if (cb) cb();
+	        }
+	    } else {
+	        view.remove();
+	        if (cb) cb();
+	    }
+	};
+	
+	
+	module.exports = ViewSwitcher;
+
+
+/***/ },
+/* 317 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/*!
+	 * VERSION: 1.7.5
+	 * DATE: 2015-02-26
+	 * UPDATES AND DOCS AT: http://greensock.com
+	 *
+	 * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+	 * This work is subject to the terms at http://greensock.com/standard-license or for
+	 * Club GreenSock members, the software agreement that was issued with your membership.
+	 * 
+	 * @author: Jack Doyle, jack@greensock.com
+	 **/
+	var _gsScope = (typeof(module) !== "undefined" && module.exports && typeof(global) !== "undefined") ? global : this || window; //helps ensure compatibility with AMD/RequireJS and CommonJS/Node
+	(_gsScope._gsQueue || (_gsScope._gsQueue = [])).push( function() {
+	
+		"use strict";
+	
+		var _doc = document.documentElement,
+			_window = window,
+			_max = function(element, axis) {
+				var dim = (axis === "x") ? "Width" : "Height",
+					scroll = "scroll" + dim,
+					client = "client" + dim,
+					body = document.body;
+				return (element === _window || element === _doc || element === body) ? Math.max(_doc[scroll], body[scroll]) - (_window["inner" + dim] || _doc[client] || body[client]) : element[scroll] - element["offset" + dim];
+			},
+	
+			ScrollToPlugin = _gsScope._gsDefine.plugin({
+				propName: "scrollTo",
+				API: 2,
+				version:"1.7.5",
+	
+				//called when the tween renders for the first time. This is where initial values should be recorded and any setup routines should run.
+				init: function(target, value, tween) {
+					this._wdw = (target === _window);
+					this._target = target;
+					this._tween = tween;
+					if (typeof(value) !== "object") {
+						value = {y:value}; //if we don't receive an object as the parameter, assume the user intends "y".
+					}
+					this.vars = value;
+					this._autoKill = (value.autoKill !== false);
+					this.x = this.xPrev = this.getX();
+					this.y = this.yPrev = this.getY();
+					if (value.x != null) {
+						this._addTween(this, "x", this.x, (value.x === "max") ? _max(target, "x") : value.x, "scrollTo_x", true);
+						this._overwriteProps.push("scrollTo_x");
+					} else {
+						this.skipX = true;
+					}
+					if (value.y != null) {
+						this._addTween(this, "y", this.y, (value.y === "max") ? _max(target, "y") : value.y, "scrollTo_y", true);
+						this._overwriteProps.push("scrollTo_y");
+					} else {
+						this.skipY = true;
+					}
+					return true;
+				},
+	
+				//called each time the values should be updated, and the ratio gets passed as the only parameter (typically it's a value between 0 and 1, but it can exceed those when using an ease like Elastic.easeOut or Back.easeOut, etc.)
+				set: function(v) {
+					this._super.setRatio.call(this, v);
+	
+					var x = (this._wdw || !this.skipX) ? this.getX() : this.xPrev,
+						y = (this._wdw || !this.skipY) ? this.getY() : this.yPrev,
+						yDif = y - this.yPrev,
+						xDif = x - this.xPrev;
+	
+					if (this._autoKill) {
+						//note: iOS has a bug that throws off the scroll by several pixels, so we need to check if it's within 7 pixels of the previous one that we set instead of just looking for an exact match.
+						if (!this.skipX && (xDif > 7 || xDif < -7) && x < _max(this._target, "x")) {
+							this.skipX = true; //if the user scrolls separately, we should stop tweening!
+						}
+						if (!this.skipY && (yDif > 7 || yDif < -7) && y < _max(this._target, "y")) {
+							this.skipY = true; //if the user scrolls separately, we should stop tweening!
+						}
+						if (this.skipX && this.skipY) {
+							this._tween.kill();
+							if (this.vars.onAutoKill) {
+								this.vars.onAutoKill.apply(this.vars.onAutoKillScope || this._tween, this.vars.onAutoKillParams || []);
+							}
+						}
+					}
+					if (this._wdw) {
+						_window.scrollTo((!this.skipX) ? this.x : x, (!this.skipY) ? this.y : y);
+					} else {
+						if (!this.skipY) {
+							this._target.scrollTop = this.y;
+						}
+						if (!this.skipX) {
+							this._target.scrollLeft = this.x;
+						}
+					}
+					this.xPrev = this.x;
+					this.yPrev = this.y;
+				}
+	
+			}),
+			p = ScrollToPlugin.prototype;
+	
+		ScrollToPlugin.max = _max;
+	
+		p.getX = function() {
+			return (!this._wdw) ? this._target.scrollLeft : (_window.pageXOffset != null) ? _window.pageXOffset : (_doc.scrollLeft != null) ? _doc.scrollLeft : document.body.scrollLeft;
+		};
+	
+		p.getY = function() {
+			return (!this._wdw) ? this._target.scrollTop : (_window.pageYOffset != null) ? _window.pageYOffset : (_doc.scrollTop != null) ? _doc.scrollTop : document.body.scrollTop;
+		};
+	
+		p._kill = function(lookup) {
+			if (lookup.scrollTo_x) {
+				this.skipX = true;
+			}
+			if (lookup.scrollTo_y) {
+				this.skipY = true;
+			}
+			return this._super._kill.call(this, lookup);
+		};
+	
+	}); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }
 /******/ ]);

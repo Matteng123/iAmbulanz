@@ -7,8 +7,8 @@ password: >
 language: de
 role: admin
 history:
+  - meta-about/text-ueber-uns-3
+  - meta-about/text-ueber-uns-2
+  - meta-about/text-ueber-uns
   - fuer-unternehmen/unternehmen-text-2
   - fuer-unternehmen/unternehmen-text-1
-  - fuer-unternehmen/unternehmen-service-liste
-  - fuer-unternehmen/unternehmen-intro
-  - standorte/text-termin
