@@ -77,9 +77,10 @@
           +bp('medium')
             text-align: right
         h2
-          &:after
-            left: auto
-            right: 0
+          +bp('medium')
+            &:after
+              left: auto
+              right: 0
   &--image-left,
   &--image-right,
   &--list,

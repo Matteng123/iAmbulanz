@@ -98,12 +98,12 @@ fields:
     fields:
       device:
         label: Device Typ
-        type: select
-        options:
-          iphone: iPhone
-          ipad: iPad
-          samsunggalaxy: Samsung Galaxy
-          custom: Andere Geräte
+        type: structure
+        style: table
+          fields:
+            colors:
+              label: Farbe
+              type: tags
       version:
         label: Device Version
         type: text

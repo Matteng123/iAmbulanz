@@ -14,6 +14,7 @@ pages:
     - section_text-teaser
     - section_text-block
     - section_map
+    - section_prices-short
 files: false
 fields:
   title: title
