@@ -31,7 +31,7 @@ var MainView = View.extend({
             main: '#main',
             footer: '#footer',
             header: '.Header',
-            headerBody: '.Header-body',
+            headerBody: '.Header .Header-body',
             nav: '.nav',
             navmain: '.nav-main',
             togglemenu: '.togglemenu'
@@ -65,12 +65,12 @@ var MainView = View.extend({
         });
 
         window.addEventListener('scroll', function() {
-          if(window.scrollY > self.header.offsetHeight && !self.isStickyOff && !self.isSticky){
+          if(window.scrollY > self.header.offsetHeight+50 && !self.isSticky){
             self.isSticky = true;
-            dom.addClass(document.body, 'Header--sticky');
-          } else if(window.scrollY < self.header.offsetHeight && self.isSticky){
+            dom.addClass(document.body, 'Header--sticky-open');
+          } else if(window.scrollY < self.header.offsetHeight+50 && self.isSticky){
             self.isSticky = false;
-            dom.removeClass(document.body, 'Header--sticky');
+            dom.removeClass(document.body, 'Header--sticky-open');
           }
         });
 

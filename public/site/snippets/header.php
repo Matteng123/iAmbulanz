@@ -24,7 +24,12 @@
 
 </head>
 <body>
-
+  <header class="Header--sticky" role="banner">
+    <div class="Header-body">
+      <?php snippet('logo') ?>
+      <?php snippet('menu--sticky') ?>
+    </div>
+  </header>
   <header class="Header" role="banner">
     <?php snippet('logo') ?>
     <div class="Header-body">
