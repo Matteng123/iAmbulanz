@@ -6,10 +6,6 @@ pages:
     - default
     - faq
     - landing
-    - service
-    - about
-    - locations
-    - prices
     - contact
 fields:
   section1:
@@ -96,17 +92,29 @@ fields:
     type: structure
     style: table
     fields:
+      category:
+        label: Kategorie
+        type: tags
+      overview:
+        label: Auf Übersicht anzeigen
+        type: toggle
+        text: yes/no
+        default: true
       device:
-        label: Device Typ
-        type: structure
-        style: table
-          fields:
-            colors:
-              label: Farbe
-              type: tags
-      version:
-        label: Device Version
+        label: Device Name
         type: text
+      versions:
+        label: Versionen / Farben
+        type: tags
+      service-display:
+        label: Schaden Display
+        type: tags
+      service-smallpiece:
+        label: Schaden Kleinkomponenten
+        type: tags
+      service-akku:
+        label: Schaden Akku
+        type: tags
   section0:
     label: Meta Angaben
     type: headline

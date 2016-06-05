@@ -1,0 +1,28 @@
+.Prices
+	background-color: $primary-color
+	&-text
+		margin-bottom: $large-border
+		h2
+			text-align: center
+			color: $text_color
+			font-size: 2em
+			font-weight: 600
+			&:after
+				content: none
+	&-body
+		@extend .Section-body--smallest
+	&-tabs
+		background-color: white
+		&:after
+			content: ""
+			display: table
+			clear: both
+
+	&-tab
+		text-align: center
+		+bp('large')
+			width: +unit(4)
+			float: left
+	&-button
+		@extend .Button
+		margin-top: 0
