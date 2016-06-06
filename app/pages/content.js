@@ -13,7 +13,8 @@ var Content = PageView.extend(MapLayers);
 Content = Content.extend({
 
 	events: {
-		"click .Location-teaser-tab-item":"_handleTabbarClick"
+		"click .Location-teaser-tab-item":"_handleTabbarClick",
+		"click .Prices-button":"_handlePricebarClick"
 	},
 
 	hookBeforeHide: function(){
@@ -26,6 +27,8 @@ Content = Content.extend({
 		TweenMax.delayedCall(0.1, this.initializeSlider, [], this); // Slider
 		this.bindResponsimg();
 		this.Tabbars = this.queryAll('.Location-teaser-tab-item');
+		this.Pricebars = this.queryAll('.Prices-button');
+		this.Pricetables = this.queryAll('.Prices-table');
 		this.Mapbox = this.query('.Map-body');
 
 		if (this.Mapbox !== undefined){
@@ -70,6 +73,19 @@ Content = Content.extend({
 				});
 				dom.addClass(event.delegateTarget, 'active');
 			}
+	},
+
+	_handlePricebarClick: function(event){
+		if(!dom.hasClass(event.delegateTarget, 'active')){
+			_.each(this.Pricebars, function(item, index){
+				dom.removeClass(item, 'active');
+			});
+			_.each(this.Pricetables, function(item, index){
+				dom.removeClass(item, 'active');
+			});
+			dom.addClass(this.query(event.delegateTarget.getAttribute('href')), 'active');
+			dom.addClass(event.delegateTarget, 'active');
+		}
 	}
 
 });

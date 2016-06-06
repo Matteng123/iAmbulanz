@@ -9,15 +9,20 @@
 			font-weight: 600
 			&:after
 				content: none
+		h3
 	&-body
 		@extend .Section-body--smallest
+
+
 	&-tabs
 		background-color: white
+		padding-top: 20px
+		padding-bottom: 20px
+		margin-bottom: 3em
 		&:after
 			content: ""
 			display: table
 			clear: both
-
 	&-tab
 		text-align: center
 		+bp('large')
@@ -26,3 +31,26 @@
 	&-button
 		@extend .Button
 		margin-top: 0
+	&-table
+		height: 0
+		overflow: hidden
+		opacity: 0
+		+transition(all, 0.5s)
+		&.active
+			height: auto
+			opacity: 1
+		h3
+			font-size: 1.5em
+			font-weight: 600
+			line-height: 2em
+			padding-left: 10px
+		table
+			th
+				border-top: 1px solid lighten($secondary-color, 50%)
+				width: +unit(3)
+				text-align: left
+				line-height: 3.5em
+			td, th
+				padding: 0 10px
+			tr:nth-child(even)
+				background-color: white

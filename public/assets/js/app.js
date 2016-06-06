@@ -21803,7 +21803,7 @@
 /* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -22889,7 +22889,8 @@
 	Content = Content.extend({
 	
 		events: {
-			"click .Location-teaser-tab-item":"_handleTabbarClick"
+			"click .Location-teaser-tab-item":"_handleTabbarClick",
+			"click .Prices-button":"_handlePricebarClick"
 		},
 	
 		hookBeforeHide: function(){
@@ -22902,6 +22903,8 @@
 			TweenMax.delayedCall(0.1, this.initializeSlider, [], this); // Slider
 			this.bindResponsimg();
 			this.Tabbars = this.queryAll('.Location-teaser-tab-item');
+			this.Pricebars = this.queryAll('.Prices-button');
+			this.Pricetables = this.queryAll('.Prices-table');
 			this.Mapbox = this.query('.Map-body');
 	
 			if (this.Mapbox !== undefined){
@@ -22946,6 +22949,19 @@
 					});
 					dom.addClass(event.delegateTarget, 'active');
 				}
+		},
+	
+		_handlePricebarClick: function(event){
+			if(!dom.hasClass(event.delegateTarget, 'active')){
+				_.each(this.Pricebars, function(item, index){
+					dom.removeClass(item, 'active');
+				});
+				_.each(this.Pricetables, function(item, index){
+					dom.removeClass(item, 'active');
+				});
+				dom.addClass(this.query(event.delegateTarget.getAttribute('href')), 'active');
+				dom.addClass(event.delegateTarget, 'active');
+			}
 		}
 	
 	});
