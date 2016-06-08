@@ -115,6 +115,7 @@ fields:
       service-akku:
         label: Schaden Akku
         type: tags
+      image: image_select
   section0:
     label: Meta Angaben
     type: headline
