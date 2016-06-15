@@ -10,7 +10,6 @@ var App = {
     initial: true,
 
     blastoff: function () {
-        console.log("blastoff");
         var self = window.app = this;
         // init our URL handlers and the history tracker
         this.router = new Router();
@@ -40,11 +39,6 @@ var App = {
 
     },
 
-    // This is how you navigate around the app.
-    // this gets called by a global click handler that handles
-    // all the <a> tags in the app.
-    // it expects a url without a leading slash.
-    // for example: "costello/settings".
     navigate: function (page) {
         var url = (page.charAt(0) === '/') ? page.slice(1) : page;
         this.router.history.navigate(url, {trigger: true});
@@ -52,6 +46,6 @@ var App = {
 };
 domReady(function () {
   App.blastoff();
-})
+});
 
 module.exports = window.App = App;
