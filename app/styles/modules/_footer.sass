@@ -1,161 +1,165 @@
 .Footer
-	background-color: $footer-color
-	color: white
-	&-body
-		max-width: $max-size
-		margin: 0 auto
-		padding: 30px $small-border
-		+bp('medium')
-			padding: $medium-border
-		+bp('large')
-			padding: $large-border
+  background-color: $footer-color
+  color: white
+  &-body
+    max-width: $max-size
+    margin: 0 auto
+    padding: 30px $small-border
+    +bp('medium')
+      padding: $medium-border
+    +bp('large')
+      padding: $large-border
 
-	&:after
-		content: ""
-		display: table
-		clear: both
+  &:after
+    content: ""
+    display: table
+    clear: both
 
-	a
-		font-family: $link-font
-		font-style: italic
-		text-decoration: underline
-		color: white
-		&:hover
-			color: $button-color
+  a
+    font-family: $link-font
+    font-style: italic
+    text-decoration: underline
+    color: white
+    &:hover
+      color: $button-color
 
-	table
-		width: 100%
-		tr
-			width: 100%
-		td:first-child
-			width: 30%
-		td:last-child
-			width: 70%
-	&-navigation
-		&-col
-			+bp('medium')
-				float: left
-				width: unit(6)
-	&-leftbar
-		+bp('medium')
-			float: left
-			width: unit(6)
-		+bp('large')
-			width: unit(4)
-	&-centerbar
-		ul
-			margin-bottom: 30px
-			padding: 0
-		+bp('medium')
-			float: left
-			width: unit(6)
-		+bp('large')
-			width: unit(4)
-	&-rightbar
-		+bp('medium')
-			float: left
-			width: unit(12)
-		+bp('large')
-			width: unit(4)
-	&-copyright
-		margin-top: 30px
-		text-align: center
-		+bp('medium')
-			width: unit(12)
-			float: left
-		+bp('large')
-			text-align: left
-			margin-bottom: $large-border
-	&-box
-		text-align: center
-		border: 5px solid white
-		padding: 20px
-		+bp('large')
-			text-align: left
-			padding: 40px
-		+bp('larger')
-			padding: $larger-border
+  table
+    width: 100%
+    tr
+      width: 100%
+    td:first-child
+      width: 30%
+    td:last-child
+      width: 70%
+  &-navigation
+    &-col
+      +bp('medium')
+        float: left
+        width: unit(6)
+  &-leftbar
+    +bp('medium')
+      float: left
+      width: unit(6)
+    +bp('large')
+      width: unit(4)
+  &-centerbar
+    ul
+      margin-bottom: 30px
+      padding: 0
+    +bp('medium')
+      float: left
+      width: unit(6)
+    +bp('large')
+      width: unit(4)
+  &-rightbar
+    +bp('medium')
+      float: left
+      width: unit(12)
+    +bp('large')
+      width: unit(4)
+  &-copyright
+    margin-top: 30px
+    text-align: center
+    +bp('medium')
+      width: unit(12)
+      float: left
+    +bp('large')
+      text-align: left
+      margin-bottom: $large-border
+  &-box
+    text-align: center
+    border: 5px solid white
+    padding: 20px
+    +bp('large')
+      text-align: left
+      padding: 40px
+    +bp('larger')
+      padding: $larger-border
 
-		p
-			font-size: 1.2em
-			+bp('larger')
-				font-size: 1.2em
-		a
-			font-family: $button-font
-			font-weight: bold
-			font-style: normal
-			text-decoration: none
-			font-size: 1.4em
-			display: inline-block
-			margin-bottom: 0.75rem
-			+bp('large')
-				font-size: 1.4em
-			+bp('larger')
-				font-size: 2.0em
+    p
+      font-size: 1.2em
+      +bp('larger')
+        font-size: 1.2em
+    a
+      font-family: $button-font
+      font-weight: bold
+      font-style: normal
+      text-decoration: none
+      font-size: 1.4em
+      display: inline-block
+      margin-bottom: 0.75rem
+      +bp('large')
+        font-size: 1.4em
+      +bp('larger')
+        font-size: 2.0em
 
-		&-button
-			&,
-			&:active,
-			&:hover,
-			&:focus,
-			&:visited
-				outline: 0
-				text-decoration: none
-			position: relative
-			box-sizing: border-box
-			display: inline-block
-			margin-top: 0.5rem
-			margin-bottom: 0 !important
-			background: transparent
-			opacity: 1 !important
-			overflow: hidden
-			+border-radius(2rem)
-			cursor: pointer
-			font-family: $button-font
-			font-weight: bold
-			+bp('large')
-				+border-radius(10rem)
+    &-button
+      &,
+      &:active,
+      &:hover,
+      &:focus,
+      &:visited
+        outline: 0
+        text-decoration: none
+      position: relative
+      box-sizing: border-box
+      display: inline-block
+      margin-top: 0.5rem
+      margin-bottom: 0 !important
+      background: transparent
+      opacity: 1 !important
+      overflow: hidden
+      +border-radius(2rem)
+      cursor: pointer
+      font-family: $button-font
+      font-weight: bold
+      +bp('large')
+        +border-radius(10rem)
 
-			span
-				box-sizing: border-box
-				position: relative
-				color: white
-				display: inline-block
-				text-align: center
-				+transition(color, 0.5s)
-				z-index: 10 !important
-				line-height: 1em
-				padding: 0.5rem 2rem
-				
-				+bp('large')
-					font-size: 0.69em
-					padding: 0.3rem 1.8rem
-				+bp('larger')
-					padding: 0.3rem 2.5rem
+      span
+        box-sizing: border-box
+        position: relative
+        color: white
+        display: inline-block
+        text-align: center
+        +transition(color, 0.5s)
+        z-index: 10 !important
+        line-height: 1em
+        padding: 0.5rem 2rem
 
-			&:before,
-			&:after,
-				content: ''
-				position: absolute
-				+border-radius(2rem)
-				+bp('large')
-					+border-radius(10rem)
-				left: 0
-				top: 0
-				right: 0
-				bottom: 0
-			&:before
-				background-color: transparent
-				border: 3px solid white
-				z-index: 5
-			&:after
-				background-color: $button-color
-				border: 3px solid $button-color
-				z-index: 7
-				+transition(width, 0.5s)
-				opacity: 0
-				width: 2rem
-			&:hover
-				&:after
-					opacity: 1
-					width: 100%
+        +bp('large')
+          font-size: 0.69em
+          padding: 0.3rem 1.8rem 0.7rem
+        +bp('larger')
+          padding: 0.3rem 2.5rem 1rem
+
+      &:before,
+      &:after,
+        content: ''
+        position: absolute
+        +border-radius(2rem)
+        +bp('large')
+          +border-radius(10rem)
+        left: 0
+        top: 0
+        right: 0
+        bottom: 0
+      &:after
+        background-color: transparent
+        border: 3px solid white
+        z-index: 7
+        +transition(border, 0.5s)
+      &:before
+        background-color: white
+        z-index: 5
+        opacity: 0
+        width: 2rem
+        +transition(width, 0.5s)
+      &:hover
+        span
+          color: $button-color
+        &:after
+          border: 3px solid $button-color
+        &:before
+          opacity: 1
+          width: 100%

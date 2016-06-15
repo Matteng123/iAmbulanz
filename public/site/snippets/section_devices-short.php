@@ -1,9 +1,22 @@
 <?php
-	$devices = $site->devices()->toStructure();
-	$iphone = $devices->filterBy('device', 'iphone');
-	$ipad = $devices->filterBy('device', 'ipad');
-	$samsung = $devices->filterBy('device', 'samsung');
-	$custom = $devices->filterBy('device', 'custom');
+	$devices = $site->Devices()->toStructure();
+	// Kategorien filtern: ("iPhone", "Samsung Galaxy S")
+	$categorys = array();
+	// Tabellen aufbauen
+	$tables = array();
+	foreach($devices as $device) {
+		if($device->overview()){
+			$cat = $device->category()->value();
+			$categorys[] = $cat;
+			if(!array_key_exists( $cat , $tables )){
+				$tables[$cat] = array();
+			}
+			array_push($tables[$cat], $device);
+		}
+	}
+	$categorys = array_unique ( $categorys );
+
+
 	$image = $section->image()->url();
 	$hotspots = $section->image()->hotspots()->toStructure();
 ?>
@@ -14,38 +27,18 @@
 				<h2><?php echo $section->headline()->html() ?></h2>
 				<?php echo $section->copy()->kirbytext() ?>
 				<div class="Devices-teaser-items">
-					<div class="Devices-teaser-list">
-						<h3>iPhone</h3>
-						<ul>
-						<?php foreach($iphone as $item): ?>
-							<li><?php echo $item->version() ?></li>
-						<?php endforeach; ?>
-						</ul>
-					</div>
-					<div class="Devices-teaser-list">
-						<h3>iPad</h3>
-						<ul>
-						<?php foreach($ipad as $item): ?>
-							<li><?php echo $item->version() ?></li>
-						<?php endforeach; ?>
-						</ul>
-					</div>
-					<div class="Devices-teaser-list">
-						<h3>Samsung Galaxy</h3>
-						<ul>
-						<?php foreach($samsung as $item): ?>
-							<li><?php echo $item->version() ?></li>
-						<?php endforeach; ?>
-						</ul>
-					</div>
-					<div class="Devices-teaser-list">
-						<h3>Andere Geräte</h3>
-						<ul>
-						<?php foreach($custom as $item): ?>
-							<li><?php echo $item->version() ?></li>
-						<?php endforeach; ?>
-						</ul>
-					</div>
+					<?php foreach($categorys as $category): ?>
+						<div class="Devices-teaser-list">
+							<h3><?php echo $category; ?></h3>
+							<ul>
+							<?php foreach($tables[$category] as $device): ?>
+								<?php if($device->overview()) : ?>
+									<li><a class="Devices-teaser-list-button" href="#"><span><?php echo $device->device(); ?></span></a></li>
+								<?php endif; ?>
+							<?php endforeach; ?>
+							</ul>
+						</div>
+					<?php endforeach; ?>
 				</div>
 		</div>
 		<div class="Devices-teaser-image">
