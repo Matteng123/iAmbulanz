@@ -119,7 +119,8 @@ var MainView = View.extend({
     },
 
     _openToggleMenu: function(){
-        dom.setAttribute(this.header, 'style', 'margin-top:'+this.headerBody.offsetHeight+'px');
+        //dom.setAttribute(this.header, 'style', 'margin-top:'+this.headerBody.offsetHeight+'px');
+        TweenMax.to(this.header, 0.5, {css:{marginTop:this.headerBody.offsetHeight}});
         dom.addClass(this.header, 'Header--open');
     },
 

@@ -3,9 +3,8 @@
   width: 100%
   position: relative
   height: 5.3rem
-  margin-top: 0%
+  margin-top: 0px
   border-bottom: 1px solid lighten($secondary-color, 50%)
-  +transition(margin, .5s)
   +bp('large')
     +transition(margin, 0s)
     height: auto
@@ -14,11 +13,6 @@
    font-style: normal
 
   &--open
-    // margin-top: 40%
-    // height: auto
-    .Header-body
-      // +transform(translateY(0%))
-
     .Header-toggle
       span
         background: $button-color
