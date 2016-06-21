@@ -7,8 +7,8 @@ password: >
 language: de
 role: admin
 history:
+  - preise/service-preise
+  - preise/anfahrt-service-tabelle
   - preise/preise
   - preise
   - meta-about/text-ueber-uns-3
-  - meta-about/text-ueber-uns-2
-  - meta-about/text-ueber-uns

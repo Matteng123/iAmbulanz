@@ -35,7 +35,7 @@
 			<?php endforeach; ?>
 		</div>
 		<?php foreach($tables as $key => $value): ?>
-		<div class="Prices-table" id="<?php echo str_replace(' ', '-', $key); ?>">
+		<div class="Prices-table Prices-table--tabs" id="<?php echo str_replace(' ', '-', $key); ?>">
 				<h3><?php echo $key; ?></h3>
 				<div class="Prices-table-scroll">
 					<table>

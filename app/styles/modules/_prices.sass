@@ -1,21 +1,27 @@
 .Prices
 	background-color: $primary-color
 	&-text
-		margin-bottom: $large-border
 		h2
 			text-align: center
 			color: $text_color
 			font-size: 2em
 			font-weight: 600
+			margin-bottom: 0
 			&:after
 				content: none
 		h3
 	&-body
 		@extend .Section-body--smallest
-
+		&.Prices-body--margin
+			margin-bottom: -1*30px
+			+bp('medium')
+				margin-bottom: -1*$medium-border
+			+bp('large')
+				margin-bottom: -2*$large-border
 	&-tabs
 		position: relative
 		padding: 20px
+		margin-top: $large-border
 		+bp('large')
 			padding: 20px 0
 		margin-bottom: 3em
@@ -62,9 +68,15 @@
 			margin-bottom: 0px
 		margin-top: 0
 	&-table
-		height: 0
-		overflow-y: hidden
-		opacity: 0
+		&--tabs
+			height: 0
+			overflow-y: hidden
+			opacity: 0
+			th
+				border-top: 1px solid lighten($secondary-color, 50%)
+			&.active
+				height: auto
+				opacity: 1
 		width: 100%
 		&-scroll
 			overflow-x: scroll
@@ -73,8 +85,14 @@
 			margin-bottom: 20px
 		td
 			width: 20%
+		td, th
+			padding: 0 10px
+		tr:nth-child(even)
+			background-color: white
 		th
-
+			width: +unit(3)
+			text-align: left
+			line-height: 3.5em
 			div
 				display: inline-block
 				margin-left: 5px
@@ -129,21 +147,8 @@
 				width: auto
 
 		+transition(all, 0.5s)
-		&.active
-			height: auto
-			opacity: 1
 		h3
 			font-size: 1.5em
 			font-weight: 600
 			line-height: 2em
 			padding-left: 10px
-		table
-			th
-				border-top: 1px solid lighten($secondary-color, 50%)
-				width: +unit(3)
-				text-align: left
-				line-height: 3.5em
-			td, th
-				padding: 0 10px
-			tr:nth-child(even)
-				background-color: white
