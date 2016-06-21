@@ -7,8 +7,8 @@ password: >
 language: de
 role: admin
 history:
+  - faqs/zum-thema-bezahlung
+  - faqs/zum-thema-garantie
+  - faqs/frage-hinter-den-wortbergen
+  - faqs
   - preise/service-preise
-  - preise/anfahrt-service-tabelle
-  - preise/preise
-  - preise
-  - meta-about/text-ueber-uns-3

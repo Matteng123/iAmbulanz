@@ -6,7 +6,4 @@ pages:
 files: false
 fields:
   title: title
-  text:
-    label: Text
-    type:  textarea
   ispart: ispart

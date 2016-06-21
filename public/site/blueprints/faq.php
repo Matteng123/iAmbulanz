@@ -2,16 +2,11 @@
 
 title: FAQ
 pages: false
-files:
-  sortable: true
+files: false
 fields:
   title: title
-  year:
-    label: Year
-    type:  text
-  text:
-    label: Text
-    type:  textarea
-  tags:
-    label: Tags
-    type:  tags
+  category:
+    label: Kategorie
+    type: text
+  copy_left: copy
+  copy_right: copy
