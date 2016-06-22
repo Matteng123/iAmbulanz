@@ -1,9 +1,10 @@
 <?php if(!defined('KIRBY')) exit ?>
 
-title: FAQs
+title: Blog
 pages:
-  template: faq
+  template: blog_page
 files: false
 fields:
   title: title
+  headline: headline
   ispart: ispart

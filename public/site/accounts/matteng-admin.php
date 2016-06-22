@@ -7,8 +7,8 @@ password: >
 language: de
 role: admin
 history:
-  - faqs/zum-thema-bezahlung
-  - faqs/zum-thema-garantie
-  - faqs/frage-hinter-den-wortbergen
-  - faqs
-  - preise/service-preise
+  - blog/project-a
+  - blog/news-5
+  - blog/news
+  - blog/project-c
+  - blog/project-b

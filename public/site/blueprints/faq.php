@@ -1,12 +1,9 @@
 <?php if(!defined('KIRBY')) exit ?>
 
-title: FAQ
-pages: false
+title: FAQs
+pages:
+  template: faq_page
 files: false
 fields:
   title: title
-  category:
-    label: Kategorie
-    type: text
-  copy_left: copy
-  copy_right: copy
+  ispart: ispart

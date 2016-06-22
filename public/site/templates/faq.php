@@ -2,16 +2,37 @@
 <?php snippet('view-start') ?>
 
   <main class="Application-main" role="main">
+    <?php
+      $faqs = $page->children();
+      $faqsbycat = array();
+      foreach($faqs as $faq) {
+        $cat = $faq -> category() -> value();
+        if(!array_key_exists( $cat , $faqsbycat )){
+          $faqsbycat[$cat] = array();
+        }
+        array_push($faqsbycat[$cat], $faq);
+      }
+    ?>
     <div class="Faqs">
-    	<div class="Faqs-body Faqs-body--detail">
+    	<div class="Faqs-body">
     		<div class="Faqs-text">
-    				<h2><?php echo $page->parent()->title().'&nbsp;&nbsp;›&nbsp;&nbsp;'.$page->category()->html().'&nbsp;&nbsp;›&nbsp;&nbsp;'.$page->title()->html() ?></h2>
-            <div><?php echo $page->copy_left()->kirbytext() ?></div>
-            <div><?php echo $page->copy_right()->kirbytext() ?></div>
+    				<h2><?php echo $page->title()->html() ?></h2>
         </div>
-        <a class="Faqs-button" href="<?php echo $page->parent()->url(); ?>"><span>Zurück zur Übersicht</span></a>
+    		<div class="Faqs-lists">
+          <?php foreach($faqsbycat as $cat => $faqs) : ?>
+            <div>
+              <h3><?php echo $cat ?></h3>
+              <ul>
+                <?php foreach($faqs as $items) : ?>
+                  <li><a href="<?php echo $items->url() ?>"><?php echo $items->title()->html() ?></a></li>
+                <?php endforeach; ?>
+              <ul>
+            </div>
+          <?php endforeach; ?>
+        </div>
       </div>
     </div>
+
   </main>
 <?php snippet('view-end') ?>
 <?php snippet('footer') ?>

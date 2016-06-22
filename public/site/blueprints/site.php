@@ -5,7 +5,7 @@ pages:
   template:
     - default
     - faq
-    - landing
+    - blog
     - contact
 fields:
   section1:
