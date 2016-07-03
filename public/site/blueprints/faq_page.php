@@ -8,5 +8,4 @@ fields:
   category:
     label: Kategorie
     type: text
-  copy_left: copy
-  copy_right: copy
+  copy: copy
