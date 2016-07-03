@@ -19,15 +19,16 @@ var Base = View.extend({
     },
 
     render: function(){
-        // console.log("RENDER");
+        console.log("RENDER", this.isInitial);
         if(!this.isInitial){
+            console.log("RENDER width Template");
             this.renderWithTemplate(this);
         }
-        
+
         this.hookInRender();
 
         this.once('remove', this.cleanup, this);
-        
+
         return this;
     },
 
@@ -42,13 +43,14 @@ var Base = View.extend({
         key.setScope(this.cid);
         */
     },
-    
+
     unregisterKeyboardShortcuts: function () {
         //key.deleteScope(this.cid);
     },
 
     handleInitialPage: function(){
         // initial Stuff
+        this.isInitial = true;
     },
 
     hookBeforeHide: function(){
@@ -65,7 +67,7 @@ var Base = View.extend({
 
     getScrollXY: function() {
         var scrOfX = 0, scrOfY = 0;
-     
+
         if( typeof( window.pageYOffset ) == 'number' ) {
             //Netscape compliant
             scrOfY = window.pageYOffset;

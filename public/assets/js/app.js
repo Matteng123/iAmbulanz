@@ -21798,7 +21798,7 @@
 /* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -22989,15 +22989,16 @@
 	    },
 	
 	    render: function(){
-	        // console.log("RENDER");
+	        console.log("RENDER", this.isInitial);
 	        if(!this.isInitial){
+	            console.log("RENDER width Template");
 	            this.renderWithTemplate(this);
 	        }
-	        
+	
 	        this.hookInRender();
 	
 	        this.once('remove', this.cleanup, this);
-	        
+	
 	        return this;
 	    },
 	
@@ -23012,13 +23013,14 @@
 	        key.setScope(this.cid);
 	        */
 	    },
-	    
+	
 	    unregisterKeyboardShortcuts: function () {
 	        //key.deleteScope(this.cid);
 	    },
 	
 	    handleInitialPage: function(){
 	        // initial Stuff
+	        this.isInitial = true;
 	    },
 	
 	    hookBeforeHide: function(){
@@ -23035,7 +23037,7 @@
 	
 	    getScrollXY: function() {
 	        var scrOfX = 0, scrOfY = 0;
-	     
+	
 	        if( typeof( window.pageYOffset ) == 'number' ) {
 	            //Netscape compliant
 	            scrOfY = window.pageYOffset;
@@ -23066,6 +23068,7 @@
 	
 	
 	module.exports = Base;
+
 
 /***/ },
 /* 105 */
@@ -47557,7 +47560,7 @@
 	
 	    updateActiveNav: function () {
 	        var path = window.location.pathname.slice(1);
-	        console.log(path);
+	        // console.log("updateActiveNav", path);
 	
 	        this.queryAll('.Header a[href]').forEach(function (aTag) {
 	

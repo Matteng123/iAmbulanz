@@ -6,6 +6,7 @@
     <div class="Blog">
       <div class="Blog-body">
         <h1><?php echo $page->headline()->html() ?></h1>
+        <?php $page ?>
         <?php snippet('blogelements', array('blog' => $page, 'index' => get('page'))) ?>
       </div>
     </div>

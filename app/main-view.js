@@ -189,7 +189,7 @@ var MainView = View.extend({
 
     updateActiveNav: function () {
         var path = window.location.pathname.slice(1);
-        console.log(path);
+        // console.log("updateActiveNav", path);
 
         this.queryAll('.Header a[href]').forEach(function (aTag) {
 
