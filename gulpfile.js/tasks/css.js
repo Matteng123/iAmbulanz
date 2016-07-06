@@ -13,9 +13,7 @@ var path         = require('path')
 var paths = {
   src: path.join(config.root.src, config.tasks.css.src, '/**/*.{' + config.tasks.css.extensions.join(',') + '}'),
   dest: path.join(config.root.dest, config.tasks.css.dest)
-}
-
-console.log(paths);
+};
 
 var cssTask = function () {
   return gulp.src(paths.src)
@@ -27,7 +25,7 @@ var cssTask = function () {
     .pipe(minifyCSS({keepBreaks:false}))
     .pipe(gulp.dest(paths.dest))
     .pipe(browserSync.stream())
-}
+};
 
 gulp.task('css', cssTask)
 module.exports = cssTask
