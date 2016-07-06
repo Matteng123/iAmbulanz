@@ -11396,7 +11396,7 @@
 	
 	    // ------- ROUTE HANDLERS ---------
 	    content: function (value) {
-	        console.log("CONTENT");
+	        console.log("CONTENT", value);
 	        this.trigger('page', new ContentView({
 	            model: new ContentModel({id:value})
 	        }));
@@ -47082,7 +47082,7 @@
 	        var url;
 	        if (this.isNew()) url = base;
 	        else url = base + (base.charAt(base.length - 1) === '/' ? '' : '/') + this.getId() ;
-	        return url;
+	        return url + location.search;
 	    }
 	});
 	
@@ -47507,11 +47507,13 @@
 	            hash = '',
 	            path = '';
 	
+	
+	
 	        if (aTag.hash !== undefined && aTag.hash.length >= 1){
 	            hash = aTag.hash;
 	        }
 	
-	        path =  aTag.hash !== undefined ? aTag.pathname+hash : aTag.getAttribute('xlink:href');
+	        path = aTag.pathname + aTag.search;
 	
 	        this._doLinkClick(path, e, aTag);
 	
@@ -47519,34 +47521,19 @@
 	    },
 	
 	    _doLinkClick: function(path, e, tag){
-	        var local = tag.host === window.location.host,
-	            link = this.query(e.delegateTarget),
-	            href = window.location.href,
-	            aUrl = e.delegateTarget.href,
-	            attr = e.delegateTarget.getAttribute('data-value') || undefined;
+	        var local = tag.host === window.location.host;
 	
-	        if ( $(tag).data('animation') !== undefined ){
-	            app.pageAnimation = $(tag).data('animation');
-	        } else {
-	            app.pageAnimation = "scroll";
-	        }
 	        // console.log("pageHash: ",  window.location.pathname +" - "+ tag.pathname );
 	
 	        if (local && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey && tag.getAttribute("target") !== "_blank") {
 	            e.preventDefault();
 	
-	            app.pageHash = tag.hash;
-	            if(dom.hasClass(tag, 'anchor') && window.location.pathname == tag.pathname ){
-	                // console.log(app);
-	                this._scrollToSection();
-	                if(dom.hasClass(tag, 'anchor-close') )
-	                    this.handleTogglemenu();
-	            } else {
+	
 	                // this.closeMainMenu();
 	                app.navigate(path);
 	                // close menu container
 	                this.handleTogglemenu();
-	            }
+	
 	        }
 	    },
 	

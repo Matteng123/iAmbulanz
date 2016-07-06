@@ -40,7 +40,7 @@ var Content = Model.extend({
         var url;
         if (this.isNew()) url = base;
         else url = base + (base.charAt(base.length - 1) === '/' ? '' : '/') + this.getId() ;
-        return url;
+        return url + location.search;
     }
 });
 

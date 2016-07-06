@@ -1,8 +1,3 @@
-<?php
-  if($blog->children()->visible()->slice($index*3, 3)->count() == 0){
-    go('blog');
-  };
- ?>
 <?php foreach($blog->children()->visible()->slice($index*3, 3) as $blogelement): ?>
     <?php if(!$blogelement->motiv()->isEmpty()) : ?>
       <div class="Blog-element Blog-element--image">

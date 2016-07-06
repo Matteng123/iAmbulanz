@@ -16,6 +16,21 @@
 
   &-body
     @extend .Section-body--smaller
+  &-navigation
+    max-width: $max-size - 320
+    margin: 0 auto
+    padding: 0 $small-border 30px $small-border
+    margin-top: -30px
+    +bp('medium')
+      padding: 0 $medium-border $medium-border
+      margin-top: -1*$medium-border
+    +bp('large')
+      padding: 0 $large-border 2*$large-border $large-border
+      margin-top: -2*$large-border
+    div:first-child
+      float: left
+    div:last-child
+      float: right
     &:after
       content: ""
       display: table

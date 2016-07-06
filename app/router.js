@@ -17,7 +17,7 @@ var Router = AmpersandRouter.extend({
 
     // ------- ROUTE HANDLERS ---------
     content: function (value) {
-        console.log("CONTENT");
+        console.log("CONTENT", value);
         this.trigger('page', new ContentView({
             model: new ContentModel({id:value})
         }));
