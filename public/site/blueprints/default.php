@@ -16,6 +16,7 @@ pages:
     - section_map
     - section_prices-short
     - section_prices-table
+    - section_form
 files: false
 fields:
   title: title

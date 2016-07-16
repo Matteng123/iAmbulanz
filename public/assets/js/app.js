@@ -21798,7 +21798,7 @@
 /* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -22885,7 +22885,9 @@
 	
 		events: {
 			"click .Location-teaser-tab-item":"_handleTabbarClick",
-			"click .Prices-button":"_handlePricebarClick"
+			"click .Prices-button":"_handlePricebarClick",
+			"click .Form-field--radio div":"_handleRadioClick",
+			"click .Form-field--checkbox div":"_handleCheckboxClick",
 		},
 	
 		hookBeforeHide: function(){
@@ -22945,7 +22947,31 @@
 					dom.addClass(event.delegateTarget, 'active');
 				}
 		},
+		_handleRadioClick: function(event){
+			var group = event.delegateTarget.parentNode,
+					radios = group.childNodes,
+					input = event.delegateTarget.firstElementChild;
 	
+			_.each(radios, function(node){
+				if(dom.hasClass(node, 'isChecked')){
+						dom.removeClass(node, 'isChecked');
+						node.firstElementChild.removeAttribute('checked');
+				}
+			});
+			dom.addClass(event.delegateTarget, 'isChecked');
+			input.setAttribute('checked', true);
+		},
+		_handleCheckboxClick: function(event){
+			var input = event.delegateTarget.firstElementChild;
+	
+			if(dom.hasClass(event.delegateTarget, 'isChecked')){
+				dom.removeClass(event.delegateTarget, 'isChecked');
+				input.removeAttribute('checked');
+			}else{
+				dom.addClass(event.delegateTarget, 'isChecked');
+				input.setAttribute('checked', true);
+			}
+		},
 		_handlePricebarClick: function(event){
 			if(!dom.hasClass(event.delegateTarget, 'active')){
 				_.each(this.Pricebars, function(item, index){
