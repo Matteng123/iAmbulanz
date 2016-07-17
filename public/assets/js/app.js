@@ -55,8 +55,8 @@
 	jQuery = $ = __webpack_require__(2);
 	var _ = __webpack_require__(3);
 	var Router = __webpack_require__(4);
-	var domReady = __webpack_require__(314);
-	var MainView = __webpack_require__(315);
+	var domReady = __webpack_require__(315);
+	var MainView = __webpack_require__(316);
 	
 	var App = {
 	    // this is the the whole app initter
@@ -11382,8 +11382,8 @@
 	
 	var FormModel = __webpack_require__(42);
 	var ContentView = __webpack_require__(103);
-	var ContentModel = __webpack_require__(311);
-	var ContactView = __webpack_require__(313);
+	var ContentModel = __webpack_require__(312);
+	var ContactView = __webpack_require__(314);
 	
 	
 	var Router = AmpersandRouter.extend({
@@ -21781,7 +21781,7 @@
 /* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -22861,7 +22861,7 @@
 			owlCarousel = __webpack_require__(297),
 			responsImg = __webpack_require__(280),
 			MapLayers = __webpack_require__(298),
-			Form = __webpack_require__(318);
+			Form = __webpack_require__(311);
 	
 	
 	var Content = PageView.extend(MapLayers),
@@ -47013,9 +47013,223 @@
 /* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var _ = __webpack_require__(3),
+	  dom = __webpack_require__(278);
+	
+	var form = {
+	  _scrollToTop: function(form){
+	    TweenMax.to(window, 0.5, {scrollTo:{y:form.offsetTop}, ease:Power2.easeOut});
+	  },
+	  _handleRadioClick: function(event){
+	    var group = event.delegateTarget.parentNode,
+	        radios = group.childNodes,
+	        input = event.delegateTarget.firstElementChild;
+	
+	    _.each(radios, function(node){
+	      if(dom.hasClass(node, 'isChecked')){
+	          dom.removeClass(node, 'isChecked');
+	          node.firstElementChild.removeAttribute('checked');
+	      }
+	    });
+	    dom.addClass(event.delegateTarget, 'isChecked');
+	    input.setAttribute('checked', true);
+	  },
+	  _handleCheckboxClick: function(event){
+	    var input = event.delegateTarget.firstElementChild;
+	
+	    if(dom.hasClass(event.delegateTarget, 'isChecked')){
+	      dom.removeClass(event.delegateTarget, 'isChecked');
+	      input.removeAttribute('checked');
+	    }else{
+	      dom.addClass(event.delegateTarget, 'isChecked');
+	      input.setAttribute('checked', true);
+	    }
+	  },
+	  _findFormTag: function(target){
+	    if(target.parentNode.nodeName.toUpperCase() == "FORM"){
+	      return target.parentNode;
+	    } else {
+	      if(target.nodeName.toUpperCase() == "BODY"){
+	        return null;
+	      } else {
+	        return this._findFormTag(target.parentNode);
+	      }
+	    }
+	  },
+	  _findParentByClass: function(target, className){
+	    if(dom.hasClass(target.parentNode, className)){
+	      return target.parentNode;
+	    } else {
+	      if(target.nodeName.toUpperCase() == "BODY"){
+	        return null;
+	      } else {
+	        return this._findParentByClass(target.parentNode, className);
+	      }
+	    }
+	  },
+	  _handleFormSubmitClick: function(event){
+	
+	    event.preventDefault();
+	
+	    var that = this,
+	        errorClass = 'haserror',
+	        elementClass = 'Form-element',
+	    form = this._findFormTag(event.delegateTarget),
+	    formid, formsent, honeypot, inputs, textareas, radios, radiogroups, checkboxes, checkboxgroups, errors;
+	
+	    if(form === null){
+	      throw(new Error("The DOM misses a Form-tag."));
+	    } else {
+	      formid = '#' + form.getAttribute('id');
+	      that.formModel.fields.uid = form.getAttribute('data-url');
+	    }
+	
+	    honeypot = this.query(formid + ' .emailvalidation input');
+	    if(honeypot.value !== ""){
+	      return;
+	    }
+	
+	    formsent = this.query(formid + ' .Form-sentmessage div');
+	
+	    errors = [];
+	    dom.removeClass(form, errorClass);
+	    _.each(this.queryAll(formid + ' .' + errorClass), function(erroritem){
+	      dom.removeClass(erroritem, errorClass);
+	    });
+	
+	    inputs = this.queryAll(formid + ' input[type=text]');
+	    _.each(inputs, function(input){
+	      that.formModel.fields[input.getAttribute('name')] = input.value;
+	      if(input.required){
+	        if(input.value === "" || input.value.length < 1){
+	          errors.push(input);
+	        }
+	      }
+	    });
+	
+	    textareas = this.queryAll(formid + ' textarea');
+	    _.each(textareas, function(area){
+	      that.formModel.fields[area.getAttribute('name')] = area.value;
+	      if(area.required){
+	        if(area.value === "" || area.value.length < 1){
+	          errors.push(area);
+	        }
+	      }
+	    });
+	
+	    radios = this.queryAll(formid + ' input[type=radio]');
+	    radiogroups = {};
+	    _.each(radios, function(radio){
+	      if(radiogroups[radio.getAttribute('name')] === undefined){
+	        radiogroups[radio.getAttribute('name')] = [];
+	      }
+	      radiogroups[radio.getAttribute('name')].push(radio);
+	    });
+	    _.each(radiogroups, function(radiogroup, index){
+	      that.formModel.fields[index] = "";
+	      var isrequired = false;
+	      _.each(radiogroup, function(radiobutton){
+	        if(radiobutton.required) isrequired = true;
+	        if(radiobutton.getAttribute('checked')){
+	          that.formModel.fields[index] = radiobutton.value;
+	        }
+	      });
+	      if(isrequired && that.formModel.fields[index] === ""){
+	        errors.push(radiogroup);
+	      }
+	    });
+	
+	    checkboxes = this.queryAll(formid + ' input[type=checkbox]');
+	    checkboxgroups = {};
+	    _.each(checkboxes, function(checkbox){
+	      if(checkboxgroups[checkbox.getAttribute('name')] === undefined){
+	        checkboxgroups[checkbox.getAttribute('name')] = [];
+	      }
+	      checkboxgroups[checkbox.getAttribute('name')].push(checkbox);
+	    });
+	    _.each(checkboxgroups, function(checkboxgroup, index){
+	      that.formModel.fields[index] = "";
+	      var isrequired = false;
+	      _.each(checkboxgroup, function(checkbox){
+	        if(checkbox.required) isrequired = true;
+	        if(checkbox.getAttribute('checked')){
+	          if(that.formModel.fields[index] === "") that.formModel.fields[index] = checkbox.value;
+	          else that.formModel.fields[index] = that.formModel.fields[index] + ', ' + checkbox.value;
+	        }
+	      });
+	      if(isrequired && that.formModel.fields[index] === ""){
+	        errors.push(checkboxgroup);
+	      }
+	    });
+	
+	    if(errors.length > 0){
+	      that._scrollToTop(form);
+	      dom.addClass(form, errorClass);
+	      _.each(errors, function(erroritem){
+	        var FormItem;
+	        if(erroritem.length > 0){
+	          FormItem = that._findParentByClass(erroritem[0], elementClass);
+	        } else {
+	          FormItem = that._findParentByClass(erroritem, elementClass);
+	        }
+	
+	        if(FormItem === null){
+	          if(erroritem.length > 0){
+	            dom.addClass(erroritem[0].parentNode, errorClass);
+	          } else {
+	            dom.addClass(erroritem.parentNode, errorClass);
+	          }
+	        } else {
+	          dom.addClass(FormItem, errorClass);
+	        }
+	      });
+	    } else {
+	
+	      that.formModel.send(this.formModel.fields).then(function(success){
+	        formsent.innerHTML = success.message;
+	        dom.addClass(form, "issent");
+	
+	        // reset
+	        _.each(inputs, function(element, index, list){
+	          element.value = '';
+	        }, this);
+	        _.each(textareas, function(element, index, list){
+	          element.value = '';
+	        }, this);
+	        _.each(radios, function(element, index, list){
+	          element.removeAttribute('checked');
+	          dom.removeClass(element.parentNode, 'isChecked');
+	        }, this);
+	        _.each(checkboxes, function(element, index, list){
+	          element.removeAttribute('checked');
+	          dom.removeClass(element.parentNode, 'isChecked');
+	        }, this);
+	
+	        that._scrollToTop(form);
+	
+	      }, function(error){
+	        dom.addClass(form, "issent");
+	        formsent.innerHTML = error.message;
+	        that._scrollToTop(form);
+	      });
+	
+	      console.log(that.formModel.fields);
+	    }
+	
+	  }
+	
+	};
+	
+	module.exports = form;
+
+
+/***/ },
+/* 312 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/*global $*/
 	// base view for pages
-	var Model = __webpack_require__(312);
+	var Model = __webpack_require__(313);
 	//var _ = require('underscore');
 	//var key = require('keymaster');
 	
@@ -47027,7 +47241,7 @@
 	module.exports = Content;
 
 /***/ },
-/* 312 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global $*/
@@ -47081,7 +47295,7 @@
 
 
 /***/ },
-/* 313 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(2);
@@ -47320,7 +47534,7 @@
 	module.exports = Contact;
 
 /***/ },
-/* 314 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -47356,7 +47570,7 @@
 
 
 /***/ },
-/* 315 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global me, app*/
@@ -47364,9 +47578,9 @@
 	var _ = __webpack_require__(3);
 	var View = __webpack_require__(105);
 	var dom = __webpack_require__(278);
-	var ViewSwitcher = __webpack_require__(316);
+	var ViewSwitcher = __webpack_require__(317);
 	var gsap = __webpack_require__(296);
-	var gsap = __webpack_require__(317);
+	var gsap = __webpack_require__(318);
 	
 	var MainView = View.extend({
 	
@@ -47589,7 +47803,7 @@
 
 
 /***/ },
-/* 316 */
+/* 317 */
 /***/ function(module, exports) {
 
 	/*$AMPERSAND_VERSION*/
@@ -47715,7 +47929,7 @@
 
 
 /***/ },
-/* 317 */
+/* 318 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -47839,220 +48053,6 @@
 	
 	}); if (_gsScope._gsDefine) { _gsScope._gsQueue.pop()(); }
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 318 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(3),
-	  dom = __webpack_require__(278);
-	
-	var form = {
-	  _scrollToTop: function(form){
-	    TweenMax.to(window, 0.5, {scrollTo:{y:form.offsetTop}, ease:Power2.easeOut});
-	  },
-	  _handleRadioClick: function(event){
-	    var group = event.delegateTarget.parentNode,
-	        radios = group.childNodes,
-	        input = event.delegateTarget.firstElementChild;
-	
-	    _.each(radios, function(node){
-	      if(dom.hasClass(node, 'isChecked')){
-	          dom.removeClass(node, 'isChecked');
-	          node.firstElementChild.removeAttribute('checked');
-	      }
-	    });
-	    dom.addClass(event.delegateTarget, 'isChecked');
-	    input.setAttribute('checked', true);
-	  },
-	  _handleCheckboxClick: function(event){
-	    var input = event.delegateTarget.firstElementChild;
-	
-	    if(dom.hasClass(event.delegateTarget, 'isChecked')){
-	      dom.removeClass(event.delegateTarget, 'isChecked');
-	      input.removeAttribute('checked');
-	    }else{
-	      dom.addClass(event.delegateTarget, 'isChecked');
-	      input.setAttribute('checked', true);
-	    }
-	  },
-	  _findFormTag: function(target){
-	    if(target.parentNode.nodeName.toUpperCase() == "FORM"){
-	      return target.parentNode;
-	    } else {
-	      if(target.nodeName.toUpperCase() == "BODY"){
-	        return null;
-	      } else {
-	        return this._findFormTag(target.parentNode);
-	      }
-	    }
-	  },
-	  _findParentByClass: function(target, className){
-	    if(dom.hasClass(target.parentNode, className)){
-	      return target.parentNode;
-	    } else {
-	      if(target.nodeName.toUpperCase() == "BODY"){
-	        return null;
-	      } else {
-	        return this._findParentByClass(target.parentNode, className);
-	      }
-	    }
-	  },
-	  _handleFormSubmitClick: function(event){
-	
-	    event.preventDefault();
-	
-	    var that = this,
-	        errorClass = 'haserror',
-	        elementClass = 'Form-element',
-	    form = this._findFormTag(event.delegateTarget),
-	    formid, formsent, honeypot, inputs, textareas, radios, radiogroups, checkboxes, checkboxgroups, errors;
-	
-	    if(form === null){
-	      throw(new Error("The DOM misses a Form-tag."));
-	    } else {
-	      formid = '#' + form.getAttribute('id');
-	      that.formModel.fields.uid = form.getAttribute('data-url');
-	    }
-	
-	    honeypot = this.query(formid + ' .emailvalidation input');
-	    if(honeypot.value !== ""){
-	      return;
-	    }
-	
-	    formsent = this.query(formid + ' .Form-sentmessage div');
-	
-	    errors = [];
-	    dom.removeClass(form, errorClass);
-	    _.each(this.queryAll(formid + ' .' + errorClass), function(erroritem){
-	      dom.removeClass(erroritem, errorClass);
-	    });
-	
-	    inputs = this.queryAll(formid + ' input[type=text]');
-	    _.each(inputs, function(input){
-	      that.formModel.fields[input.getAttribute('name')] = input.value;
-	      if(input.required){
-	        if(input.value === "" || input.value.length < 1){
-	          errors.push(input);
-	        }
-	      }
-	    });
-	
-	    textareas = this.queryAll(formid + ' textarea');
-	    _.each(textareas, function(area){
-	      that.formModel.fields[area.getAttribute('name')] = area.value;
-	      if(area.required){
-	        if(area.value === "" || area.value.length < 1){
-	          errors.push(area);
-	        }
-	      }
-	    });
-	
-	    radios = this.queryAll(formid + ' input[type=radio]');
-	    radiogroups = {};
-	    _.each(radios, function(radio){
-	      if(radiogroups[radio.getAttribute('name')] === undefined){
-	        radiogroups[radio.getAttribute('name')] = [];
-	      }
-	      radiogroups[radio.getAttribute('name')].push(radio);
-	    });
-	    _.each(radiogroups, function(radiogroup, index){
-	      that.formModel.fields[index] = "";
-	      var isrequired = false;
-	      _.each(radiogroup, function(radiobutton){
-	        if(radiobutton.required) isrequired = true;
-	        if(radiobutton.getAttribute('checked')){
-	          that.formModel.fields[index] = radiobutton.value;
-	        }
-	      });
-	      if(isrequired && that.formModel.fields[index] === ""){
-	        errors.push(radiogroup);
-	      }
-	    });
-	
-	    checkboxes = this.queryAll(formid + ' input[type=checkbox]');
-	    checkboxgroups = {};
-	    _.each(checkboxes, function(checkbox){
-	      if(checkboxgroups[checkbox.getAttribute('name')] === undefined){
-	        checkboxgroups[checkbox.getAttribute('name')] = [];
-	      }
-	      checkboxgroups[checkbox.getAttribute('name')].push(checkbox);
-	    });
-	    _.each(checkboxgroups, function(checkboxgroup, index){
-	      that.formModel.fields[index] = "";
-	      var isrequired = false;
-	      _.each(checkboxgroup, function(checkbox){
-	        if(checkbox.required) isrequired = true;
-	        if(checkbox.getAttribute('checked')){
-	          if(that.formModel.fields[index] === "") that.formModel.fields[index] = checkbox.value;
-	          else that.formModel.fields[index] = that.formModel.fields[index] + ', ' + checkbox.value;
-	        }
-	      });
-	      if(isrequired && that.formModel.fields[index] === ""){
-	        errors.push(checkboxgroup);
-	      }
-	    });
-	
-	    if(errors.length > 0){
-	      that._scrollToTop(form);
-	      dom.addClass(form, errorClass);
-	      _.each(errors, function(erroritem){
-	        var FormItem;
-	        if(erroritem.length > 0){
-	          FormItem = that._findParentByClass(erroritem[0], elementClass);
-	        } else {
-	          FormItem = that._findParentByClass(erroritem, elementClass);
-	        }
-	
-	        if(FormItem === null){
-	          if(erroritem.length > 0){
-	            dom.addClass(erroritem[0].parentNode, errorClass);
-	          } else {
-	            dom.addClass(erroritem.parentNode, errorClass);
-	          }
-	        } else {
-	          dom.addClass(FormItem, errorClass);
-	        }
-	      });
-	    } else {
-	
-	      that.formModel.send(this.formModel.fields).then(function(success){
-	        formsent.innerHTML = success.message;
-	        dom.addClass(form, "issent");
-	
-	        // reset
-	        _.each(inputs, function(element, index, list){
-	          element.value = '';
-	        }, this);
-	        _.each(textareas, function(element, index, list){
-	          element.value = '';
-	        }, this);
-	        _.each(radios, function(element, index, list){
-	          element.removeAttribute('checked');
-	          dom.removeClass(element.parentNode, 'isChecked');
-	        }, this);
-	        _.each(checkboxes, function(element, index, list){
-	          element.removeAttribute('checked');
-	          dom.removeClass(element.parentNode, 'isChecked');
-	        }, this);
-	
-	        that._scrollToTop(form);
-	
-	      }, function(error){
-	        dom.addClass(form, "issent");
-	        formsent.innerHTML = error.message;
-	        that._scrollToTop(form);
-	      });
-	
-	      console.log(that.formModel.fields);
-	    }
-	
-	  }
-	
-	};
-	
-	module.exports = form;
-
 
 /***/ }
 /******/ ]);
