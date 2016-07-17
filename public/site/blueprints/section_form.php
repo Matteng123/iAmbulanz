@@ -14,8 +14,7 @@ fields:
     type: structure
     entry: >
       Feld: <strong>{{label}}</strong><br />
-      Type: {{type}}
-      Variable Name: {{variable}}
+      Variable Name: <strong>{{variable}}</strong>
     modalsize: large
     fields:
       label:
