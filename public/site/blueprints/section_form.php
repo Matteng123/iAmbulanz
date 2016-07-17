@@ -15,6 +15,7 @@ fields:
     entry: >
       Feld: <strong>{{label}}</strong><br />
       Type: {{type}}
+      Variable Name: {{variable}}
     modalsize: large
     fields:
       label:
