@@ -6,7 +6,6 @@ pages:
     - default
     - faq
     - blog
-    - contact
 fields:
   section1:
     label: Firmendaten
