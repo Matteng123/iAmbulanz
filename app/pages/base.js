@@ -10,7 +10,8 @@ var Base = View.extend({
 
     props: {
         isInitial: [Boolean, true, false],
-        isKilled: [Boolean, true, false]
+        isKilled: [Boolean, true, false],
+        formModel: [Object, true, '']
     },
 
     template: function(){

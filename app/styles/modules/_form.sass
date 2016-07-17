@@ -6,6 +6,22 @@
         content: ""
         display: table
         clear: both
+    &.haserror
+      >.Form-errormessage
+        display: block
+        padding-left: 14px
+        line-height: 3em
+        border: 1px solid red
+        border-left: 5px solid red
+        font-weight: 500
+    &.issent,
+      >.Form-sentmessage
+        text-align: center
+        >div
+          +transform(translateY(0%))
+          display: inline-block
+          height: auto
+          opacity: 1
   label
     display: block
     font-weight: 600
@@ -65,11 +81,21 @@
       font-size: 1.5em
     +bp('large')
       margin-bottom: $large-border
+    &.Form-errormessage
+      font-size: 1em
+      margin-top: -1*$small-border
+      margin-bottom: 0
   &-body
     @extend .Section-body--smallest
 
   &-element
     position: relative
+    &.haserror
+      .Form-errormessage
+        display: block
+      label
+        color: red
+        font-weight: 600
     &:last-child
       text-align: right
       +bp('medium')
@@ -86,6 +112,45 @@
       &--full
         float: left
         width: +unit(12)
+  &-errormessage
+    color: red
+    display: none
+  &-sentmessage
+    >div
+      position: relative
+      +transform(translateY(-10%))
+      +transition(all, 0.75s)
+      &:after, &:before
+        bottom: 100%
+        left: 50%
+        border: solid transparent
+        content: " "
+        height: 0
+        width: 0
+        position: absolute
+        pointer-events: none
+      &:after
+        border-color: rgba(0, 0, 0, 0)
+        border-bottom-color: white
+        border-width: 25px
+        margin-left: -25px
+      &:before
+        border-color: rgba(0, 0, 0, 0)
+        border-bottom-color: $success-color
+        border-width: 26px
+        margin-left: -26px
+
+      height: 0px
+      opacity: 0
+      background-color: white
+      padding: $small-border
+      border: 1px solid $success-color
+      border-radius: 4px
+    p
+      font-size: 1.2em
+      color: $success-color
+      &:last-child
+        margin-bottom: 0
   &-field
     position: relative
     &--radio,

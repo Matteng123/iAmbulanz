@@ -17,16 +17,9 @@ var Router = AmpersandRouter.extend({
 
     // ------- ROUTE HANDLERS ---------
     content: function (value) {
-        console.log("CONTENT", value);
         this.trigger('page', new ContentView({
-            model: new ContentModel({id:value})
-        }));
-    },
-    contact: function () {
-        value = '/kontakt';
-        this.trigger('page', new ContactView({
             model: new ContentModel({id:value}),
-            form: new FormModel({id:"sendEmail.php"})
+            formModel: new FormModel()
         }));
     }
 });

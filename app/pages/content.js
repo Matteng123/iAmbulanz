@@ -6,10 +6,13 @@ var _ = require('underscore'),
 		gsap = require('../vendor/gsap/uncompressed/TweenMax.js'),
 		owlCarousel = require('../vendor/owl.carousel.js'),
 		responsImg = require('../vendor/responsiveimage/jquery.responsImg.js'),
-		MapLayers = require('../features/mapgl-layers.js');
+		MapLayers = require('../features/mapgl-layers.js'),
+		Form = require('../features/form.js');
 
 
-var Content = PageView.extend(MapLayers);
+var Content = PageView.extend(MapLayers),
+		Content = Content.extend(Form);
+
 Content = Content.extend({
 
 	events: {
@@ -17,6 +20,7 @@ Content = Content.extend({
 		"click .Prices-button":"_handlePricebarClick",
 		"click .Form-field--radio div":"_handleRadioClick",
 		"click .Form-field--checkbox div":"_handleCheckboxClick",
+		"click .Form button[type=submit]":"_handleFormSubmitClick"
 	},
 
 	hookBeforeHide: function(){
@@ -25,7 +29,7 @@ Content = Content.extend({
 
 	hookInRender: function () {
 		var self = this;
-
+		
 		TweenMax.delayedCall(0.1, this.initializeSlider, [], this); // Slider
 		this.bindResponsimg();
 		this.Tabbars = this.queryAll('.Location-teaser-tab-item');
@@ -76,31 +80,7 @@ Content = Content.extend({
 				dom.addClass(event.delegateTarget, 'active');
 			}
 	},
-	_handleRadioClick: function(event){
-		var group = event.delegateTarget.parentNode,
-				radios = group.childNodes,
-				input = event.delegateTarget.firstElementChild;
 
-		_.each(radios, function(node){
-			if(dom.hasClass(node, 'isChecked')){
-					dom.removeClass(node, 'isChecked');
-					node.firstElementChild.removeAttribute('checked');
-			}
-		});
-		dom.addClass(event.delegateTarget, 'isChecked');
-		input.setAttribute('checked', true);
-	},
-	_handleCheckboxClick: function(event){
-		var input = event.delegateTarget.firstElementChild;
-
-		if(dom.hasClass(event.delegateTarget, 'isChecked')){
-			dom.removeClass(event.delegateTarget, 'isChecked');
-			input.removeAttribute('checked');
-		}else{
-			dom.addClass(event.delegateTarget, 'isChecked');
-			input.setAttribute('checked', true);
-		}
-	},
 	_handlePricebarClick: function(event){
 		if(!dom.hasClass(event.delegateTarget, 'active')){
 			_.each(this.Pricebars, function(item, index){
