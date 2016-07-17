@@ -3,8 +3,8 @@
 if(!get('author') or get('author') != 'iAmbulanz') notFound();
 
   $form = $site->page(get('uid'));
-  $mailbody = $form->mailbody()->kt();
-  $clientbody = $form->clientbody()->kt();
+  $mailbody = $form->mailbody()->value();
+  $clientbody = $form->clientbody()->value();
 
   foreach( $_POST as $mail_key => $mail_value ) {
     $mailbody = str_replace('%'.$mail_key.'%', $mail_value, $mailbody);
