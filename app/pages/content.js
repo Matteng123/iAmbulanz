@@ -29,7 +29,7 @@ Content = Content.extend({
 
 	hookInRender: function () {
 		var self = this;
-		
+
 		TweenMax.delayedCall(0.1, this.initializeSlider, [], this); // Slider
 		this.bindResponsimg();
 		this.Tabbars = this.queryAll('.Location-teaser-tab-item');
@@ -48,9 +48,10 @@ Content = Content.extend({
 	},
 
 	initializeSlider: function(){
-
+		var isloop = (this.queryAll('.Carousel .Carousel-body .item').length > 1) ? true : false;
+		console.log("isloop", isloop);
 		$('.Carousel .Carousel-body').owlCarousel({
-			    loop:true,
+			    loop:isloop,
 			    margin:0,
 			    nav:true,
 			    items:1

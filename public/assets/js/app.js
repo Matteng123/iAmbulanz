@@ -21781,7 +21781,7 @@
 /* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -22883,7 +22883,7 @@
 	
 		hookInRender: function () {
 			var self = this;
-			
+	
 			TweenMax.delayedCall(0.1, this.initializeSlider, [], this); // Slider
 			this.bindResponsimg();
 			this.Tabbars = this.queryAll('.Location-teaser-tab-item');
@@ -22902,9 +22902,10 @@
 		},
 	
 		initializeSlider: function(){
-	
+			var isloop = (this.queryAll('.Carousel .Carousel-body .item').length > 1) ? true : false;
+			console.log("isloop", isloop);
 			$('.Carousel .Carousel-body').owlCarousel({
-				    loop:true,
+				    loop:isloop,
 				    margin:0,
 				    nav:true,
 				    items:1
