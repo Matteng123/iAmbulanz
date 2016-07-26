@@ -6,6 +6,7 @@ pages:
     - default
     - faq
     - blog
+    - tool
 fields:
   section1:
     label: Firmendaten

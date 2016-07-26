@@ -17,70 +17,19 @@ fields:
       Variable Name: <strong>{{variable}}</strong>
     modalsize: large
     fields:
-      label:
-        label: Bezeichner
-        type: text
-      variable:
-        label: Variabel Name
-        type: text
-        help: Der Variabel Name wird als Key für die Mailtemplates verwendet. Der Variabel Name 'email' wird als solches erkannt und erzeugt eine Kopie des Formulars an den Kunden.
-        validate: alphanum
-      type:
-        label: Feldtyp
-        type: select
-        options:
-          input: A Einzeilige Eingabe
-          textarea: B Mehrzeilige Eingabe
-          radio: C Einzelauswahl Radiobuttons
-          checkbox: D Mehrfachauswahl Checkboxen
-      values:
-        label: Inhalte (Nur bei Auswahl C/D)
-        type: tags
-      required:
-        label: Pflichtfeld
-        type: toggle
-        text: yes/no
-        default: false
-        width: 1/2
-      error:
-        label: Fehlermeldung falls Pflichtfeld
-        type: text
-        default: Bitte vervollständigen Sie Ihre Eingabe.
-      size:
-        label: Breite
-        type: select
-        width: 1/2
-        default: full
-        options:
-          full: Volle Breite
-          half: Halbe Breite
-  error:
-    label: Fehlermeldung falls unvollständig
-    type: textarea
-    default: Bitte überprüfen Sie Ihre Eingaben.
-  successmessage:
-    label: Meldung nach erfolgreichem Versand
-    type: textarea
-    default: "**Vielen Dank für Ihre Anfrage. ** Wir melden uns zeitnah bei Ihnen. Ihr Team von iAmbulanz."
-  mailsubject:
-    label: Betreff für die E-Mail
-    type: text
-    default: ** E-Mail von iAmbulanz.de
-  mailbody:
-    label: Template für E-Mail an iAmbulanz
-    type: textarea
-    help: Der Text wird beim Versand des Formulars an den Empfänger des Formulars verschickt. Variabeln werden per %key% in den Text eingefügt und durch die ausgefüllten Werte ersetzt.
-  clientbody:
-    label: Template für E-Mail an Kunden
-    type: textarea
-    help: Der Text wird beim Versand des Formulars an den User des Formulars verschickt. Variabeln werden per %key% in den Text eingefügt und durch die ausgefüllten Werte ersetzt.
-  recipient:
-    label: Empfänger des Formulars
-    type: text
-    default: info@iAmbulanz.de
-  sender:
-    label: Absender des Formulars
-    type: text
-    default: no-reply@iAmbulanz.de
+      label: form_fields_label
+      variable: form_fields_variable
+      type: form_fields_type
+      values: form_fields_values
+      required: form_fields_required
+      error: form_fields_error
+      size: form_fields_size
+  error: form_text_error
+  successmessage: form_text_success
+  mailsubject: form_mail_subject
+  mailbody: form_mail_body
+  clientbody: form_mail_clientbody
+  recipient: form_recipients
+  sender: form_sender
   section: section
 files: false
