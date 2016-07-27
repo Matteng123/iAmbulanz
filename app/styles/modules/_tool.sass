@@ -1,0 +1,41 @@
+.Tool
+  &-statusbar
+    background-color: lighten($secondary-color, 60%)
+    padding: 10px 0
+    ul
+      width: 100%
+      max-width: $max-size
+      margin: 0 auto
+      text-align: center
+      li
+        display: inline-block
+        padding: 0 20px
+        min-width: 200px
+        user-select: none
+        -webkit-tap-highlight-color: rgba(0,0,0,0)
+        a
+          font-style: normal
+        >span,
+        a >span
+          display: inline-block
+        >span:first-child, a >span:first-child
+          font-family: $headline-font
+          font-weight: 800
+          font-size: 1.5em
+          color: white
+          background-color: $secondary-color
+          width: 46px
+          text-align: center
+          padding: 5px 0
+          margin: 10px
+          margin-right: 20px
+          vertical-align: top
+        >span:last-child, a >span:last-child
+          font-size: 1.1em
+          margin-top: 10px
+          font-weight: 600
+        a.active >span:first-child
+          background-color: $button-color
+          color: white
+  &-body
+    @extend .Section-body
