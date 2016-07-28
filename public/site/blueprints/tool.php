@@ -43,6 +43,7 @@ fields:
   step5headline:
     label: Headline
     type: text
+  services: services
   preisboxtext:
     label: Preisbox Text
     type: textarea

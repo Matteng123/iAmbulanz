@@ -5,27 +5,55 @@ $statusItems = array(
     'title' => 'Gerät',
     'param' => 'device' ),
   1 => array( 'page' => 2,
+    'title' => 'Modell',
+    'param' => 'model' ),
+  2 => array( 'page' => 3,
     'title' => 'Farbe',
     'param' => 'color' ),
-  2 => array( 'page' => 3,
+  3 => array( 'page' => 4,
     'title' => 'Schaden',
     'param' => 'damage' ),
-  3 => array( 'page' => 4,
+  4 => array( 'page' => 5,
     'title' => 'Preis',
     'param' => 'price' ),
-  4 => array( 'page' => 5,
+  5 => array( 'page' => 6,
     'title' => 'Unverbindliche Anfrage',
     'param' => 'form' )
 );
+$damages = array(
+	0 => array(
+		'title' => 'Bildschirm',
+		'value' => 'service-display' ),
+	1 => array(
+		'title' => 'Akku',
+		'value' => 'service_akku' ),
+	2 => array(
+		'title' => 'Andere Komponente',
+		'value' => 'service-smallpiece' ),
+	3 => array(
+		'title' => 'Wasserschaden',
+		'value' => 'service-waterdamage' ),
+	4 => array(
+		'title' => 'Schadenstyp unbekannt',
+		'value' => 'service-unknown' )
+);
 
-function getParams(){
+function getParamString($source, $replaceKey = "", $replaceValue = ""){
   $params = "";
-  if(get('device')){
-    $params .= "&device=".get('device');
+
+  foreach($source as $item){
+    if($item['param'] == $replaceKey){
+      $params .= "&".$item['param']."=".$replaceValue;
+    }
+    else if(get($item['param'])){
+      $params .= "&".$item['param']."=".get($item['param']);
+    }
   }
+
   return $params;
 }
 
+$paramString = getParamString($statusItems);
 
 
 ?>
@@ -44,27 +72,22 @@ function getParams(){
               <?php foreach($statusItems as $key => $item) : ?>
                 <li>
                   <?php if(($key == 0)||intval(get('page'))>$key) : ?>
-
-                    <a class="<?php if($key == 0|| intval(get('page')) == $item['page']) echo 'active' ?>" href="/anfrage/?page=<?php echo $item['page']; echo getParams(); ?>"><span><?php echo $item['page']; ?></span><span><?php echo $item['title'] ?></span></a>
+                    <a class="<?php if(($key == 0 && !get('page'))||(intval(get('page')) == $item['page'])) echo 'active'; ?>" href="/<?php echo $page->uri(); ?>/?page=<?php echo $item['page']; echo $paramString; ?>"><span><?php echo $item['page']; ?></span><span><?php echo $item['title'] ?><i><?php echo get($item['param']) ?></i></span></a>
                   <?php else : ?>
                     <span><?php echo $item['page']; ?></span><span><?php echo $item['title'] ?></span>
                   <?php endif; ?>
                 </li>
               <?php endforeach; ?>
             </ul>
-            <!-- <a href="/anfrage/?page=1"<?php getParams(); ?>"">
-              <span>1</span><span>Geräte<i><?php echo get('device') ?></i></span>
-            </a>
-            <a href="/anfrage/?page=2"<?php getParams(); ?>""><span>2</span><span>Modell<i></i></span></a>
-            <a href="/anfrage/?page=3"<?php getParams(); ?>""><span>3</span><span>Farbe<i></i></span></a>
-            <a href="/anfrage/?page=4"<?php getParams(); ?>""><span>4</span><span>Schaden<i></i></span></a>
-            <a href="/anfrage/?page=5"<?php getParams(); ?>""><span>4</span><span>Preis<i></i></span></a>
-            <a href="/anfrage/?page=6"<?php getParams(); ?>""><span>4</span><span>Unverbindliche Anfrage<i></i></span></a> -->
         </div>
       </div>
       <div class="Tool-body">
-        <h1><?php echo $page->headline()->html() ?></h1>
-        <!-- <?php snippet('blogelements', array('blog' => $page, 'index' => $index)) ?> -->
+        <?php
+          if( (!get('page')) || (get('page') == 1) ) :
+            snippet('tool_page1', array('statusItems' => $statusItems));
+          else :
+            snippet('tool_page'.get('page'), array('statusItems' => $statusItems, 'damages' => $damages));
+          endif; ?>
       </div>
     </div>
 
