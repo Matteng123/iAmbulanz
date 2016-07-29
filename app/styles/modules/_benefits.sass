@@ -69,7 +69,6 @@
 			text-align: center
 			vertical-align: top
 			width: +unit(12)
-
 			p
 				padding: 0 $medium-border
 			h3
@@ -77,12 +76,15 @@
 				font-weight: 600
 				margin-bottom: $small-border
 			+bp('medium')
+				margin-bottom: $medium-border
 				width: +unit(6)
 			+bp('large')
-				width: +unit(3)
+				margin-bottom: $large-border
+
 				h3
 					min-height: 48px
 			+bp('larger')
+				width: +unit(3)
 				p, h3
 					padding: 0 2*$medium-border
 			+bp('huge')

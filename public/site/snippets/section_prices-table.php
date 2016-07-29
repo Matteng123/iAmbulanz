@@ -3,12 +3,12 @@
 ?>
 
 <div class="Prices">
-	<?php if(!$section->headline()->isEmpty()) :  ?>
-		<div class="Prices-text">
-			<h2><?php echo $section->headline()->html() ?></h2>
-		</div>
-	<?php endif ?>
 	<div class="Prices-body<?php if( $section->margin()->isTrue() ) { echo " Prices-body--margin"; } ?>">
+		<?php if(!$section->headline()->isEmpty()) :  ?>
+			<div class="Prices-text">
+				<h2><?php echo $section->headline()->html() ?></h2>
+			</div>
+		<?php endif ?>
 		<div class="Prices-table">
 
 			<div class="Prices-table-scroll">
