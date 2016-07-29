@@ -1,16 +1,20 @@
-$ = require('jquery');
-var _ = require('underscore'),
-		PageView = require('./base'),
-		MapModel = require('../models/mapbox'),
-		dom = require('ampersand-dom'),
-		gsap = require('../vendor/gsap/uncompressed/TweenMax.js'),
-		owlCarousel = require('../vendor/owl.carousel.js'),
-		responsImg = require('../vendor/responsiveimage/jquery.responsImg.js'),
-		MapLayers = require('../features/mapgl-layers.js'),
-		Form = require('../features/form.js');
+import $ from 'jquery';
+import jQuery from 'jquery';
+window.$ = $; window.jQuery = jQuery;
+
+import _ from 'underscore';
+import dom from 'ampersand-dom';
+
+import PageView from './base';
+import MapModel from '../models/mapbox';
+import "TweenMax";
+import "responsImg"
+import owlCarousel from '../vendor/owl.carousel.js';
+import MapLayers from '../features/mapgl-layers.js';
+import Form from '../features/form.js';
 
 
-var Content = PageView.extend(MapLayers),
+let Content = PageView.extend(MapLayers);
 		Content = Content.extend(Form);
 
 Content = Content.extend({
@@ -31,7 +35,7 @@ Content = Content.extend({
 		var self = this;
 
 		TweenMax.delayedCall(0.1, this.initializeSlider, [], this); // Slider
-		this.bindResponsimg();
+		// this.bindResponsimg();
 		this.Tabbars = this.queryAll('.Location-teaser-tab-item');
 		this.Pricebars = this.queryAll('.Prices-button');
 		this.Pricetables = this.queryAll('.Prices-table');
@@ -48,7 +52,7 @@ Content = Content.extend({
 	},
 
 	initializeSlider: function(){
-		var isloop = (this.queryAll('.Carousel .Carousel-body .item').length > 1) ? true : false;
+		let isloop = (this.queryAll('.Carousel .Carousel-body .item').length > 1) ? true : false;
 		console.log("isloop", isloop);
 		$('.Carousel .Carousel-body').owlCarousel({
 			    loop:isloop,
@@ -97,4 +101,4 @@ Content = Content.extend({
 
 });
 
-module.exports = Content;
+export default Content;

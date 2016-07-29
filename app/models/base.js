@@ -1,12 +1,13 @@
 /*global $*/
 // base view for pages
-var $ = require('jquery');
-var Model = require('ampersand-model');
-var _ = require('underscore');
-//var key = require('keymaster');
+import $ from 'jquery';
+import jQuery from 'jquery';
+window.$ = $; window.jQuery = jQuery;
 
+import Model from 'ampersand-model';
+import _ from 'underscore';
 
-var Content = Model.extend({
+let Content = Model.extend({
     urlRoot: '/',
     props: {
         id: 'string',
@@ -17,7 +18,7 @@ var Content = Model.extend({
         i18nSwitcher: 'object',
         lang: 'string'
     },
-    parse:function (resp, options) {
+    parse: function (resp, options) {
         var dom = $(resp);
         this.pageTitle = resp.split("<title>")[1].split("</title>")[0];
         this.pageContent = dom.find('.Application-view')[0];
@@ -45,4 +46,4 @@ var Content = Model.extend({
 });
 
 
-module.exports = Content;
+export default Content;

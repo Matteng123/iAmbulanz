@@ -1,9 +1,9 @@
-var State = require("ampersand-state");
-var sync = require("ampersand-sync");
-var qs = require("qs");
-var Promise = require("es6-promise").Promise;
+import State from "ampersand-state";
+import sync from "ampersand-sync";
+import qs from "qs";
+import {Promise} from "es6-promise";
 
-var Form = State.extend({
+let Form = State.extend({
 
     ajaxConfig: {
         headers: {
@@ -68,4 +68,4 @@ var Form = State.extend({
 
 });
 
-module.exports = Form;
+export default Form;

@@ -5,7 +5,7 @@ var path   = require('path')
 var gutil  = require("gulp-util")
 
 var cleanTask = function (cb) {
-  var files = [ path.join(config.root.dest, 'manifest.json') ]
+  var files = [ path.join(config.root.dest, 'rev-manifest.json') ]
 
   for(var key in config.tasks) {
     var task = config.tasks[key]

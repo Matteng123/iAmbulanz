@@ -1,19 +1,18 @@
 /*global me, app*/
-var $ = require('jquery');
-var _ = require('underscore');
-var View = require('ampersand-view');
-var dom = require('ampersand-dom');
-var ViewSwitcher = require('ampersand-view-switcher');
-var gsap = require('./vendor/gsap/uncompressed/TweenMax.js');
-var gsap = require('./vendor/gsap/uncompressed/plugins/ScrollToPlugin.js');
 
-var MainView = View.extend({
+import _ from 'underscore';
+import View from 'ampersand-view';
+import dom from 'ampersand-dom';
+import ViewSwitcher from 'ampersand-view-switcher';
+import "ScrollToPlugin";
+import "TweenMax";
+
+let MainView = View.extend({
 
     props: {
-        isMobile: false,
         pageTitle: [String, true, 'iAmbulanz'],
-        isStickyOff: false,
-        isSticky: false,
+        isStickyOff: ['boolean', false, false],
+        isSticky: ['boolean', false, false]
     },
 
     events: {
@@ -85,7 +84,7 @@ var MainView = View.extend({
         // TRACKING
         if(typeof ga != 'undefined'){
             ga('send', 'pageview', {
-                'page': app.router.history.location.pathname,
+                'page': App.router.history.location.pathname,
                 'title': view.model.pageTitle
             });
         }
@@ -159,7 +158,7 @@ var MainView = View.extend({
 
 
                 // this.closeMainMenu();
-                app.navigate(path);
+                App.navigate(path);
                 // close menu container
                 this.handleTogglemenu();
 
@@ -167,8 +166,8 @@ var MainView = View.extend({
     },
 
     _scrollToSection: function(){
-        if (app.pageHash.length >= 1){
-            var id = this.query(app.pageHash);
+        if (App.pageHash.length >= 1){
+            var id = this.query(App.pageHash);
             TweenMax.to(window, 1.2, {scrollTo:{y:id.offsetTop}, ease:Power2.easeOut});
         }
     },

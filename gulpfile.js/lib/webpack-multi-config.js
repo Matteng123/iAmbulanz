@@ -17,21 +17,53 @@ module.exports = function(env) {
   var webpackConfig = {
     context: jsSrc,
     plugins: [],
-    // externals: {
-    //       "jquery": "jQuery"
-    // },
     resolve: {
-      extensions: [''].concat(extensions)
-    }
-    // module: {
-    //   loaders: [
-    //     {
-    //       test: /\.js$/,
-    //       loader: false,
-    //       exclude: /node_modules/
-    //     }
-    //   ]
-    // }
+      extensions: ['', '.js'],
+      alias: {
+        webworkify: 'webworkify-webpack',
+        'jQuery': path.resolve('./node_modules/jquery/dist/jquery.js'),
+        '$': path.resolve('./node_modules/jquery/dist/jquery.js'),
+        'responsImg': path.resolve('./app/vendor/responsiveimage/jquery.responsImg.js'),
+        'mapbox-gl': path.resolve('./node_modules/mapbox-gl/dist/mapbox-gl.js'),
+        'ScrollMagic': path.resolve('./node_modules/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js'),
+        'animationGsap': path.resolve('./node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js'),
+        'ScrollToPlugin': path.resolve('./node_modules/gsap/src/uncompressed/plugins/ScrollToPlugin.js'),
+        'TweenMax': path.resolve('./node_modules/gsap/src/uncompressed/TweenMax.js'),
+        'TweenLite': path.resolve('./node_modules/gsap/src/uncompressed/TweenLite.js'),
+        'TimelineMax': path.resolve('./node_modules/gsap/src/uncompressed/TimelineMax.js')
+      }
+    },
+    // node: {
+    //   fs: "empty"
+    // },
+    module: {
+      loaders: [{
+          test: /\.jsx?$/,
+          loader: 'babel',
+          exclude: /node_modules/,
+          query: {
+            presets: ['es2015', 'stage-0']
+          }
+        },
+        {
+          test: /\.json$/,
+          loader: 'json-loader'
+        },
+        {
+          test: /\.js$/,
+          include: path.resolve(__dirname, 'node_modules/webworkify/index.js'),
+          loader: 'worker'
+        },
+        {
+         test: /mapbox-gl.+\.js$/,
+         loader: 'transform/cacheable?brfs'
+        }]
+      ,postLoaders: [{
+          include: /node_modules\/mapbox-gl-shaders/,
+          loader: 'transform',
+          query: 'brfs'
+      }]
+   }
   }
 
   if(env !== 'test') {
@@ -57,7 +89,7 @@ module.exports = function(env) {
 
   if(env === 'development') {
     webpackConfig.devtool = 'source-map'
-    webpack.debug = false
+    webpack.debug = true
   }
 
   if(env === 'production') {
@@ -69,7 +101,7 @@ module.exports = function(env) {
         }
       }),
       new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.UglifyJsPlugin({compress:true}),
+      new webpack.optimize.UglifyJsPlugin(),
       new webpack.NoErrorsPlugin()
     )
   }

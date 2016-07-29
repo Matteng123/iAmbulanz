@@ -1,17 +1,15 @@
 /*global $*/
 // base view for pages
-var View = require('ampersand-view');
-var dom = require('ampersand-dom');
-var _ = require('underscore');
-var responsImg = require('../vendor/responsiveimage/jquery.responsImg.js');
+import View from 'ampersand-view';
+import _ from 'underscore';
 
 
-var Base = View.extend({
+let Base = View.extend({
 
     props: {
-        isInitial: [Boolean, true, false],
-        isKilled: [Boolean, true, false],
-        formModel: [Object, true, '']
+        isInitial: ['boolean', true, false],
+        isKilled: ['boolean', true, false],
+        formModel: ['object', true, function(){ return {}; }]
     },
 
     template: function(){
@@ -98,4 +96,4 @@ var Base = View.extend({
 });
 
 
-module.exports = Base;
+export default Base;

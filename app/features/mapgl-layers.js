@@ -1,8 +1,8 @@
 // var mapboxgl = require('mapbox-gl');
-var mapboxgl = require('../vendor/mapboxgl/mapbox-gl.js');
-var each = require('amp-each');
+import mapboxgl from '../vendor/mapboxgl/mapbox-gl.js';
+import each from 'amp-each';
 
-var layers = {
+let layers = {
 
 	map:null,
 	activeChapterName:null,
@@ -199,4 +199,4 @@ var layers = {
 	}
 };
 
-module.exports = layers;
+export default layers;

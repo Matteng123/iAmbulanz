@@ -1,17 +1,13 @@
 /* global me, app */
-var AmpersandRouter = require('ampersand-router');
-
-var FormModel = require('./models/form');
-var ContentView = require('./pages/content');
-var ContentModel = require('./models/content');
-var ContactView = require('./pages/contact');
+import AmpersandRouter from 'ampersand-router';
+import FormModel from './models/form';
+import ContentModel from './models/content';
+import ContentView from './pages/content';
 
 
-var Router = AmpersandRouter.extend({
+
+let Router = AmpersandRouter.extend({
     routes: {
-        // 'de/kontakt/': 'contact',
-        // ':i18n/:query/': 'project',
-        // ':i18n/:query/:page': 'project',
         '(*path)': 'content'
     },
 
@@ -24,4 +20,4 @@ var Router = AmpersandRouter.extend({
     }
 });
 
-module.exports = Router;
+export default Router

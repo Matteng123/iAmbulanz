@@ -2,7 +2,7 @@ var path = require('path')
 var fs   = require('fs')
 
 module.exports = function(publicPath, dest, filename) {
-  filename = filename || 'manifest.json'
+  filename = filename || 'rev-manifest.json'
 
   return function() {
     this.plugin("done", function(stats) {

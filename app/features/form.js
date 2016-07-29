@@ -1,7 +1,7 @@
-var _ = require('underscore'),
-  dom = require('ampersand-dom');
+import _ from 'underscore';
+import dom from 'ampersand-dom';
 
-var form = {
+let form = {
   _scrollToTop: function(form){
     TweenMax.to(window, 0.5, {scrollTo:{y:form.offsetTop}, ease:Power2.easeOut});
   },
@@ -205,4 +205,4 @@ var form = {
 
 };
 
-module.exports = form;
+export default form;

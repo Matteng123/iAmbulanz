@@ -1,45 +1,51 @@
 {
   "root": {
+    "domain": "http://iAmbulanz.de",
+    "appName": "iAmbulanz",
+    "appDescription": "-",
     "src": "./app",
     "dest": "./public/assets"
   },
+
   "tasks": {
     "browserSync": {
       "proxy": "iambulanz.dev"
     },
+
+    "js": {
+      "src": "",
+      "dest": "js",
+      "extractSharedJs": false,
+      "entries": {
+        "app": ["./app.js"],
+        "loader": ["./loader.js"]
+      },
+      "extensions": ["js"]
+    },
+
     "css": {
       "src": "styles",
       "dest": "css",
       "autoprefixer": {
-        "browsers": [
-          "last 3 version"
-        ]
+        "browsers": ["last 3 version"]
       },
       "sass": {
         "indentedSyntax": true
       },
       "extensions": ["sass", "scss", "css"]
     },
-    "fonts": {
-      "src": "fonts",
-      "dest": "fonts",
-      "extensions": ["eot", "svg", "ttf", "woff", "woff2", "css"],
-      "exclude": [
-        "**/specimen_files/**/*"
-      ]
+
+    "favicons": {
+      "src": "/favicons/favicon.png",
+      "dest": "/assets/favicons",
+      "background" :"#FFF"
     },
-    "js": {
-      "src": "",
-      "dest": "js",
-      "extractSharedJs": false,
-      "entries": {
-        "app": [
-          "./app.js"
-        ]
-      },
-      "extensions": [
-        "js"
-      ]
+
+    "production": {
+      "cssSrc": "./public/assets//*.css",
+      "jsSrc": "./public/assets//*.js",
+      "dest": "./public/assets/"
     }
+
   }
 }

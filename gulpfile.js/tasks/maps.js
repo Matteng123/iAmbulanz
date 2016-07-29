@@ -1,5 +1,5 @@
 var config      = require('../config')
-if(!config.tasks.maps) return
+if(!config.tasks.images) return
 
 var browserSync = require('browser-sync')
 var changed     = require('gulp-changed')
@@ -7,7 +7,7 @@ var gulp        = require('gulp')
 var path        = require('path')
 
 var paths = {
-  src: path.join(config.root.src, config.tasks.maps.src, '/**/*'),
+  src: path.join(config.root.src, config.tasks.maps.src, '/**'),
   dest: path.join(config.root.dest, config.tasks.maps.dest)
 }
 

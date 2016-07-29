@@ -1,12 +1,9 @@
 /*global $*/
 // base view for pages
-var Model = require('./base');
-//var _ = require('underscore');
-//var key = require('keymaster');
+import Model from './base';
 
-
-var Content = Model.extend({
+let Content = Model.extend({
     urlRoot: '/'
 });
 
-module.exports = Content;
+export default Content;

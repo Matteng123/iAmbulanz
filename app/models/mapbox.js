@@ -1,7 +1,7 @@
 // base view for pages
-var Model = require('ampersand-model');
+import Model from 'ampersand-model';
 
-var Content = Model.extend({
+let Content = Model.extend({
     urlRoot: '/',
     props: {
         source: 'String',
@@ -29,4 +29,4 @@ var Content = Model.extend({
     }
 });
 
-module.exports = Content;
+export default Content;

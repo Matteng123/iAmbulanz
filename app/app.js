@@ -1,20 +1,20 @@
 /*global app, me, $*/
-jQuery = $ = require('jquery');
-var _ = require('underscore');
-var Router = require('./router');
-var domReady = require('domready');
-var MainView = require('./main-view');
+import _ from 'underscore';
+import Router from './router';
+import MainView from './main-view';
+
+import $ from 'jquery';
+import jQuery from 'jquery';
+window.$ = $; window.jQuery = jQuery;
 
 var App = {
-    // this is the the whole app initter
-    initial: true,
-
+    initial: ['boolean', true, true],
     blastoff: function () {
-        var self = window.app = this;
+        var self = window.App = this;
         // init our URL handlers and the history tracker
-        this.router = new Router();
+        self.router = new Router();
 
-        var mainView = self.view = new MainView({
+        let mainView = self.view = new MainView({
             el: document.body
         });
 
@@ -34,18 +34,15 @@ var App = {
             });
             view.model.fetch();
         });
-        // we have what we need, we can now start our router and show the appropriate page
+        // // we have what we need, we can now start our router and show the appropriate page
         self.router.history.start({pushState: true, root: '/'});
 
     },
 
     navigate: function (page) {
-        var url = (page.charAt(0) === '/') ? page.slice(1) : page;
+        let url = (page.charAt(0) === '/') ? page.slice(1) : page;
         this.router.history.navigate(url, {trigger: true});
     }
 };
-domReady(function () {
-  App.blastoff();
-});
 
-module.exports = window.App = App;
+export default window.App = App;

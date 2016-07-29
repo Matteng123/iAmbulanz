@@ -21,9 +21,290 @@
       h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
     })(document);
   </script>
+  <style>
+      .preloader {
+        text-align:center;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 111110;
+      }
+      .preloader .curtain {
+        background-color: #fff;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        -webkit-transition: opacity .75s;
+        -moz-transition: opacity .75s;
+        -ms-transition: opacity .75s;
+        transition: opacity .75s;
+      }
+      .preloader .curtain {
+        background-color: #fff;
+        -moz-transition: opacity .75s;
+        -ms-transition: opacity .75s;
+        transition: opacity .75s;
+      }
+      .newload {
+        overflow: hidden
+      }
+      .newload .preloader,
+      .loading .preloader,
+      .hideloader .preloader,
+      .loaded .preloader {
+        z-index: 99999;
+      }
+      .newload .preloader .curtain,
+      .loading .preloader .curtain,
+      .loaded .preloader .curtain {
+        opacity: 1;
+      }
+      .hideloader .preloader .curtain {
+        opacity: 0;
+      }
+      .preloader .loader {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        position: relative;
+        border: 4px solid #9e8756;
+        top: 50%;
+        animation: loader 2s infinite ease;
+        -webkit-animation: loader 2s infinite ease;
+        -moz-animation: loader 2s infinite ease;
+        -o-animation: loader 2s infinite ease;
+      }
+      .preloader .loader-inner {
+        vertical-align: top;
+        display: inline-block;
+        width: 100%;
+        background-color: #9e8756;
+        animation: loader-inner 2s infinite ease-in;
+        -webkit-animation: loader-inner 2s infinite ease-in;
+        -moz-animation: loader-inner 2s infinite ease-in;
+        -o-animation: loader-inner 2s infinite ease-in;
+      }
+
+      @keyframes loader {
+        0% {
+          transform: rotate(45deg);
+          -webkit-transform: rotate(45deg);
+          -ms-transform: rotate(45deg);
+        }
+
+        25% {
+          transform: rotate(225deg);
+          -webkit-transform: rotate(225deg);
+          -ms-transform: rotate(225deg);
+        }
+
+        50% {
+          transform: rotate(225deg);
+          -webkit-transform: rotate(225deg);
+          -ms-transform: rotate(225deg);
+        }
+
+        75% {
+          transform: rotate(405deg);
+          -webkit-transform: rotate(405deg);
+          -ms-transform: rotate(405deg);
+        }
+
+        100% {
+          transform: rotate(405deg);
+          -webkit-transform: rotate(405deg);
+          -ms-transform: rotate(405deg);
+        }
+      }
+      @-webkit-keyframes loader {
+        0% {
+          transform: rotate(45deg);
+          -webkit-transform: rotate(45deg);
+          -ms-transform: rotate(45deg);
+        }
+
+        25% {
+          transform: rotate(225deg);
+          -webkit-transform: rotate(225deg);
+          -ms-transform: rotate(225deg);
+        }
+
+        50% {
+          transform: rotate(225deg);
+          -webkit-transform: rotate(225deg);
+          -ms-transform: rotate(225deg);
+        }
+
+        75% {
+          transform: rotate(405deg);
+          -webkit-transform: rotate(405deg);
+          -ms-transform: rotate(405deg);
+        }
+
+        100% {
+          transform: rotate(405deg);
+          -webkit-transform: rotate(405deg);
+          -ms-transform: rotate(405deg);
+        }
+      }
+      @-mos-keyframes loader {
+        0% {
+          transform: rotate(45deg);
+          -webkit-transform: rotate(45deg);
+          -ms-transform: rotate(45deg);
+        }
+
+        25% {
+          transform: rotate(225deg);
+          -webkit-transform: rotate(225deg);
+          -ms-transform: rotate(225deg);
+        }
+
+        50% {
+          transform: rotate(225deg);
+          -webkit-transform: rotate(225deg);
+          -ms-transform: rotate(225deg);
+        }
+
+        75% {
+          transform: rotate(405deg);
+          -webkit-transform: rotate(405deg);
+          -ms-transform: rotate(405deg);
+        }
+
+        100% {
+          transform: rotate(405deg);
+          -webkit-transform: rotate(405deg);
+          -ms-transform: rotate(405deg);
+        }
+      }
+      @-o-keyframes loader {
+        0% {
+          transform: rotate(45deg);
+          -webkit-transform: rotate(45deg);
+          -ms-transform: rotate(45deg);
+        }
+
+        25% {
+          transform: rotate(225deg);
+          -webkit-transform: rotate(225deg);
+          -ms-transform: rotate(225deg);
+        }
+
+        50% {
+          transform: rotate(225deg);
+          -webkit-transform: rotate(225deg);
+          -ms-transform: rotate(225deg);
+        }
+
+        75% {
+          transform: rotate(405deg);
+          -webkit-transform: rotate(405deg);
+          -ms-transform: rotate(405deg);
+        }
+
+        100% {
+          transform: rotate(405deg);
+          -webkit-transform: rotate(405deg);
+          -ms-transform: rotate(405deg);
+        }
+      }
+
+
+      @keyframes loader-inner {
+        0% {
+          height: 0%;
+        }
+
+        25% {
+          height: 0%;
+        }
+
+        50% {
+          height: 100%;
+        }
+
+        75% {
+          height: 100%;
+        }
+
+        100% {
+          height: 0%;
+        }
+      }
+      @-webkit-keyframes loader-inner {
+        0% {
+          height: 0%;
+        }
+
+        25% {
+          height: 0%;
+        }
+
+        50% {
+          height: 100%;
+        }
+
+        75% {
+          height: 100%;
+        }
+
+        100% {
+          height: 0%;
+        }
+      }
+      @-moz-keyframes loader-inner {
+        0% {
+          height: 0%;
+        }
+
+        25% {
+          height: 0%;
+        }
+
+        50% {
+          height: 100%;
+        }
+
+        75% {
+          height: 100%;
+        }
+
+        100% {
+          height: 0%;
+        }
+      }
+      @-o-keyframes loader-inner {
+        0% {
+          height: 0%;
+        }
+
+        25% {
+          height: 0%;
+        }
+
+        50% {
+          height: 100%;
+        }
+
+        75% {
+          height: 100%;
+        }
+
+        100% {
+          height: 0%;
+        }
+      }
+  </style>
 
 </head>
-<body>
+<body class="loading">
   <header class="Header--sticky" role="banner">
     <div class="Header-body">
       <?php snippet('logo') ?>

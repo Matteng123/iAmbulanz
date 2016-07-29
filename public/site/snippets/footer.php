@@ -24,7 +24,7 @@
       <div class="Footer-centerbar">
         <div class="Footer-navigation">
           <div class="Footer-navigation-col">
-            <?php 
+            <?php
               $metaitems = $pages->filterBy('ispart', 'meta');
               if($metaitems and $metaitems->count()):
             ?>
@@ -36,7 +36,7 @@
               <?php endforeach ?>
             </ul>
             <?php endif ?>
-            <?php 
+            <?php
               $footeritems = $pages->filterBy('ispart', 'footer');
               if($footeritems and $footeritems->count()):
             ?>
@@ -50,7 +50,7 @@
             <?php endif ?>
           </div>
           <div class="Footer-navigation-col">
-            <?php 
+            <?php
               $landingitems = $pages->filterBy('ispart', 'landing');
               if($landingitems and $landingitems->count()):
             ?>
@@ -78,6 +78,14 @@
       </div>
     </div>
   </footer>
-  <?php echo js('assets/js/app.js') ?>
+  <?php echo js('assets/js/loader.js') ?>
+  //- PRELOADER
+  <div class="preloader">
+    <div class="curtain">
+      <div class="loader">
+        <div class="loader-inner"></div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
