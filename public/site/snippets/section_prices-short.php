@@ -42,15 +42,18 @@
 						<tr>
 							<th>Modelle</th>
 							<th>Display
-								<div>
+								<!-- <div>
 									<span></span>
 									<p>Hilfetext für Display</p>
-								</div>
+								</div> -->
 							</th>
 							<th>Kleinkompente
 								<div>
 									<span></span>
-									<p>Hilfetext für Kleinkomponente</p>
+									<p>Zu Kleinkomponenten zählen folgende Teile:<br/>
+											Kamera; Kameralinse; Innenkamera; Hörmuschel; Homebutton; Powerbutton; Lautstärkeregler; Stummschalter; Ladebuchse; Lautsprecher; Mikrofon; Kopfhörerbuchse; Backcover / Mittelrahmen; SIM / SD Kartenleser;
+											WLAN / Bluetooth Antenne
+									</p>
 								</div>
 							</th>
 							<th>Akku</th>
