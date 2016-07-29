@@ -17,6 +17,7 @@
 					color: $button-color
 					font-weight: 600
 			a
+				+transition(padding, 0.35s)
 				user-select: none
 				-webkit-tap-highlight-color: rgba(0,0,0,0)
 				z-index: 999
@@ -34,6 +35,8 @@
 		+bp('medium')
 			li
 				a
+
+					padding: 1rem 0.9rem 2rem 0.9rem
 					span
 						position: relative
 						&:after
@@ -59,7 +62,7 @@
 			li
 				display: inline-block
 				a
-					padding: 1rem 1.5rem 2rem 1.5rem
+					padding: 1rem 1.0rem 2rem 1.0rem
 					line-height: 4.5rem
 					color: $text-color
 					font-size: 1.1rem
@@ -67,6 +70,10 @@
 			li
 				a
 					padding: 1rem 2rem
-					padding: 1rem 2rem 2rem 2rem
+					padding: 1rem 1.1rem 2rem 1.1rem
 					line-height: 5rem
 					font-size: 1.3rem
+		+bp('huge')
+			li
+				a
+					padding: 1rem 2rem 2rem 2rem
