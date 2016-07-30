@@ -79,7 +79,6 @@
     </div>
   </footer>
   <?php echo js('assets/js/loader.js') ?>
-  //- PRELOADER
   <div class="preloader">
     <div class="curtain">
       <div class="loader">

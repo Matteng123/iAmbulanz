@@ -116,9 +116,9 @@ let layers = {
 			this.map.on('click', function (e) {
 				self._clickPopup(e);
 			});
-			this.map.on('mousemove', function (e) {
-				self._mouseMove(e);
-			});
+			// this.map.on('mousemove', function (e) {
+			// 	self._mouseMove(e);
+			// });
 		}
 	},
 
@@ -139,37 +139,28 @@ let layers = {
 	_clickPopup: function (e){
 		var self = this,
 			keys = [];
-
-			console.log("_clickPopup");
-
 		each(self.MapConfig.layer, function(layerData, key) {
-			console.log(key);
 			keys.push(key);
 		});
 
-		self.map.featuresAt(e.point, {
-			radius: 30,
-			includeGeometry: true,
-			layer: keys
-		}, function (err, features) {
-			if (err || !features.length) {
-				self.popup.remove();
-				return;
-			}
-			var feature = features[0];
-			var prop = feature.properties;
+		var features = self.map.queryRenderedFeatures([[e.point.x-20, e.point.y-20],[e.point.x+20, e.point.y+20] ], {layers: keys});
 
-			// popup template
-			var output = '';
-			output += '<div class="map-popup-layer">';
-			output += prop.headline !== "" ? '<strong>' + prop.headline + '</strong>' : '';
-			output += prop.description !== "" ? prop.description : '';
-			output += '</div>';
+		if(features.length > 0) {
+			var prop = features[0].properties;
+				// popup template
+				var output = '';
+				output += '<div class="map-popup-layer">';
+				output += prop.headline !== "" ? '<strong>' + prop.headline + '</strong>' : '';
+				output += prop.description !== "" ? prop.description : '';
+				output += '</div>';
 
-			self.popup.setLngLat( feature.geometry.coordinates )
-				.setHTML(output)
-				.addTo(self.map);
-		});
+				self.popup.setLngLat( features[0].geometry.coordinates )
+					.setHTML(output)
+					.addTo(self.map);
+
+		} else {
+			self.popup.remove();
+		}
 	},
 
 	_loadLayer: function (){
