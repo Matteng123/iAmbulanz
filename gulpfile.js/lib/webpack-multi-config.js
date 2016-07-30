@@ -24,7 +24,6 @@ module.exports = function(env) {
         'jQuery': path.resolve('./node_modules/jquery/dist/jquery.js'),
         '$': path.resolve('./node_modules/jquery/dist/jquery.js'),
         'responsImg': path.resolve('./app/vendor/responsiveimage/jquery.responsImg.js'),
-        'mapbox-gl': path.resolve('./node_modules/mapbox-gl/dist/mapbox-gl.js'),
         'ScrollMagic': path.resolve('./node_modules/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js'),
         'animationGsap': path.resolve('./node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js'),
         'ScrollToPlugin': path.resolve('./node_modules/gsap/src/uncompressed/plugins/ScrollToPlugin.js'),

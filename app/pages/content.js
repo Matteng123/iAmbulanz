@@ -44,6 +44,7 @@ Content = Content.extend({
 		if (this.Mapbox !== undefined){
         this.MapConfig = new MapModel({source:'./assets/map/config.json'});
         this.MapConfig.on("sync", function(model, resp){
+              console.log("sync mapmodel");
             self._renderMap(this.Mapbox);
         });
         this.MapConfig.fetch();

@@ -1,5 +1,5 @@
 // var mapboxgl = require('mapbox-gl');
-import mapboxgl from '../vendor/mapboxgl/mapbox-gl.js';
+import mapboxgl from 'mapbox-gl';
 import each from 'amp-each';
 
 let layers = {
@@ -104,10 +104,11 @@ let layers = {
 
 			// set initials
 			this.map = mapbox;
-			this._i18n();
+			// this._i18n();
 
 			this.map.addControl( new mapboxgl.Navigation( {position:"top-right"} ) );
 			this.map.on('style.load', function() {
+				console.log("loadLayer");
 				self._loadLayer();
 			});
 
