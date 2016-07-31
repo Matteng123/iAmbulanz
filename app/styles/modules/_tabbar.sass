@@ -5,6 +5,8 @@
     .Tabbar-item
       &--active
         border: none
+        +bp('medium')
+          border: 2px solid darken($primary-color, 10%)
         a
           &:after
             content: ''

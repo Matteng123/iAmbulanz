@@ -19,6 +19,7 @@
             <td><a href="mailto:<?php echo $site->email()->html() ?>">› <?php echo $site->email()->html() ?></a></td>
           </tr>
       	</table>
+        
         <br>
       </div>
       <div class="Footer-centerbar">
