@@ -48,13 +48,13 @@ button.Nav-button {
 	.Nav-button {
 		padding: ms(0.375em, 0.8) ms(0.875em, 0.8);
 		border-radius: ms(0.875em, 0.8);
-		background-color: $primary-color;
+		background-color: $color-primary;
 		letter-spacing: normal;
 		text-transform: none;
 	}
 
 	.Nav-item.isActive .Nav-button {
-		background-color: $text-color;
-		color: $primary-color;
+		background-color: $color-text;
+		color: $color-primary;
 	}
 }

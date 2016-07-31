@@ -1,10 +1,10 @@
 .Prices
-	background-color: $primary-color
+	background-color: $color-primary
 	&-text
-		margin-bottom: $large-border
+		margin-bottom: $border-large
 		h2
 			text-align: center
-			color: $text_color
+			color: $color-text
 			font-size: 2em
 			font-weight: 600
 			margin-bottom: 0
@@ -16,9 +16,9 @@
 		&.Prices-body--margin
 			margin-bottom: -1*30px
 			+bp('medium')
-				margin-bottom: -1*$medium-border
+				margin-bottom: -1*$border-medium
 			+bp('large')
-				margin-bottom: -2*$large-border
+				margin-bottom: -2*$border-large
 	&-tabs
 		position: relative
 		padding: 20px
@@ -73,7 +73,7 @@
 			overflow-y: hidden
 			opacity: 0
 			th
-				border-top: 1px solid lighten($secondary-color, 50%)
+				border-top: 1px solid lighten($color-secondary, 50%)
 			&.active
 				height: auto
 				opacity: 1

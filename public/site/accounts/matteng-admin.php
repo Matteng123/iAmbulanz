@@ -7,8 +7,8 @@ password: >
 language: de
 role: admin
 history:
-  - reparatur/geraete
-  - blog
   - anfrage
   - garantie/garantieformular
+  - reparatur/geraete
+  - blog
   - blog/project-a

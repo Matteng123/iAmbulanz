@@ -1,5 +1,4 @@
 .Form
-  background-color: $primary-color
   form
     +bp('medium')
       &:after
@@ -15,7 +14,11 @@
         border-left: 5px solid red
         font-weight: 500
     &.issent,
+      .Form-element
+        opacity: 0
+        visibility: hidden
       >.Form-sentmessage
+        height: inherit
         text-align: center
         >div
           +transform(translateY(0%))
@@ -37,22 +40,22 @@
 
   input[type="text"],
   textarea
-    font-family: $text-font
+    font-family: $font-text
     border: none
     outline: none
     height: 50px
     color: #000
-    background: #fff
+    background: $color-primary
     position: relative
     margin-bottom: 20px
     padding-left: 20px
-    border-left: 0px $button-color solid
+    border-left: 0px $color-button solid
     width: 100%
     font-size: 1.2em
     +transition(all,0.1s)
     &:focus,
     &:focus:hover
-      border-left: 8px $button-color solid
+      border-left: 8px $color-button solid
 
 
   textarea
@@ -69,21 +72,21 @@
       clear: both
     h2
       text-align: center
-      color: $text_color
+      color: $color-text
       font-size: 2em
       font-weight: 600
       &:after
         content: none
   p
-    margin-bottom: $small-border
+    margin-bottom: $border-small
     +bp('medium')
-      margin-bottom: $medium-border
+      margin-bottom: $border-medium
       font-size: 1.5em
     +bp('large')
-      margin-bottom: $large-border
+      margin-bottom: $border-large
     &.Form-errormessage
       font-size: 1em
-      margin-top: -1*$small-border
+      margin-top: -1*$border-small
       margin-bottom: 0
   &-body
     @extend .Section-body--smallest
@@ -96,7 +99,7 @@
       label
         color: red
         font-weight: 600
-    &:last-child
+    &.submit
       text-align: right
       +bp('medium')
         padding-right: 30px
@@ -106,16 +109,20 @@
       +bp('medium')
         padding-right: 30px
     +bp('medium')
+      display: inline-block
+      vertical-align: top
+      margin-right: -4px
       &--half
-        float: left
+        // float: left
         width: +unit(6)
       &--full
-        float: left
+        // float: left
         width: +unit(12)
   &-errormessage
     color: red
     display: none
   &-sentmessage
+    height: 0
     >div
       position: relative
       +transform(translateY(-10%))
@@ -136,19 +143,19 @@
         margin-left: -25px
       &:before
         border-color: rgba(0, 0, 0, 0)
-        border-bottom-color: $success-color
+        border-bottom-color: $color-success
         border-width: 26px
         margin-left: -26px
 
       height: 0px
       opacity: 0
       background-color: white
-      padding: $small-border
-      border: 1px solid $success-color
+      padding: $border-small
+      border: 1px solid $color-success
       border-radius: 4px
     p
       font-size: 1.2em
-      color: $success-color
+      color: $color-success
       &:last-child
         margin-bottom: 0
   &-field
@@ -175,7 +182,7 @@
           left: 0
           height: 31px
           width: 31px
-          background-color: white
+          background-color: $color-primary
         &:after
           content: ''
           display: inline-block
@@ -184,7 +191,7 @@
           top: 15px
           height: 0px
           width: 0px
-          background-color: lighten($footer-color, 50%)
+          background-color: lighten($color-footer, 50%)
           z-index: 10
           +transition(all, 0.25s)
         &:hover
@@ -200,13 +207,24 @@
             top: 9px
             height: 13px
             width: 13px
-            background-color: $footer-color
+            background-color: $color-footer
     &--radio
       span
         &:before,
         &:after
           border-radius: 25px
 
+  &--grey
+    background-color: $color-primary
+    input[type="text"],
+    textarea
+      background-color: #fff
+    .Form-field
+        &--radio,
+        &--checkbox
+          span
+            &:before
+              background-color: white
 
 
 

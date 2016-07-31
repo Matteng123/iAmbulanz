@@ -18,21 +18,21 @@
   	transform-style: preserve-3d
 		h1
 			color: white
-			font-family: $headline-font
+			font-family: $font-headline
 			font-weight: bold
 			font-size: 1.8em
 			line-height: 1.0em
 			margin-bottom: 0.5em
 		p
 			color: white
-			font-family: $subline-font
+			font-family: $font-subline
 			font-weight: 500
 		+bp('medium')
 			max-width: 40%
 			p
 				font-size: 1.2em
 		+bp('large')
-			left: $large-border
+			left: $border-large
 			max-width: $max-size
 			h1, p
 				max-width: 60%
@@ -41,9 +41,9 @@
 			p
 				font-size: 1.5em
 		+bpf($max-size)
-			width: $max-size - $large-border * 2
+			width: $max-size - $border-large * 2
 			left: 50%
-			+transform(translateX(($max-size - $large-border * 2)/2*-1))
+			+transform(translateX(($max-size - $border-large * 2)/2*-1))
 			h1, p
 				max-width: 40%
 		+bp('larger')
@@ -53,14 +53,14 @@
 
 
 	&--testimonials
-		border-top: 1px solid lighten($secondary-color, 50%)
-		padding-top: $small-border
+		border-top: 1px solid lighten($color-secondary, 50%)
+		padding-top: $border-small
 		+bp('medium')
-			padding-top: $medium-border
+			padding-top: $border-medium
 		+bp('large')
-			padding-top: $large-border
+			padding-top: $border-large
 		+bp('larger')
-			padding-top: $larger-border
+			padding-top: $border-larger
 		.owl-controls
 			+bp('large')
 				// position: absolute
@@ -91,7 +91,7 @@
 			&-header
 				h2
 					text-align: center
-					color: $text_color
+					color: $color-text
 					font-size: 2em
 					font-weight: 600
 					&:after

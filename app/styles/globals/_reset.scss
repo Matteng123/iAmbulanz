@@ -11,13 +11,13 @@ html {
 
 ::-moz-selection {
 	color: rgb(255,255,255);
-	background-color: $secondary-color;
+	background-color: $color-secondary;
 	text-shadow: none;
 }
 
 ::selection {
 	color: rgb(255,255,255);
-	background-color: $secondary-color;
+	background-color: $color-secondary;
 	text-shadow: none;
 }
 

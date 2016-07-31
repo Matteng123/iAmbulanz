@@ -78,40 +78,40 @@ let MainView = View.extend({
 
         // facebook
 
-        FB.init({
-          appId      : '1050812854954398',
-          xfbml      : true,
-          version    : 'v2.7'
-        });
+        // FB.init({
+        //   appId      : '1050812854954398',
+        //   xfbml      : true,
+        //   version    : 'v2.7'
+        // });
 
-        FB.api(
-          "/iAmbulanz?fields=access_token",
-          function (response) {
-            console.log('api', response);
-            if (response && !response.error) {
-              console.log(response);
-              /* handle the result */
-            }
-          },{
-            "access_token" : '408ec553aa3edeb7470c7a5040e475b2'
-          }
-        );
+        // FB.api(
+        //   "/iAmbulanz?fields=access_token",
+        //   function (response) {
+        //     console.log('api', response);
+        //     if (response && !response.error) {
+        //       console.log(response);
+        //       /* handle the result */
+        //     }
+        //   },{
+        //     "access_token" : '408ec553aa3edeb7470c7a5040e475b2'
+        //   }
+        // );
 
         // {page-id}?fields=access_token
 
-        FB.api(
-          "/iAmbulanz/ratings",
-          function (response) {
-            console.log('api', response);
-            if (response && !response.error) {
-              console.log(response);
-              /* handle the result */
-            }
-          },{
-            "access_token" : '408ec553aa3edeb7470c7a5040e475b2'
-          }
-
-        );
+        // FB.api(
+        //   "/iAmbulanz/ratings",
+        //   function (response) {
+        //     console.log('api', response);
+        //     if (response && !response.error) {
+        //       console.log(response);
+        //       /* handle the result */
+        //     }
+        //   },{
+        //     "access_token" : '408ec553aa3edeb7470c7a5040e475b2'
+        //   }
+        //
+        // );
 
         return this;
     },

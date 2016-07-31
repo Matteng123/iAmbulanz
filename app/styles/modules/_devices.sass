@@ -8,6 +8,7 @@
 					width: 50%
 					margin: 0 auto
 		&-wrapper
+			padding: 0 $border-large
 			.owl-controls
 				.owl-dots
 					margin-bottom: -40px
@@ -26,7 +27,6 @@
 								width: 30px
 								top: 50%
 								margin-top: -7px
-								margin-left: -50px
 								background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMSBUaW55Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLXRpbnkuZHRkIj48c3ZnIHZlcnNpb249IjEuMSIgYmFzZVByb2ZpbGU9InRpbnkiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjI5LjYyMnB4IiBoZWlnaHQ9IjE5LjAwMnB4IiB2aWV3Qm94PSIwIDAgMjkuNjIyIDE5LjAwMiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggZmlsbD0iI0E5MTIxQyIgZD0iTTI4LjMyMyw4LjE3NUg0LjA1NGw1Ljc5MS01LjkxMmMwLjUwNy0wLjUxOCwwLjUwNy0xLjM1NywwLTEuODc1cy0xLjMzLTAuNTE4LTEuODM2LDBMMCw4LjU2M2MtMC41MDcsMC41MTgtMC41MDcsMS4zNTcsMCwxLjg3NWw4LjAwOCw4LjE3NWMwLjI1MywwLjI1OSwwLjU4NiwwLjM4OSwwLjkxOCwwLjM4OWMwLjMzMywwLDAuNjY1LTAuMTMsMC45MTgtMC4zODljMC41MDctMC41MTgsMC41MDctMS4zNTYsMC0xLjg3NGwtNS43OTEtNS45MTNoMjQuMjY5YzAuNzE3LDAsMS4yOTktMC41OTMsMS4yOTktMS4zMjVTMjkuMDQsOC4xNzUsMjguMzIzLDguMTc1eiIvPjwvc3ZnPg==)
 								background-size: contain
 								background-repeat: no-repeat
@@ -36,39 +36,38 @@
 							.owl-next
 								left: auto
 								right: 0%
-								margin-right: -50px
 								+transform(translateY(-50%) rotate(-180deg))
 		&-item
 			margin-left: 5px
 			h3
 				font-weight: 800
 				font-size: 1.3em
-				border-bottom: 1px solid darken($primary-color, 10%)
-				padding-left: $small-border
-				padding-bottom: $small-border
-				margin-top: $medium-border
+				border-bottom: 1px solid darken($color-primary, 10%)
+				padding-left: $border-small
+				padding-bottom: $border-small
+				margin-top: $border-medium
 			ul
-				padding-top: $small-border
-				padding-bottom: $small-border
+				padding-top: $border-small
+				padding-bottom: $border-small
 				+bp('large')
-					border-right: 1px solid darken($primary-color, 10%)
+					border-right: 1px solid darken($color-primary, 10%)
 				li
-					padding-left: $small-border
+					padding-left: $border-small
 			div
 				+bp('large')
-					border-right: 1px solid darken($primary-color, 10%)
+					border-right: 1px solid darken($color-primary, 10%)
 			span
 				display: block
 				text-align: center
 		&-text
-			margin-bottom: $small-border
+			margin-bottom: $border-small
 			+bp('medium')
-				margin-bottom: $medium-border
+				margin-bottom: $border-medium
 			+bp('large')
-				margin-bottom: $large-border
+				margin-bottom: $border-large
 			h2
 				text-align: center
-				color: $text_color
+				color: $color-text
 				font-size: 2em
 				font-weight: 600
 				margin-bottom: 0
@@ -92,7 +91,7 @@
 		&-body
 			@extend .Section-body--small
 		&-text
-			margin-bottom: $small-border
+			margin-bottom: $border-small
 			+bp('medium')
 				width: 45%
 				float: left
@@ -170,7 +169,7 @@
 				&:hover
 					z-index: 99999
 					span
-						background-color: darken($primary-color, 5%)
+						background-color: darken($color-primary, 5%)
 					div
 						+box-shadow(0, 0, 40px, rgba(0,0,0,0.5))
 						background-color: white

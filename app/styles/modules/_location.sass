@@ -33,7 +33,7 @@
 		&-body
 			@extend .Section-body--small
 		&-text
-			margin-bottom: $small-border
+			margin-bottom: $border-small
 			+bp('medium')
 				width: 45%
 				float: left
@@ -50,12 +50,12 @@
 					.Location-teaser-tab-body
 						height: auto
 						opacity: 1
-						padding: 2*$small-border $small-border
+						padding: 2*$border-small $border-small
 			&-bar
 				font-weight: 500
 				line-height: 2.2em
 				margin-bottom: 2px
-				background-color: $primary-color
+				background-color: $color-primary
 				padding-left: 15px
 				position: relative
 				cursor: pointer
@@ -73,7 +73,7 @@
 					outline: 0
 					text-decoration: none
 				&:hover
-					color: $button-color
+					color: $color-button
 					background-color: rgb(210,210,210)
 					&:after
 						+transform(rotate(-180deg))
@@ -98,7 +98,7 @@
 				height: 0
 				opacity: 0
 				overflow: hidden
-				padding: 0 $small-border
+				padding: 0 $border-small
 				div
 					margin-bottom: 5px
 				+transition(opacity, 0.5s)

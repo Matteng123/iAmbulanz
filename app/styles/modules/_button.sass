@@ -10,7 +10,7 @@
   overflow: hidden
   +border-radius(2rem)
   cursor: pointer
-  font-family: $button-font
+  font-family: $font-button
   font-weight: bold
   font-style: normal
   color: white
@@ -44,13 +44,13 @@
     right: 0
     bottom: 0
   &:before
-    background-color: $button-color
+    background-color: $color-button
     background-image: none
     z-index: 5
   &:after
     background-color: white
     background-image: none
-    border: 2px solid $button-color
+    border: 2px solid $color-button
     z-index: 7
     +transition(width, 0.5s)
     opacity: 0
@@ -60,7 +60,7 @@
   &:hover,
   &.active
     span
-      color: $button-color
+      color: $color-button
     &:after
       opacity: 1
       width: 100%
@@ -82,7 +82,7 @@
   overflow: hidden
   +border-radius(2rem)
   cursor: pointer
-  font-family: $button-font
+  font-family: $font-button
   font-weight: bold
   +bp('large')
     +border-radius(10rem)
@@ -126,9 +126,9 @@
 
   &:hover
     span
-      color: $button-color
+      color: $color-button
     &:after
-      border: 2px solid $button-color
+      border: 2px solid $color-button
     &:before
       opacity: 1
       width: 100%

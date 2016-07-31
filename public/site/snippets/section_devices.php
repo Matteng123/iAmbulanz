@@ -16,6 +16,8 @@
 		}
 	}
 	$categorys = array_unique ( $categorys );
+	$toolpage = $site->find($site->tool())->url();
+
 ?>
 
 <div class="Devices-carousel">
@@ -60,7 +62,7 @@
 							<?php endforeach; ?>
 						</ul>
 						<span>
-							<a class="Devices-carousel-button" href="/anfrage/?page=2&device=<?php echo $category; ?>"><span>Preis berechnen</span></a>
+							<a class="Devices-carousel-button" href="<?php echo $toolpage; ?>/?page=2&device=<?php echo $category; ?>"><span>Preis berechnen</span></a>
 						</span>
 					</div>
 			</div>

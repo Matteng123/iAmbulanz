@@ -60,7 +60,7 @@ let form = {
         errorClass = 'haserror',
         elementClass = 'Form-element',
     form = this._findFormTag(event.delegateTarget),
-    formid, formsent, honeypot, inputs, textareas, radios, radiogroups, checkboxes, checkboxgroups, errors;
+    formid, formsent, honeypot, inputs, hidden, textareas, radios, radiogroups, checkboxes, checkboxgroups, errors;
 
     if(form === null){
       throw(new Error("The DOM misses a Form-tag."));
@@ -90,6 +90,11 @@ let form = {
           errors.push(input);
         }
       }
+    });
+
+    hidden = this.queryAll(formid + ' input[type=hidden]');
+    _.each(hidden, function(input){
+      that.formModel.fields[input.getAttribute('name')] = input.value;
     });
 
     textareas = this.queryAll(formid + ' textarea');

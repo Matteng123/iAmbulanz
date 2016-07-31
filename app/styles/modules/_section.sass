@@ -2,11 +2,11 @@
   &-body
     max-width: $max-size
     margin: 0 auto
-    padding: 30px $small-border
+    padding: 30px $border-small
     +bp('medium')
-      padding: $medium-border
+      padding: $border-medium
     +bp('large')
-      padding: 2*$large-border $large-border
+      padding: 2*$border-large $border-large
     +bp('medium')
       &:after
         content: ""
@@ -15,11 +15,11 @@
   &-body--small
       max-width: $max-size - 160
       margin: 0 auto
-      padding: 30px $small-border
+      padding: 30px $border-small
       +bp('medium')
-        padding: $medium-border
+        padding: $border-medium
       +bp('large')
-        padding: 2*$large-border $large-border
+        padding: 2*$border-large $border-large
       +bp('medium')
         &:after
           content: ""
@@ -28,11 +28,11 @@
   &-body--smaller
       max-width: $max-size - 320
       margin: 0 auto
-      padding: 30px $small-border
+      padding: 30px $border-small
       +bp('medium')
-        padding: $medium-border
+        padding: $border-medium
       +bp('large')
-        padding: 2*$large-border $large-border
+        padding: 2*$border-large $border-large
       +bp('medium')
         &:after
           content: ""
@@ -41,11 +41,11 @@
   &-body--smallest
       max-width: $max-size - 640
       margin: 0 auto
-      padding: 30px $small-border
+      padding: 30px $border-small
       +bp('medium')
-        padding: $medium-border
+        padding: $border-medium
       +bp('large')
-        padding: 2*$large-border $large-border
+        padding: 2*$border-large $border-large
       +bp('medium')
         &:after
           content: ""

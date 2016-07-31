@@ -53,8 +53,21 @@ function getParamString($source, $replaceKey = "", $replaceValue = ""){
   return $params;
 }
 
-$paramString = getParamString($statusItems);
+function arePrevoiusParamsSet($statusItems, $value = 0){
+  $count = 0;
+  if($value == 0) return false;
+  foreach($statusItems as $key => $item){
+    if(get($item['param']) && ($key < $value)){
+      $count++;
+    }
+  }
+  if($count == $value)
+    return true;
+  else
+    return false;
+}
 
+$paramString = getParamString($statusItems);
 
 ?>
 <?php snippet('header') ?>
@@ -68,27 +81,25 @@ $paramString = getParamString($statusItems);
 
         </div>
         <div class="Tool-statusbar">
-            <ul>
+            <div class="Tool-statusbar-carousel">
               <?php foreach($statusItems as $key => $item) : ?>
-                <li>
-                  <?php if(($key == 0)||intval(get('page'))>$key) : ?>
-                    <a class="<?php if(($key == 0 && !get('page'))||(intval(get('page')) == $item['page'])) echo 'active'; ?>" href="/<?php echo $page->uri(); ?>/?page=<?php echo $item['page']; echo $paramString; ?>"><span><?php echo $item['page']; ?></span><span><?php echo $item['title'] ?><i><?php echo get($item['param']) ?></i></span></a>
+                <div class="item<?php if( get($item['param']) ){ echo ' isset'; } ?>">
+                  <?php if(($key == 0)||(intval(get('page'))>$key)||(arePrevoiusParamsSet($statusItems, $key))) : ?>
+                    <a data-page="<?php echo $item['page']; ?>" class="<?php if(($key == 0 && !get('page'))||(intval(get('page')) == $item['page'])){ echo 'active'; } ?>" href="/<?php echo $page->uri(); ?>/?page=<?php echo $item['page']; echo $paramString; ?>"><span><?php echo $item['page']; ?></span><span><?php echo $item['title'] ?><i><?php echo get($item['param']) ?></i></span></a>
                   <?php else : ?>
-                    <span><?php echo $item['page']; ?></span><span><?php echo $item['title'] ?></span>
+                    <span><?php echo $item['page']; ?></span><span><?php echo $item['title'] ?><i><?php echo get($item['param']) ?></i></span>
                   <?php endif; ?>
-                </li>
+                </div>
               <?php endforeach; ?>
-            </ul>
+            </div>
         </div>
       </div>
-      <div class="Tool-body">
-        <?php
-          if( (!get('page')) || (get('page') == 1) ) :
-            snippet('tool_page1', array('statusItems' => $statusItems));
-          else :
-            snippet('tool_page'.get('page'), array('statusItems' => $statusItems, 'damages' => $damages));
-          endif; ?>
-      </div>
+      <?php
+        if( (!get('page')) || (get('page') == 1) ) :
+          snippet('tool_page1', array('statusItems' => $statusItems));
+        else :
+          snippet('tool_page'.get('page'), array('statusItems' => $statusItems, 'damages' => $damages));
+        endif; ?>
     </div>
 
   </main>

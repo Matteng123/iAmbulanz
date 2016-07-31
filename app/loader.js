@@ -5,7 +5,8 @@ var Loader = {
     tl:null,
     init: () => {
       head.ready(document, function() {
-          head.load(["//connect.facebook.net/en_US/sdk.js", "/assets/css/app.css", "/assets/js/app.js"], Loader.startApp);
+          // head.load(["//connect.facebook.net/en_US/sdk.js", "/assets/css/app.css", "/assets/js/app.js"], Loader.startApp);
+          head.load(["/assets/css/app.css", "/assets/js/app.js"], Loader.startApp);
       });
     },
     removeLoader: () => {

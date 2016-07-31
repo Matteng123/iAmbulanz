@@ -12,15 +12,15 @@
       clear: both
     h2
       text-align: center
-      color: $text_color
+      color: $color-text
       font-size: 2em
       font-weight: 600
       &:after
         content: none
     p
-      margin-bottom: $small-border
+      margin-bottom: $border-small
     div
-      margin-bottom: $small-border
+      margin-bottom: $border-small
       // +bp('medium')
       //   float: left
       //   width: +unit(5.5)
@@ -43,7 +43,7 @@
         margin-top: 10px
         margin-bottom: 15px
     div
-      margin-bottom: $large-border
+      margin-bottom: $border-large
     +bp('medium')
       &:after
         +clearfix()

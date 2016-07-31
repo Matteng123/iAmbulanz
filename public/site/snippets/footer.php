@@ -19,7 +19,7 @@
             <td><a href="mailto:<?php echo $site->email()->html() ?>">› <?php echo $site->email()->html() ?></a></td>
           </tr>
       	</table>
-        
+
         <br>
       </div>
       <div class="Footer-centerbar">
@@ -71,7 +71,7 @@
           <p>Handy defekt? Jetzt anrufen:</p>
           <a href="tel:<?php echo $site->tel()->html() ?>"><?php echo $site->tel()->html() ?></a>
           <p>oder:</p>
-          <a class="Footer-box-button" href=""><span>Online-Termin machen</span></a>
+          <a class="Footer-box-button" href="<?php echo $site->find($site->tool())->url(); ?>"><span>Online-Termin machen</span></a>
         </div>
       </div>
       <div class="Footer-copyright">

@@ -15,14 +15,12 @@
 			}
 	}
 ?>
-
-<div class="Tool-header">
-	<h1><?php echo $page->step3headline() ?></h1>
-</div>
-<div class="Tool-buttonlist">
-		<ul>
-		<?php foreach($filtered as $color): ?>
-				<li><a class="Tool-buttonlist-button" href="/<?php echo $page->uri() ?>/?page=4<?php echo getParamString($statusItems, 'color', $color); ?>"><span><?php echo $color; ?></span></a></li>
-		<?php endforeach; ?>
-		</ul>
+<div class="Tool-body">
+	<div class="Tool-header">
+		<span>Schritt 3/6</span>
+		<h1><?php echo $page->step3headline() ?></h1>
+	</div>
+	<div class="Tool-buttonlist Tool-buttonlist--grid">
+			<ul><?php foreach($filtered as $color): ?><li><span><a class="Tool-buttonlist-button" href="/<?php echo $page->uri() ?>/?page=4<?php echo getParamString($statusItems, 'color', $color); ?>"><span><?php echo $color; ?></span></a></span></li><?php endforeach; ?></ul>
+	</div>
 </div>

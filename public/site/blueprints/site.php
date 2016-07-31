@@ -116,6 +116,10 @@ fields:
         label: Schaden Akku
         type: tags
       image: image_select
+  tool:
+    label: Seite für Anfragen
+    type: page
+    help: Bitte die Seite Auswählen die mit dem Template "Anfragetool" erstellt worden ist
   section0:
     label: Meta Angaben
     type: headline

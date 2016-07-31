@@ -1,7 +1,8 @@
 
 <nav class="Topbar" role="navigation">
-  <?php 
+  <?php
     $metaitems = $pages->filterBy('ispart', 'meta');
+    $toolpage = $site->find($site->tool())->url();
     if($metaitems and $metaitems->count()):
   ?>
   <div class="Topbar-body">
@@ -14,7 +15,7 @@
   </ul>
   <ul>
     <li><a class="Topbar-phone" href="tel:<?php echo $site->tel()->html() ?>"><?php echo $site->tel()->html() ?></a></li>
-    <li><a class="Topbar-button" href=""><span>Online-Termin</span></a></li>
-  </ul> 
+    <li><a class="Topbar-button" href="<?php echo $toolpage; ?>"><span>Online-Termin</span></a></li>
+  </ul>
 <?php endif ?>
 </nav>

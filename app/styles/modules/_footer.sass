@@ -1,14 +1,14 @@
 .Footer
-  background-color: $footer-color
+  background-color: $color-footer
   color: white
   &-body
     max-width: $max-size
     margin: 0 auto
-    padding: 30px $small-border
+    padding: 30px $border-small
     +bp('medium')
-      padding: $medium-border
+      padding: $border-medium
     +bp('large')
-      padding: $large-border
+      padding: $border-large
 
   &:after
     content: ""
@@ -16,12 +16,12 @@
     clear: both
 
   a
-    font-family: $link-font
+    font-family: $font-link
     font-style: italic
     text-decoration: underline
     color: white
     &:hover
-      color: $button-color
+      color: $color-button
 
   table
     width: 100%
@@ -65,7 +65,7 @@
       float: left
     +bp('large')
       text-align: left
-      margin-bottom: $large-border
+      margin-bottom: $border-large
   &-box
     text-align: center
     border: 5px solid white
@@ -74,14 +74,14 @@
       text-align: left
       padding: 40px
     +bp('larger')
-      padding: $larger-border
+      padding: $border-larger
 
     p
       font-size: 1.2em
       +bp('larger')
         font-size: 1.2em
     a
-      font-family: $button-font
+      font-family: $font-button
       font-weight: bold
       font-style: normal
       text-decoration: none
@@ -111,7 +111,7 @@
       overflow: hidden
       +border-radius(2rem)
       cursor: pointer
-      font-family: $button-font
+      font-family: $font-button
       font-weight: bold
       +bp('large')
         +border-radius(10rem)
@@ -157,9 +157,9 @@
         +transition(width, 0.5s)
       &:hover
         span
-          color: $button-color
+          color: $color-button
         &:after
-          border: 3px solid $button-color
+          border: 3px solid $color-button
         &:before
           opacity: 1
           width: 100%

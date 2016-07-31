@@ -6,7 +6,7 @@
       &--active
         border: none
         +bp('medium')
-          border: 2px solid darken($primary-color, 10%)
+          border: 2px solid darken($color-primary, 10%)
         a
           &:after
             content: ''
@@ -20,7 +20,7 @@
             +bp('large')
               bottom: -2px
           span
-            color: darken($primary-color, 50%)
+            color: darken($color-primary, 50%)
     &-body
       @extend .Section-body--small
       padding-bottom: 0
@@ -32,18 +32,18 @@
       width: 100%
       text-align: center
       +bp('large')
-        border-bottom: 2px solid darken($primary-color, 10%)
+        border-bottom: 2px solid darken($color-primary, 10%)
       li
         display: block
         cursor: pointer
         user-select: none
         -webkit-tap-highlight-color: rgba(0,0,0,0)
-        border: 2px solid darken($primary-color, 10%)
-        margin: 0 $small-border/2
+        border: 2px solid darken($color-primary, 10%)
+        margin: 0 $border-small/2
         margin-bottom: 4px
         +bp('large')
           display: inline-block
-          margin: 0 $small-border
+          margin: 0 $border-small
           margin-bottom: -2px
 
         &,
@@ -56,16 +56,16 @@
         a
           position: relative
           display: block
-          padding: $small-border/2 $small-border
+          padding: $border-small/2 $border-small
           text-decoration: none
-          color: $button-color
+          color: $color-button
           font-style: normal
           font-weight: 600
           font-size: 1.2em
           +bp('medium')
-            padding: $small-border
+            padding: $border-small
             font-size: 2em
-            padding: $small-border/2 2*$large-border
+            padding: $border-small/2 2*$border-large
           span
             position: relative
             z-index: 1

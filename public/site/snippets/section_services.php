@@ -1,5 +1,7 @@
 <?php
 	$services = $section->services()->toStructure();
+	$toolpage = $site->find($site->tool())->url();
+
 ?>
 
 <div class="Services">
@@ -13,7 +15,7 @@
 			<?php foreach($services as $item): ?>
 				<div class="Services-items-box">
 					<div>
-						<span class="Services-items-icon Services-items-icon--<?php echo $item->icon(); ?>"></span>
+						<span class="Services-items-icon Services-items-icon--<?php echo $item->type(); ?>"></span>
 					</div>
 					<div>
 						<p><strong><?php echo $item->headline(); ?> | <?php echo $item->time(); ?></strong><br>
@@ -22,7 +24,7 @@
 						<?php snippet('partial_guide-'.$item->icon()); ?>
 					</div>
 					<div>
-						<a class="Services-button" href="<?php echo $item->button_url()->url(); ?>"><span><?php echo $item->button_text()->html(); ?></span></a>
+						<a class="Services-button" href="<?php echo $toolpage.'/?page=1&price='.$item->type(); ?>"><span><?php echo $item->button_text()->html(); ?></span></a>
 					</div>
 				</div>
 			<?php endforeach; ?>

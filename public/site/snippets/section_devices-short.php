@@ -16,7 +16,7 @@
 	}
 	$categorys = array_unique ( $categorys );
 
-
+	$toolpage = $site->find($site->tool())->url();
 	$image = $section->image()->url();
 	$hotspots = $section->image()->hotspots()->toStructure();
 ?>
@@ -33,7 +33,7 @@
 							<ul>
 							<?php foreach($tables[$category] as $device): ?>
 								<?php if($device->overview()) : ?>
-									<li><a class="Devices-teaser-list-button" href="#"><span><?php echo $device->device(); ?></span></a></li>
+									<li><a class="Devices-teaser-list-button" href="<?php echo $toolpage.'/?page=3&device='.$category.'&model='.$device->device() ?>"><span><?php echo $device->device(); ?></span></a></li>
 								<?php endif; ?>
 							<?php endforeach; ?>
 							</ul>

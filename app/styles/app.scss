@@ -2,27 +2,27 @@
 $scale-base: 1;
 
 // Colors
-$primary-color: rgb(241,241,241);
-$secondary-color: rgb(76,84,84);
-$button-color: rgb(177,0,0);
-$text-color: rgb(49,41,41);
-$neg-text-color: rgb(255,255,255);
-$background-color: rgb(255,255,255);
-$footer-color: #4c5454;
-$success-color: #3ab100;
+$color-primary: rgb(241,241,241);
+$color-secondary: rgb(76,84,84);
+$color-button: rgb(177,0,0);
+$color-text: rgb(49,41,41);
+$color-text-neg: rgb(255,255,255);
+$color-background: rgb(255,255,255);
+$color-footer: #4c5454;
+$color-success: #3ab100;
 
 // Fonts
-$headline-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
-$button-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
-$subline-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
-$text-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
-$link-font: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$font-headline: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$font-button: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$font-subline: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$font-text: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$font-link: "brandon-grotesque", Helvetica, Arial, sans-serif;
 
 // Standards
-$small-border: 15px;
-$medium-border: 30px;
-$large-border: 40px;
-$larger-border: 60px;
+$border-small: 15px;
+$border-medium: 30px;
+$border-large: 40px;
+$border-larger: 60px;
 $max-size: 1600px;
 
 // Mixins

@@ -33,7 +33,7 @@ fields:
   rabatt:
     label: Rabattinfo
     type: textarea
-  rabatt-image:
+  rabattimage:
     label: Rabbattbild
     type: select
     options: images
@@ -68,11 +68,14 @@ fields:
       required: form_fields_required
       error: form_fields_error
       size: form_fields_size
-      tab: form_fields_index
   error: form_text_error
   successmessage: form_text_success
   mailsubject: form_mail_subject
-  mailbody: form_mail_body
+  mailbody:
+    label: Template für E-Mail an iAmbulanz
+    type: textarea
+    default: %vorname% %nachname% %device%, %model%, %color%, %damage% und %price%
+    help: Der Text wird beim Versand des Formulars an den Empfänger des Formulars verschickt. Variabeln werden per %key% in den Text eingefügt und durch die ausgefüllten Werte ersetzt. Neben den Formularfeldern stehen in den Mailtemplates noch die Variablen %device%, %model%, %color%, %damage% und %price% zur Verfügung und sollten auch aufgeführt sein.
   clientbody: form_mail_clientbody
   recipient: form_recipients
   sender: form_sender

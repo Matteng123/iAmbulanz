@@ -24,7 +24,7 @@ Content = Content.extend({
     "click .Prices-button":"_handlePricebarClick",
     "click .Form-field--radio div":"_handleRadioClick",
     "click .Form-field--checkbox div":"_handleCheckboxClick",
-    "click .Form button[type=submit]":"_handleFormSubmitClick"
+    "click .Form-element button[type=submit]":"_handleFormSubmitClick"
   },
 
   hookBeforeHide: function(){
@@ -70,7 +70,6 @@ Content = Content.extend({
     });
 
     $('.Devices-carousel .Devices-carousel-wrapper').owlCarousel({
-          margin: 0,
           nav: true,
           items: 4,
           responsive: {
@@ -89,7 +88,50 @@ Content = Content.extend({
              }
           }
     });
+    if(this.query(".Tool-statusbar-carousel")){
+        let perpage = 1;
+        let owl = $('.Tool-statusbar-carousel');
+        owl.on('initialized.owl.carousel', function(event) {
+          console.log("initialized");
+          perpage = Math.ceil(event.item.count/event.page.count)
+        });
+        owl.on('resized.owl.carousel', function(event) {
+          console.log("resized");
+          perpage = Math.ceil(event.item.count/event.page.count)
+        });
+        owl.owlCarousel({
+            margin: 0,
+            nav: true,
+            loop: false,
+            responsive: {
+              0: {
+                items: 1,
+              },
+              600: {
+                  items: 2,
+              },
+              800: {
+                  items: 3,
+              },
+              1200: {
+                  items: 4,
+              },
+               1500: {
+                   items: 6,
+                   nav: false
+                }
+            }
+      });
 
+      let activeA = this.query(".Tool-statusbar-carousel a.active");
+      let activeO = activeA.getAttribute('data-page');
+      console.log("perpage", perpage);
+      console.log("to page", Math.ceil(activeO/perpage)-1);
+      owl.trigger('to.owl.carousel', [Math.ceil(activeO/perpage)-1, 1]);
+
+      console.log(owl);
+      // owl.next();
+    }
   },
 
   bindResponsimg: function (){
