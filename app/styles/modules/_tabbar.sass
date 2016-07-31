@@ -1,70 +1,75 @@
 .Tabbar
-	&-body
-		@extend .Section-body
-	&--links
-		.Tabbar-item
-			&--active
-				a
-					&:after
-						content: ''
-						position: absolute
-						background-color: white
-						top: 0
-						left: 0
-						bottom: 0
-						right: 0
-						z-index: 0
-						+bp('large')
-							bottom: -2px
-					span
-						color: darken($primary-color, 50%)
-		&-body
-			@extend .Section-body--small
-		ul
-			width: 100%
-			text-align: center
-			+bp('large')
-				border-bottom: 2px solid darken($primary-color, 10%)
-			li
-				display: block
-				cursor: pointer
-				user-select: none
-				-webkit-tap-highlight-color: rgba(0,0,0,0)
-				border: 2px solid darken($primary-color, 10%)
-				margin: 0 $small-border/2
-				margin-bottom: 4px
-				+bp('large')
-					display: inline-block
-					margin: 0 $small-border
-					margin-bottom: -2px
+  &-body
+    @extend .Section-body
+  &--links
+    .Tabbar-item
+      &--active
+        a
+          &:after
+            content: ''
+            position: absolute
+            background-color: white
+            top: 0
+            left: 0
+            bottom: 0
+            right: 0
+            z-index: 0
+            +bp('large')
+              bottom: -2px
+          span
+            color: darken($primary-color, 50%)
+    &-body
+      @extend .Section-body--small
+      padding-bottom: 0
+      +bp('medium')
+        padding-bottom: 0
+      +bp('large')
+        padding-bottom: 0
+    ul
+      width: 100%
+      text-align: center
+      +bp('large')
+        border-bottom: 2px solid darken($primary-color, 10%)
+      li
+        display: block
+        cursor: pointer
+        user-select: none
+        -webkit-tap-highlight-color: rgba(0,0,0,0)
+        border: 2px solid darken($primary-color, 10%)
+        margin: 0 $small-border/2
+        margin-bottom: 4px
+        +bp('large')
+          display: inline-block
+          margin: 0 $small-border
+          margin-bottom: -2px
 
-				&,
-				&:active,
-				&:hover,
-				&:focus,
-				&:visited
-					outline: 0
-					text-decoration: none
-				a
-					position: relative
-					display: block
-					padding: $small-border/2 $small-border
-					text-decoration: none
-					color: $button-color
-					font-style: normal
-					font-weight: 600
-					font-size: 1.2em
-					+bp('medium')
-						padding: $small-border
-						font-size: 2em
-						padding: $small-border/2 2*$large-border
-					span
-						position: relative
-						z-index: 1
-					&,
-					&:active,
-					&:hover,
-					&:focus,
-					&:visited
-						outline: 0
-						text-decoration: none
+        &,
+        &:active,
+        &:hover,
+        &:focus,
+        &:visited
+          outline: 0
+          text-decoration: none
+        a
+          position: relative
+          display: block
+          padding: $small-border/2 $small-border
+          text-decoration: none
+          color: $button-color
+          font-style: normal
+          font-weight: 600
+          font-size: 1.2em
+          +bp('medium')
+            padding: $small-border
+            font-size: 2em
+            padding: $small-border/2 2*$large-border
+          span
+            position: relative
+            z-index: 1
+          &,
+          &:active,
+          &:hover,
+          &:focus,
+          &:visited
+            outline: 0
+            text-decoration: none

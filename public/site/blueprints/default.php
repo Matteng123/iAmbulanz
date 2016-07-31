@@ -4,6 +4,7 @@ title: Standardseite
 pages:
   template:
     - section_benefits
+    - section_devices
     - section_devices-short
     - section_linkbar
     - section_location-short

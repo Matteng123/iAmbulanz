@@ -1,4 +1,56 @@
 .Devices
+	&-carousel
+		&-body
+			@extend .Section-body--smaller
+		.owl-item
+			.Devices-carousel-item
+				img
+					width: 50%
+					margin: 0 auto
+		&-wrapper
+			.owl-controls
+				+bp('large')
+					.owl-nav
+						display: block
+				margin-bottom: -40px
+		&-item
+			margin-left: 5px
+			h3
+				font-weight: 800
+				font-size: 1.3em
+				border-bottom: 1px solid darken($primary-color, 10%)
+				padding-left: $small-border
+				padding-bottom: $small-border
+				margin-top: $medium-border
+			ul
+				padding-top: $small-border
+				padding-bottom: $small-border
+				+bp('large')
+					border-right: 1px solid darken($primary-color, 10%)
+				li
+					padding-left: $small-border
+			div
+				+bp('large')
+					border-right: 1px solid darken($primary-color, 10%)
+			span
+				display: block
+				text-align: center
+		&-text
+			margin-bottom: $small-border
+			+bp('medium')
+				margin-bottom: $medium-border
+			+bp('large')
+				margin-bottom: $large-border
+			h2
+				text-align: center
+				color: $text_color
+				font-size: 2em
+				font-weight: 600
+				margin-bottom: 0
+				&:after
+					content: none
+		&-button
+			@extend .Button
 	&-teaser
 		background: #b8b8b8
 		background: -moz-linear-gradient(top,  #b8b8b8 0%, #7e7e7e 100%)
