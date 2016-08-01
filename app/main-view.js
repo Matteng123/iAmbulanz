@@ -44,10 +44,10 @@ let MainView = View.extend({
             hide: function (oldView, cb) {
                 if(oldView && oldView.el){
                     oldView.hookBeforeHide();
-                    TweenMax.to(oldView.el, 0.8, { opacity:0, delay:0.2 });
-                    TweenMax.to(window, 1, {scrollTo:{y:0}});
+                    TweenMax.to(oldView.el, 0.4, { opacity:0, delay:0.2 });
+                    TweenMax.to(window, 0.6, {scrollTo:{y:0}});
                 }
-                setTimeout(cb, 1000);
+                setTimeout(cb, 600);
             },
 
             show: function (newView) {
@@ -55,7 +55,7 @@ let MainView = View.extend({
                 document.title = _.result(newView.model, 'pageTitle');
 
                 TweenMax.set(newView.el, { opacity:0 });
-                TweenMax.to(newView.el, 1.2, {opacity:1, delay:0.5, onComplete:function(){
+                TweenMax.to(newView.el, 0.4, {opacity:1, delay:0.2, onComplete:function(){
                     newView.el.setAttribute("style", " ");
                     newView.hookAfterRender();
                 }});
