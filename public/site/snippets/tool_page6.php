@@ -1,5 +1,13 @@
 <?php
 	$fields = $page->formluar()->toStructure();
+	$price = getPriceforDamage($site);
+	$services = $page->services()->toStructure();
+	foreach ($services as $key => $service) {
+		if($service->type()==get('price')){
+			$serviceprice = $service->price()->value();
+			$servicetime = $service->time()->html();
+		}
+	}
 ?>
 <div class="Tool-body">
 	<div class="Tool-header">
@@ -11,22 +19,30 @@
 				<h4>Vorraussichtliche</h4>
 				<h3>Reparaturkosten</h4>
 				<div>
-					<span>
-						<h6>Analyse &amp; Reparatur</h6>
-						<h5>55 €</h5>
-					</span>
-					<span>
-						<h6>Service <?php echo get('price') ?></h6>
-						<h5>+ 30 €</h5>
-					</span>
-					<span class="Tool-leftbar-pricebox-price">
-						<h6>Gesamtkosten</h6>
-						<h5>85 €</h5>
-					</span>
-					<span>
-						<h6>Dauer ca.</h6>
-						<h5>30 - 60 Min.</h5>
-					</span>
+					<?php if($price == 0) : ?>
+						<span>
+							<h6>Leider ist kein Preis ermittelbar</h6>
+						</span>
+					<?php else : ?>
+						<span>
+							<h6>Analyse &amp; Reparatur</h6>
+							<h5><?php echo $price+$page->analyseprice()->value() ?> €</h5>
+						</span>
+						<span>
+							<h6>Service <?php echo get('price') ?></h6>
+							<h5>+ <?php echo $serviceprice; ?> €</h5>
+						</span>
+						<span class="Tool-leftbar-pricebox-price">
+							<h6>Gesamtkosten</h6>
+							<h5><?php echo $price+$page->analyseprice()->value()+$serviceprice ?> €</h5>
+						</span>
+						<span>
+							<h6>Dauer ca.</h6>
+							<h5><?php echo $servicetime; ?></h5>
+						</span>
+					<?php endif; ?>
+
+
 				</div>
 				<p><?php echo $page->preisboxtext()->html() ?></p>
 		</div>

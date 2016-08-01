@@ -20,5 +20,9 @@ fields:
   description: description
   time:
     label: Zeit
-    type:  text
+    type: text
   button_text: button_text
+  price:
+    label: Kosten
+    type: number
+    help: Muss nur in dem Anfragentool ausgefüllt werden

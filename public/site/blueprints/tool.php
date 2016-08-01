@@ -47,6 +47,10 @@ fields:
   preisboxtext:
     label: Preisbox Text
     type: textarea
+  analyseprice:
+    label: Kosten für Analyse
+    type: number
+    default: 19
   section6:
     label: Step Anfrage
     type: headline

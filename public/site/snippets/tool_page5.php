@@ -1,5 +1,6 @@
 <?php
 	$services = $page->services()->toStructure();
+	$price = getPriceforDamage($site);
 ?>
 <div class="Tool-body">
 	<div class="Tool-header">
@@ -12,8 +13,13 @@
 				<h3>Reparaturkosten</h4>
 				<div>
 					<span class="Tool-leftbar-pricebox-price">
-						<h6>Reparaturkosten</h6>
-						<h5>55 €</h5>
+
+						<?php if($price == 0) : ?>
+							<h6>Leider ist kein Preis ermittelbar</h6>
+						<?php else : ?>
+							<h6>Reparaturkosten</h6>
+							<h5><?php echo $price+$page->analyseprice()->value() ?> €</h5>
+						<?php endif; ?>
 					</span>
 				</div>
 				<p><?php echo $page->preisboxtext()->html() ?></p>

@@ -26,7 +26,7 @@ $damages = array(
 		'value' => 'service-display' ),
 	1 => array(
 		'title' => 'Akku',
-		'value' => 'service_akku' ),
+		'value' => 'service-akku' ),
 	2 => array(
 		'title' => 'Andere Komponente',
 		'value' => 'service-smallpiece' ),
@@ -65,6 +65,45 @@ function arePrevoiusParamsSet($statusItems, $value = 0){
     return true;
   else
     return false;
+}
+
+function getPriceforDamage($site){
+  $devices = $site->Devices()->toStructure();
+	$filtered = array();
+	foreach($devices as $device) {
+		$target = $device->device();
+		if($target == get('model')){
+			switch(get('damage')){
+				case 'Bildschirm' :
+					$filtered = $device->service_display()->split($separator = ',');
+					break;
+				case 'Akku' :
+					$filtered = $device->service_akku()->split($separator = ',');
+					break;
+				case 'Andere Komponente' :
+					$filtered = $device->service_smallpiece()->split($separator = ',');
+					break;
+				case 'Wasserschaden' :
+					$small = $device->service_smallpiece()->split($separator = ',');
+					foreach($small as $item){
+						if(strrpos((string)$item, 'asser')){
+							array_push($filtered, $item);
+						}
+					}
+					break;
+				default :
+					array_push($filtered, "unbekannt:0");
+			}
+		}
+	}
+	$price = 0;
+	foreach($filtered as $priceitem){
+		$new = explode(':', (string)$priceitem)[1];
+		if((int)$new > $price){
+			$price = (int)$new;
+		}
+	}
+	return $price;
 }
 
 $paramString = getParamString($statusItems);

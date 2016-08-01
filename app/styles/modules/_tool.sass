@@ -1,6 +1,9 @@
 .Tool
   +bp('medium')
+    min-height: 450px
     +clearfix()
+  +bp('large')
+    min-height: 700px
   &-leftbar
     &-pricebox
       background-color: $color-secondary
@@ -185,6 +188,7 @@
         a
           color: $color-text
           font-style: normal
+          +noselect()
         >span,
         a >span
           display: inline-block

@@ -64,12 +64,14 @@ let MainView = View.extend({
         });
 
         window.addEventListener('scroll', function() {
-          if(window.scrollY > self.header.offsetHeight+50 && !self.isSticky){
-            self.isSticky = true;
-            dom.addClass(document.body, 'Header--sticky-open');
-          } else if(window.scrollY < self.header.offsetHeight+50 && self.isSticky){
-            self.isSticky = false;
-            dom.removeClass(document.body, 'Header--sticky-open');
+          if(window.scrollY >= 0){
+            if(window.scrollY > self.header.offsetHeight+50 && !self.isSticky){
+              self.isSticky = true;
+              dom.addClass(document.body, 'Header--sticky-open');
+            } else if(window.scrollY < self.header.offsetHeight+50 && self.isSticky){
+              self.isSticky = false;
+              dom.removeClass(document.body, 'Header--sticky-open');
+            }
           }
         });
 
