@@ -1,0 +1,55 @@
+$use-mediaqueries: true !default;
+
+$min-width: (
+	smaller: 22em,
+	small: 30em,
+	medium: 45em,
+	large: 60em,
+	larger: 72em,
+	huge: 85em
+);
+
+$max-width: (
+	smaller: 21.9375em,
+	small: 29.9375em,
+	medium: 44.9375em,
+	large: 59.9375em,
+	larger: 71.9375em,
+	huge: 79.9375em
+);
+
+@mixin bpf($value) {
+	@media (min-width: $value) { @content; }
+};
+
+@mixin bp($min, $max: null) {
+	$min-value: map-get($min-width, $min);
+	$max-value: map-get($max-width, $max);
+
+	@if $min-value {
+		@if $max-value {
+			@if $use-mediaqueries {
+				@media (min-width: $min-value) and (max-width: $max-value) { @content; }
+			}
+			@else if $max-value > map-get($max-width, large) {
+				@content;
+			}
+		}
+		@else {
+			@if $use-mediaqueries {
+				@media (min-width: $min-value) { @content; }
+			}
+			@else if $min-value <= map-get($min-width, large) {
+				@content;
+			}
+		}
+	}
+	@else if $max-value {
+		@if $use-mediaqueries {
+			@media (max-width: $max-value) { @content; }
+		}
+		@else if $max-value > map-get($max-width, large) {
+			@content;
+		}
+	}
+}

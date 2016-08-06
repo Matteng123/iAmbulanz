@@ -1,0 +1,115 @@
+.Location
+	&-body
+		@extend .Section-body--smallest
+	&-text
+		text-align: center
+		h2
+			&:after
+				content: none
+	&-item
+		&:after
+			content: ""
+			display: table
+			clear: both
+		&-body
+			padding-bottom: 15px
+			width: 100%
+			float: none
+			+bp('small')
+				width: 50%
+				float: left
+			+bp('medium')
+				width: 33.3333%
+				float: left
+
+		h3
+			font-weight: 600
+			font-size: 1.5em
+		p,
+		table
+			margin-bottom: 15px
+
+	&-teaser
+		&-body
+			@extend .Section-body--small
+		&-text
+			margin-bottom: $border-small
+			+bp('medium')
+				width: 45%
+				float: left
+				margin-right: 5%
+		&-tab
+			+bp('medium')
+				width: 50%
+				float: left
+			&-item
+				&.active
+					.Location-teaser-tab-bar
+						&:after
+							+transform(rotate(-180deg))
+					.Location-teaser-tab-body
+						height: auto
+						opacity: 1
+						padding: 2*$border-small $border-small
+			&-bar
+				font-weight: 500
+				line-height: 2.2em
+				margin-bottom: 2px
+				background-color: $color-primary
+				padding-left: 15px
+				position: relative
+				cursor: pointer
+				user-select: none
+				-webkit-tap-highlight-color: rgba(0,0,0,0)
+				+transition(all, 0.5s)
+				+bp('large')
+					font-size: 1.2em
+					line-height: 2.8em
+				&,
+				&:active,
+				&:hover,
+				&:focus,
+				&:visited
+					outline: 0
+					text-decoration: none
+				&:hover
+					color: $color-button
+					background-color: rgb(210,210,210)
+					&:after
+						+transform(rotate(-180deg))
+
+				&:after
+					+transition(transform, 0.5s)
+					content: ''
+					position: absolute
+					top: 0
+					right: 0
+					width: 2.2em
+					height: 2.2em
+					background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMSBUaW55Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLXRpbnkuZHRkIj48c3ZnIHZlcnNpb249IjEuMSIgYmFzZVByb2ZpbGU9InRpbnkiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE0cHgiIGhlaWdodD0iOC4wMDFweCIgdmlld0JveD0iMCAwIDE0IDguMDAxIiBvdmVyZmxvdz0iYXV0byIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggZmlsbD0iI0IwMTAxRCIgZD0iTTAsNi40ODdsMS42MzMsMS41MTRMNywzLjAyN2w1LjM2Niw0Ljk3NEwxNCw2LjQ4N0w3LDBMMCw2LjQ4N3oiLz48L3N2Zz4=)
+					background-repeat: no-repeat
+					background-position: center
+					background-size: 50%
+					+bp('large')
+						width: 2.8em
+						height: 2.8em
+						background-size: 40%
+			&-body
+				height: 0
+				opacity: 0
+				overflow: hidden
+				padding: 0 $border-small
+				div
+					margin-bottom: 5px
+				+transition(opacity, 0.5s)
+				+bp('large')
+					div
+						width: unit(6)
+						float: left
+					&:after
+						content: ""
+						display: table
+						clear: both
+				+bp('larger')
+					div
+						width: unit(4)

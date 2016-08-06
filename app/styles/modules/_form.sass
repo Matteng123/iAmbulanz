@@ -1,0 +1,235 @@
+.Form
+  form
+    +bp('medium')
+      &:after
+        content: ""
+        display: table
+        clear: both
+    &.haserror
+      >.Form-errormessage
+        display: block
+        padding-left: 14px
+        line-height: 3em
+        border: 1px solid red
+        border-left: 5px solid red
+        font-weight: 500
+    &.issent,
+      .Form-element
+        opacity: 0
+        visibility: hidden
+      >.Form-sentmessage
+        height: inherit
+        text-align: center
+        >div
+          +transform(translateY(0%))
+          display: inline-block
+          height: auto
+          opacity: 1
+  label
+    display: block
+    font-weight: 600
+    opacity: 0.8
+    line-height: 3em
+  button
+    border: none
+    @extend .Button
+
+  input[type="radio"]
+    display: inline-block
+    margin-right: 10px
+
+  input[type="text"],
+  textarea
+    font-family: $font-text
+    border: none
+    outline: none
+    height: 50px
+    color: #000
+    background: $color-primary
+    position: relative
+    margin-bottom: 20px
+    padding-left: 20px
+    border-left: 0px $color-button solid
+    width: 100%
+    font-size: 1.2em
+    +transition(all,0.1s)
+    &:focus,
+    &:focus:hover
+      border-left: 8px $color-button solid
+
+
+  textarea
+    height: 200px
+    padding-left: 2%
+    padding-top: 2%
+    resize: none
+
+  &-text
+    text-align: left
+    &:after
+      content: ""
+      display: table
+      clear: both
+    h2
+      text-align: center
+      color: $color-text
+      font-size: 2em
+      font-weight: 600
+      &:after
+        content: none
+  p
+    margin-bottom: $border-small
+    +bp('medium')
+      margin-bottom: $border-medium
+      font-size: 1.5em
+    +bp('large')
+      margin-bottom: $border-large
+    &.Form-errormessage
+      font-size: 1em
+      margin-top: -1*$border-small
+      margin-bottom: 0
+  &-body
+    @extend .Section-body--smallest
+
+  &-element
+    position: relative
+    &.haserror
+      .Form-errormessage
+        display: block
+      label
+        color: red
+        font-weight: 600
+    &.submit
+      text-align: right
+      +bp('medium')
+        padding-right: 30px
+    >div
+      div
+        display: inline-block
+      +bp('medium')
+        padding-right: 30px
+    +bp('medium')
+      display: inline-block
+      vertical-align: top
+      margin-right: -4px
+      &--half
+        // float: left
+        width: +unit(6)
+      &--full
+        // float: left
+        width: +unit(12)
+  &-errormessage
+    color: red
+    display: none
+  &-sentmessage
+    height: 0
+    >div
+      position: relative
+      +transform(translateY(-10%))
+      +transition(all, 0.75s)
+      &:after, &:before
+        bottom: 100%
+        left: 50%
+        border: solid transparent
+        content: " "
+        height: 0
+        width: 0
+        position: absolute
+        pointer-events: none
+      &:after
+        border-color: rgba(0, 0, 0, 0)
+        border-bottom-color: white
+        border-width: 25px
+        margin-left: -25px
+      &:before
+        border-color: rgba(0, 0, 0, 0)
+        border-bottom-color: $color-success
+        border-width: 26px
+        margin-left: -26px
+
+      height: 0px
+      opacity: 0
+      background-color: white
+      padding: $border-small
+      border: 1px solid $color-success
+      border-radius: 4px
+    p
+      font-size: 1.2em
+      color: $color-success
+      &:last-child
+        margin-bottom: 0
+  &-field
+    position: relative
+    &--radio,
+    &--checkbox
+      input[type=radio],
+      input[type=checkbox],
+        display: none
+      span
+        margin-bottom: 20px
+        cursor: pointer
+        user-select: none
+        -webkit-tap-highlight-color: rgba(0,0,0,0)
+        display: inline-block
+        margin-right: 20px
+        padding-left: 45px
+        line-height: 31px
+        position: relative
+        &:before
+          content: ''
+          display: inline-block
+          position: absolute
+          left: 0
+          height: 31px
+          width: 31px
+          background-color: $color-primary
+        &:after
+          content: ''
+          display: inline-block
+          position: absolute
+          left: 15px
+          top: 15px
+          height: 0px
+          width: 0px
+          background-color: lighten($color-footer, 50%)
+          z-index: 10
+          +transition(all, 0.25s)
+        &:hover
+          &:after
+            left: 4px
+            top: 4px
+            height: 23px
+            width: 23px
+      .isChecked
+        span
+          &:after
+            left: 9px
+            top: 9px
+            height: 13px
+            width: 13px
+            background-color: $color-footer
+    &--radio
+      span
+        &:before,
+        &:after
+          border-radius: 25px
+
+  &--grey
+    background-color: $color-primary
+    input[type="text"],
+    textarea
+      background-color: #fff
+    .Form-field
+        &--radio,
+        &--checkbox
+          span
+            &:before
+              background-color: white
+
+
+
+
+  .emailvalidation
+    visibility: hidden
+    opacity: 0
+    height: 0

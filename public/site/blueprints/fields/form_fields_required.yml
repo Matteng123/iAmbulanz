@@ -1,0 +1,5 @@
+  label: Pflichtfeld
+  type: toggle
+  text: yes/no
+  default: false
+  width: 1/2

@@ -1,0 +1,69 @@
+// Scale
+$scale-base: 1;
+
+// Colors
+$color-primary: rgb(241,241,241);
+$color-secondary: rgb(76,84,84);
+$color-button: rgb(177,0,0);
+$color-text: rgb(49,41,41);
+$color-text-neg: rgb(255,255,255);
+$color-background: rgb(255,255,255);
+$color-footer: #4c5454;
+$color-success: #3ab100;
+
+// Fonts
+$font-headline: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$font-button: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$font-subline: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$font-text: "brandon-grotesque", Helvetica, Arial, sans-serif;
+$font-link: "brandon-grotesque", Helvetica, Arial, sans-serif;
+
+// Standards
+$border-small: 15px;
+$border-medium: 30px;
+$border-large: 40px;
+$border-larger: 60px;
+$max-size: 1600px;
+
+// Mixins
+@import "mixins/all";
+
+// Vendor
+@import "vendor/normalize";
+@import "vendor/carousel";
+
+// Globals
+@import "globals/webfonts";
+@import "globals/reset";
+@import "globals/typography";
+
+// Objects
+@import "modules/button";
+@import "modules/responsive-media";
+@import "modules/nav";
+
+// Modules
+@import "modules/menu";
+@import "modules/logo";
+@import "modules/topbar";
+@import "modules/footer";
+@import "modules/section";
+@import "modules/carousel";
+@import "modules/location";
+@import "modules/devices";
+@import "modules/benefits";
+@import "modules/services";
+@import "modules/tabbar";
+@import "modules/textteaser";
+@import "modules/map";
+@import "modules/textblock";
+@import "modules/prices";
+@import "modules/faqs";
+@import "modules/blog";
+@import "modules/form";
+@import "modules/tool";
+
+// Layout
+@import "modules/application";
+@import "modules/header";
+@import "modules/header-sticky";

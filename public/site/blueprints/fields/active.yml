@@ -1,0 +1,4 @@
+  label: Ist aktive?
+  type: toggle
+  text: yes/no
+  default: true

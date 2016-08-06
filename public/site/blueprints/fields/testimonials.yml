@@ -1,0 +1,15 @@
+label: Kundenstimmen
+type: structure
+modalsize: large
+entry: >
+  Image: {{image}}<br />
+  Sterne: {{stars}}<br />
+  {{description}}<br />
+  {{author}}
+fields:
+  image: image_select
+  description: description
+  author: author
+  stars:
+    label: Sterne
+    type: number

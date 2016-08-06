@@ -1,0 +1,10 @@
+label: Service Tabelle
+type: structure
+modalsize: large
+style: table
+fields:
+  title: title
+  description: description
+  price:
+    label: Preis
+    type: text

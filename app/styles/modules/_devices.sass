@@ -1,0 +1,195 @@
+.Devices
+	&-carousel
+		&-body
+			@extend .Section-body--smaller
+		.owl-item
+			.Devices-carousel-item
+				img
+					width: 50%
+					margin: 0 auto
+		&-wrapper
+			padding: 0 $border-large
+			.owl-controls
+				.owl-dots
+					margin-bottom: -40px
+				+bp('large')
+					// position: absolute
+					.owl-dots
+						margin-bottom: -80px
+
+					.owl-nav
+							display: inherit
+							.owl-prev,
+							.owl-next
+								left: 0%
+								position: absolute
+								height: 15px
+								width: 30px
+								top: 50%
+								margin-top: -7px
+								background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMSBUaW55Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLXRpbnkuZHRkIj48c3ZnIHZlcnNpb249IjEuMSIgYmFzZVByb2ZpbGU9InRpbnkiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjI5LjYyMnB4IiBoZWlnaHQ9IjE5LjAwMnB4IiB2aWV3Qm94PSIwIDAgMjkuNjIyIDE5LjAwMiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggZmlsbD0iI0E5MTIxQyIgZD0iTTI4LjMyMyw4LjE3NUg0LjA1NGw1Ljc5MS01LjkxMmMwLjUwNy0wLjUxOCwwLjUwNy0xLjM1NywwLTEuODc1cy0xLjMzLTAuNTE4LTEuODM2LDBMMCw4LjU2M2MtMC41MDcsMC41MTgtMC41MDcsMS4zNTcsMCwxLjg3NWw4LjAwOCw4LjE3NWMwLjI1MywwLjI1OSwwLjU4NiwwLjM4OSwwLjkxOCwwLjM4OWMwLjMzMywwLDAuNjY1LTAuMTMsMC45MTgtMC4zODljMC41MDctMC41MTgsMC41MDctMS4zNTYsMC0xLjg3NGwtNS43OTEtNS45MTNoMjQuMjY5YzAuNzE3LDAsMS4yOTktMC41OTMsMS4yOTktMS4zMjVTMjkuMDQsOC4xNzUsMjguMzIzLDguMTc1eiIvPjwvc3ZnPg==)
+								background-size: contain
+								background-repeat: no-repeat
+								text-indent: -9999px
+								overflow: hidden
+								+transform(translateY(-50%))
+							.owl-next
+								left: auto
+								right: 0%
+								+transform(translateY(-50%) rotate(-180deg))
+		&-item
+			margin-left: 5px
+			h3
+				font-weight: 800
+				font-size: 1.3em
+				border-bottom: 1px solid darken($color-primary, 10%)
+				padding-left: $border-small
+				padding-bottom: $border-small
+				margin-top: $border-medium
+			ul
+				padding-top: $border-small
+				padding-bottom: $border-small
+				+bp('large')
+					border-right: 1px solid darken($color-primary, 10%)
+				li
+					padding-left: $border-small
+			div
+				+bp('large')
+					border-right: 1px solid darken($color-primary, 10%)
+			span
+				display: block
+				text-align: center
+		&-text
+			margin-bottom: $border-small
+			+bp('medium')
+				margin-bottom: $border-medium
+			+bp('large')
+				margin-bottom: $border-large
+			h2
+				text-align: center
+				color: $color-text
+				font-size: 2em
+				font-weight: 600
+				margin-bottom: 0
+				&:after
+					content: none
+		&-button
+			@extend .Button
+	&-teaser
+		background: #b8b8b8
+		background: -moz-linear-gradient(top,  #b8b8b8 0%, #7e7e7e 100%)
+		background: -webkit-linear-gradient(top,  #b8b8b8 0%,#7e7e7e 100%)
+		background: linear-gradient(to bottom,  #b8b8b8 0%,#7e7e7e 100%)
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b8b8b8', endColorstr='#7e7e7e',GradientType=0 )
+		h2, p
+			color: white
+		h2:after
+			background-color: white
+		h3
+			font-weight: 600
+			color: white
+		&-body
+			@extend .Section-body--small
+		&-text
+			margin-bottom: $border-small
+			+bp('medium')
+				width: 45%
+				float: left
+			+bp('large')
+				width: 55%
+		&-image
+			position: relative
+			+bp('medium')
+				width: 55%
+				float: left
+			+bp('large')
+				width: 45%
+			img
+				width: 100%
+		&-hotspots
+			position: absolute
+			left: 0
+			top: 0
+			right: 0
+			bottom: 0
+			overflow: visible
+			&-spot
+				position: absolute
+				span
+					cursor: pointer
+					user-select: none
+					-webkit-tap-highlight-color: rgba(0,0,0,0)
+					display: block
+					width: 20px
+					height: 20px
+					+border-radius(10px)
+					background-color: white
+					background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMSBUaW55Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLXRpbnkuZHRkIj48c3ZnIHZlcnNpb249IjEuMSIgYmFzZVByb2ZpbGU9InRpbnkiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE0Ljk5OXB4IiBoZWlnaHQ9IjE1LjAwM3B4IiB2aWV3Qm94PSIwIDAgMTQuOTk5IDE1LjAwMyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PGc+PHBvbHlnb24gZmlsbD0iI0IwMTAxRCIgcG9pbnRzPSIxNC45OTksNC44NCAxMC4xNiw0Ljg0IDEwLjE2LDAgNC44MzksMCA0LjgzOSw0Ljg0IDAsNC44NCAwLDEwLjE2MyA0LjgzOSwxMC4xNjMgNC44MzksMTUuMDAzIDEwLjE2LDE1LjAwMyAxMC4xNiwxMC4xNjMgMTQuOTk5LDEwLjE2MyAiLz48L2c+PC9zdmc+)
+					background-repeat: no-repeat
+					background-position: center
+					background-size: 50%
+					+transform(translateX(-50%) translateY(-50%))
+					+transition(all, 0.25s)
+					+bp('large')
+						width: 30px
+						height: 30px
+						+border-radius(15px)
+				div
+					position: absolute
+					margin-top: -50px
+					padding: 20px
+					width: 200px
+					+transform(translateX(-50%) translateY(-100%))
+					+transition(opacity 0.3s, margin 0.2s ease-in-out)
+					visibility: hidden
+					opacity: 0
+					+bp('large')
+						width: 250px
+						padding: 30px
+						margin-top: -60px
+					p,h5
+						color: black
+						+noselect()
+						font-size: 0.9em
+					h5
+					 font-weight: 600
+					&:after
+						top: 100%
+						left: 50%
+						border: solid transparent
+						content: " "
+						height: 0
+						width: 0
+						position: absolute
+						pointer-events: none
+						border-color: rgba(255, 255, 255, 0)
+						border-top-color: #fff
+						border-width: 10px
+						margin-left: -10px
+				&:hover
+					z-index: 99999
+					span
+						background-color: darken($color-primary, 5%)
+					div
+						+box-shadow(0, 0, 40px, rgba(0,0,0,0.5))
+						background-color: white
+						margin-top: -38px
+						visibility: visible
+						opacity: 1
+						+bp('large')
+							margin-top: -52px
+
+		&-list
+			margin: 1.5rem 0
+			+bp('larger')
+				margin: 3rem 0
+			ul
+				margin: 0.8rem 0 0 0
+				padding: 0
+				li
+					display: inline-block
+					font-weight: 500
+					color: white
+					margin-bottom: 0.2rem
+			&-button
+				@extend .Button--outline
