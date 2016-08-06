@@ -34,7 +34,7 @@ $damages = array(
 		'title' => 'Wasserschaden',
 		'value' => 'service-waterdamage' ),
 	4 => array(
-		'title' => 'Schadenstyp unbekannt',
+		'title' => 'Anderer Schaden',
 		'value' => 'service-unknown' )
 );
 
