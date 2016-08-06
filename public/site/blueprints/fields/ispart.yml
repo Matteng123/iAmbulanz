@@ -1,9 +1,0 @@
-label: Navigation
-width: 1/2
-type: select
-default: meta 
-options: 
-  main: Haupt-Navigation
-  meta: Meta-Navigation
-  footer: Footer
-  landing: Landing-Page
