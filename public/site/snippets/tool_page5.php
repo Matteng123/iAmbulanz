@@ -39,7 +39,7 @@
 							<?php snippet('partial_guide-'.$item->icon()); ?>
 						</div>
 						<div>
-							<a class="Services-button" href="/<?php echo $page->uri() ?>/?page=6<?php echo getParamString($statusItems, 'price', $item->button_url()); ?>"><span><?php echo $item->button_text()->html(); ?></span></a>
+							<a class="Services-button" href="/<?php echo $page->uri() ?>/?page=6<?php echo getParamString($statusItems, 'price', $item->type()); ?>"><span><?php echo $item->button_text()->html(); ?></span></a>
 						</div>
 					</div>
 				<?php endforeach; ?>
