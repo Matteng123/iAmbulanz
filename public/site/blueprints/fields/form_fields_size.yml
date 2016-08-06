@@ -1,0 +1,7 @@
+  label: Breite
+  type: select
+  width: 1/2
+  default: full
+  options:
+    full: Volle Breite
+    half: Halbe Breite

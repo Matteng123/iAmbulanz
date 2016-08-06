@@ -1,0 +1,158 @@
+.Carousel
+	&-content
+		background-position: center
+		background-size: cover
+		background-repeat: no-repeat
+		width: 100%
+		img
+			height: 300px
+		+bp('medium')
+			img
+				height: auto
+	&-layer
+		position: absolute
+		left: 10%
+		right: 10%
+		top: 20%
+		-webkit-transform-style: preserve-3d
+  	transform-style: preserve-3d
+		h1
+			color: white
+			font-family: $font-headline
+			font-weight: bold
+			font-size: 1.8em
+			line-height: 1.0em
+			margin-bottom: 0.5em
+		p
+			color: white
+			font-family: $font-subline
+			font-weight: 500
+		+bp('medium')
+			max-width: 40%
+			p
+				font-size: 1.2em
+		+bp('large')
+			left: $border-large
+			max-width: $max-size
+			h1, p
+				max-width: 60%
+			h1
+				font-size: 2.8em
+			p
+				font-size: 1.5em
+		+bpf($max-size)
+			width: $max-size - $border-large * 2
+			left: 50%
+			+transform(translateX(($max-size - $border-large * 2)/2*-1))
+			h1, p
+				max-width: 40%
+		+bp('larger')
+			h1
+				font-size: 4em
+				max-width: 65%
+
+
+	&--testimonials
+		border-top: 1px solid lighten($color-secondary, 50%)
+		padding-top: $border-small
+		+bp('medium')
+			padding-top: $border-medium
+		+bp('large')
+			padding-top: $border-large
+		+bp('larger')
+			padding-top: $border-larger
+		.owl-controls
+			+bp('large')
+				// position: absolute
+				.owl-nav
+						display: inherit
+						.owl-prev,
+						.owl-next
+							left: 10%
+							position: absolute
+							height: 15px
+							width: 30px
+							top: 30%
+							margin-top: -7px
+							background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMSBUaW55Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLXRpbnkuZHRkIj48c3ZnIHZlcnNpb249IjEuMSIgYmFzZVByb2ZpbGU9InRpbnkiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjI5LjYyMnB4IiBoZWlnaHQ9IjE5LjAwMnB4IiB2aWV3Qm94PSIwIDAgMjkuNjIyIDE5LjAwMiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggZmlsbD0iI0E5MTIxQyIgZD0iTTI4LjMyMyw4LjE3NUg0LjA1NGw1Ljc5MS01LjkxMmMwLjUwNy0wLjUxOCwwLjUwNy0xLjM1NywwLTEuODc1cy0xLjMzLTAuNTE4LTEuODM2LDBMMCw4LjU2M2MtMC41MDcsMC41MTgtMC41MDcsMS4zNTcsMCwxLjg3NWw4LjAwOCw4LjE3NWMwLjI1MywwLjI1OSwwLjU4NiwwLjM4OSwwLjkxOCwwLjM4OWMwLjMzMywwLDAuNjY1LTAuMTMsMC45MTgtMC4zODljMC41MDctMC41MTgsMC41MDctMS4zNTYsMC0xLjg3NGwtNS43OTEtNS45MTNoMjQuMjY5YzAuNzE3LDAsMS4yOTktMC41OTMsMS4yOTktMS4zMjVTMjkuMDQsOC4xNzUsMjguMzIzLDguMTc1eiIvPjwvc3ZnPg==)
+							background-size: contain
+							background-repeat: no-repeat
+							text-indent: -9999px
+							overflow: hidden
+							+transform(translateY(-50%))
+						.owl-next
+							left: auto
+							right: 10%
+							+transform(translateY(-50%) rotate(-180deg))
+
+		.Carousel
+			&-content
+				height: 0
+			&-header
+				h2
+					text-align: center
+					color: $color-text
+					font-size: 2em
+					font-weight: 600
+					&:after
+						content: none
+			&-layer--testimonials
+				position: relative
+				padding-bottom: 50px
+				background-color: white
+				+bp('large')
+					width: 60%
+					margin: 0 auto
+					padding-bottom: 140px
+				&:after
+					content: ""
+					display: table
+					clear: both
+				.Carousel-layer-img
+					width: 100%
+					text-align: center
+
+					+bp('large')
+						width: 25%
+						float: left
+					img
+						+border-radius(250px)
+						display: inline
+						width: 80%
+						max-width: 150px
+				.Carousel-layer-body
+					margin-left: 10%
+					text-align: center
+					width: 80%
+					+bp('large')
+						margin-left: 0%
+						text-align: left
+						width: 75%
+						float: left
+					.Carousel--testimonials-stars
+						margin-bottom: 20px
+						+bp('large')
+							margin-top: 0px
+						&:after
+							content: ""
+							display: table
+							clear: both
+						span
+							display: inline-block
+							width: 15px
+							height: 15px
+							margin-right: 5px
+							margin-top: 0
+							background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMSBUaW55Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLXRpbnkuZHRkIj48c3ZnIHZlcnNpb249IjEuMSIgYmFzZVByb2ZpbGU9InRpbnkiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjI2LjAwMXB4IiBoZWlnaHQ9IjI2cHgiIHZpZXdCb3g9IjAgMCAyNi4wMDEgMjYiIG92ZXJmbG93PSJhdXRvIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cGF0aCBmaWxsPSIjQjAxMDFEIiBkPSJNMTMuNjE1LDAuNDI4bDMuMzA4LDguMjA4bDguNDY3LDAuNzYzYzAuNTg4LDAuMDUzLDAuODI2LDAuODIxLDAuMzgxLDEuMjI2bC02LjQyMyw1LjgzNGwxLjkyNSw4LjY4MWMwLjEzNCwwLjYwMy0wLjQ5LDEuMDc3LTAuOTk0LDAuNzU3bC03LjI3Ny00LjYwMmwtNy4yNzYsNC42MDJjLTAuNTA2LDAuMzE5LTEuMTI4LTAuMTU1LTAuOTk0LTAuNzU3bDEuOTI0LTguNjgxbC02LjQyNC01LjgzNWMtMC40NDYtMC40MDUtMC4yMDgtMS4xNzMsMC4zOC0xLjIyNmw4LjQ2Ny0wLjc2M2wzLjMwNy04LjIwN0MxMi42MTYtMC4xNDMsMTMuMzg2LTAuMTQzLDEzLjYxNSwwLjQyOHoiLz48L3N2Zz4=)
+							background-size: contain
+							background-repeat: no-repeat
+					p
+						color: black
+						padding: 0
+						max-width: none
+						font-weight: 400
+						font-size: 1.4em
+					span
+						display: block
+						margin-top: 20px
+						font-size: 0.8em

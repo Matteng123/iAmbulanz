@@ -1,0 +1,5 @@
+$scale-base: 1 !default;
+
+@function ms($multiplier, $context:1) {
+	@return ($multiplier * $scale-base) / $context
+}

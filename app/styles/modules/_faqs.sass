@@ -1,0 +1,54 @@
+.Faqs
+  &-body
+    @extend .Section-body
+    &.Faqs-body--detail
+      @extend .Section-body--smallest
+      text-align: center
+  &-text
+    text-align: left
+    &:after
+      content: ""
+      display: table
+      clear: both
+    h2
+      text-align: center
+      color: $color-text
+      font-size: 2em
+      font-weight: 600
+      &:after
+        content: none
+    p
+      margin-bottom: $border-small
+    div
+      margin-bottom: $border-small
+      // +bp('medium')
+      //   float: left
+      //   width: +unit(5.5)
+      //   padding: 0
+      //   padding-left: +unit(0.5)
+
+  &-lists
+    h3
+      font-weight: 500
+      font-size: 1.3em
+      position: relative
+      &:after
+        content: ''
+        display: block
+        width: 20px
+        height: 1px
+        background-color: black
+        position: relative
+        left: 0
+        margin-top: 10px
+        margin-bottom: 15px
+    div
+      margin-bottom: $border-large
+    +bp('medium')
+      &:after
+        +clearfix()
+      div
+        float: left
+        width: +unit(4)
+  &-button
+    @extend .Button

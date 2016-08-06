@@ -1,0 +1,7 @@
+label: Text Aufteilung
+type: select
+options:
+  center: Zentral, kein Bild
+  list: 1/4 zu 3/4, kein Bild
+  image-left: Text Bild, Bild links
+  image-right: Text Bild, Bild rechts

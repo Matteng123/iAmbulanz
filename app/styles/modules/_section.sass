@@ -1,0 +1,53 @@
+.Section
+  &-body
+    max-width: $max-size
+    margin: 0 auto
+    padding: 30px $border-small
+    +bp('medium')
+      padding: $border-medium
+    +bp('large')
+      padding: 2*$border-large $border-large
+    +bp('medium')
+      &:after
+        content: ""
+        display: table
+        clear: both
+  &-body--small
+      max-width: $max-size - 160
+      margin: 0 auto
+      padding: 30px $border-small
+      +bp('medium')
+        padding: $border-medium
+      +bp('large')
+        padding: 2*$border-large $border-large
+      +bp('medium')
+        &:after
+          content: ""
+          display: table
+          clear: both
+  &-body--smaller
+      max-width: $max-size - 320
+      margin: 0 auto
+      padding: 30px $border-small
+      +bp('medium')
+        padding: $border-medium
+      +bp('large')
+        padding: 2*$border-large $border-large
+      +bp('medium')
+        &:after
+          content: ""
+          display: table
+          clear: both
+  &-body--smallest
+      max-width: $max-size - 640
+      margin: 0 auto
+      padding: 30px $border-small
+      +bp('medium')
+        padding: $border-medium
+      +bp('large')
+        padding: 2*$border-large $border-large
+      +bp('medium')
+        &:after
+          content: ""
+          display: table
+          clear: both

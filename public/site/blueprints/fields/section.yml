@@ -1,0 +1,5 @@
+  label: Ist eine Section?
+  type: toggle
+  text: yes/no
+  default: true
+  width: 1/4

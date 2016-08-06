@@ -1,0 +1,3 @@
+  label: Fehlermeldung falls unvollständig
+  type: textarea
+  default: Bitte überprüfen Sie Ihre Eingaben.
