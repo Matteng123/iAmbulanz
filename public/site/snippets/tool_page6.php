@@ -42,17 +42,15 @@
 						</span>
 					<?php endif; ?>
 				</div>
-				<p>
-					<?php if($price == 0) : ?>
-						<?php if(get('device') == 'Anderes') :  ?>
-								<?php echo $page->unknownboxtext()->html() ?>
-							<?php else : ?>
-								<?php echo $page->nopriceboxtext()->html() ?>
-							<?php endif; ?>
-					<?php else : ?>
-						<?php echo $page->priceboxtext()->html() ?>
-					<?php endif; ?>
-				</p>
+				<?php if($price == 0) : ?>
+					<?php if(get('device') == 'Anderes') :  ?>
+							<?php echo $page->unknownboxtext()->kriby() ?>
+						<?php else : ?>
+							<?php echo $page->nopriceboxtext()->kriby() ?>
+						<?php endif; ?>
+				<?php else : ?>
+					<?php echo $page->priceboxtext()->kriby() ?>
+				<?php endif; ?>
 		</div>
 		<div class="Tool-leftbar-rabattbox">
 			<div>
@@ -98,6 +96,9 @@
 		      </div>
 				</form>
 		</div>
-
+		<div class="Tool-rightbar-legal">
+				<h4><?php echo $page->datenschutzheadline()->html() ?></h4>
+				<p><?php echo $page->datenschutztext()->html() ?></p>
+		</div>
 	</div>
 </div>

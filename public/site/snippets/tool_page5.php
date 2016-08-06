@@ -22,17 +22,17 @@
 						<?php endif; ?>
 					</span>
 				</div>
-				<p>
-					<?php if($price == 0) : ?>
-						<?php if(get('device') == 'Anderes') :  ?>
-								<?php echo $page->unknownboxtext()->html() ?>
-							<?php else : ?>
-								<?php echo $page->nopriceboxtext()->html() ?>
-							<?php endif; ?>
-					<?php else : ?>
-						<?php echo $page->priceboxtext()->html() ?>
-					<?php endif; ?>
-				</p>
+
+				<?php if($price == 0) : ?>
+					<?php if(get('device') == 'Anderes') :  ?>
+							<?php echo $page->unknownboxtext()->kirby() ?>
+						<?php else : ?>
+							<?php echo $page->nopriceboxtext()->kirby() ?>
+						<?php endif; ?>
+				<?php else : ?>
+					<?php echo $page->priceboxtext()->kirby() ?>
+				<?php endif; ?>
+
 		</div>
 	</div>
 		<?php if($services->count()): ?>

@@ -107,7 +107,7 @@ fields:
     type: text
     help: Link geht auf erstes PDF in den Files
   section8:
-    label: Sonstiges Gerät
+    label: Unbekanntes Geräte oder kein Preis
     type: headline
   unknownboxtext:
     label: Anderes Gerät Text in Box

@@ -66,6 +66,22 @@
 
 
   &-rightbar
+    &-legal
+      h4
+        position: relative
+        font-weight: 600
+        font-size: 1.2em
+        &:after
+          content: ''
+          display: block
+          width: 30px
+          height: 2px
+          background-color: black
+          position: relative
+          left: 0
+          bottom: 0
+          margin: 10px 0 15px 0
+
     +bp('large')
       float: left
       width: +unit(9)
