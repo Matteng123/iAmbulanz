@@ -41,10 +41,18 @@
 							<h5><?php echo $servicetime; ?></h5>
 						</span>
 					<?php endif; ?>
-
-
 				</div>
-				<p><?php echo $page->preisboxtext()->html() ?></p>
+				<p>
+					<?php if($price == 0) : ?>
+						<?php if(get('device') == 'Anderes') :  ?>
+								<?php echo $page->unknownboxtext()->html() ?>
+							<?php else : ?>
+								<?php echo $page->nopriceboxtext()->html() ?>
+							<?php endif; ?>
+					<?php else : ?>
+						<?php echo $page->priceboxtext()->html() ?>
+					<?php endif; ?>
+				</p>
 		</div>
 		<div class="Tool-leftbar-rabattbox">
 			<div>

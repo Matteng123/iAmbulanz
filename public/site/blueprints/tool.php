@@ -44,7 +44,7 @@ fields:
     label: Headline
     type: text
   services: services
-  preisboxtext:
+  priceboxtext:
     label: Preisbox Text
     type: textarea
   analyseprice:
