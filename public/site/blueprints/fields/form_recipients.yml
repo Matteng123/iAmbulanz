@@ -1,3 +1,4 @@
   label: Empfänger des Formulars
   type: text
   default: info@iAmbulanz.de
+  help: Mehrer Empfänger per Komma und ohne Leerzeichen trennen: info@iambulanz.de,service@iambulanz.de.
