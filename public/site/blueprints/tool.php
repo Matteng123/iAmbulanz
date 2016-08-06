@@ -109,18 +109,9 @@ fields:
   section8:
     label: Sonstiges Gerät
     type: headline
-  differentheadline:
-    label: Sonstiges Gerät Headline
-    type: text
-  differenttext:
-    label: Sonstiges Gerät Text
+  unknownboxtext:
+    label: Anderes Gerät Text in Box
     type: textarea
-  differentboxheadline:
-    label: Sonstiges Gerät Headline in Box
-    type: text
-  differentboxtext:
-    label: Sonstiges Gerät Text in Box
+  nopriceboxtext:
+    label: Kein ermittelbarer Preis Text in Box
     type: textarea
-  differentbutton:
-    label: Sonstiges Gerät Button
-    type: text
