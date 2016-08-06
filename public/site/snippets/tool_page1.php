@@ -25,6 +25,12 @@
 						</span>
 					</li>
 			<?php endforeach; ?>
+					<li>
+							<span>
+								<img src="<?php echo $site->contentURL().'/device-unknown.png'; ?>" />
+								<a class="Tool-buttonlist-button" href="/<?php echo $page->uri() ?>/?page=5<?php echo getParamString($statusItems, 'device', 'unknown'); ?>"><span><?php echo $category; ?></span></a>
+							</span>
+					</li>
 		</ul>
 	</div>
 </div>
