@@ -1,4 +1,0 @@
-label: Variabel Name
-type: text
-help: Der Variabel Name wird als Key für die Mailtemplates verwendet. Der Variabel Name 'email' wird als solches erkannt und erzeugt eine Kopie des Formulars an den Kunden.
-validate: alphanum

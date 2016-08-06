@@ -1,7 +1,0 @@
-  label: Feldtyp
-  type: select
-  options:
-    input: A Einzeilige Eingabe
-    textarea: B Mehrzeilige Eingabe
-    radio: C Einzelauswahl Radiobuttons
-    checkbox: D Mehrfachauswahl Checkboxen

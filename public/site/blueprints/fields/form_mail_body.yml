@@ -1,3 +1,0 @@
-  label: Template für E-Mail an iAmbulanz
-  type: textarea
-  help: Der Text wird beim Versand des Formulars an den Empfänger des Formulars verschickt. Variabeln werden per %key% in den Text eingefügt und durch die ausgefüllten Werte ersetzt.
