@@ -1,9 +1,11 @@
 .Tool
   +bp('medium')
-    min-height: 450px
+    min-height: 550px
     +clearfix()
   +bp('large')
-    min-height: 700px
+    min-height: 800px
+  +bp('larger')
+    min-height: 900px
   &-leftbar
     &-pricebox
       background-color: $color-secondary
@@ -15,6 +17,10 @@
       h3
         font-weight: 800
         font-size: 1.8em
+        +bp('large')
+          font-size: 1.2em
+        +bp('larger')
+          font-size: 1.8em
         line-height: 1em
         margin-bottom: $border-medium
 
@@ -45,6 +51,7 @@
       +bp('large')
         margin-bottom: $border-large
     &-rabattbox
+      margin-bottom: $border-medium
       div
         img
           margin: 0 auto
@@ -54,6 +61,7 @@
 
     &-pricebox,
     &-rabattbox,
+
       +bp('large')
         margin-right: $border-large
       +bp('larger')
@@ -66,6 +74,21 @@
 
 
   &-rightbar
+    &-postbox
+      >div
+        margin-bottom: $border-medium
+      h3
+        font-weight: bold
+        font-size: 2em
+        margin-bottom: $border-small
+        +bp('large')
+          margin-bottom: $border-medium
+      +bp('large')
+        +clearfix()
+        >div
+          float: left
+          width: +unit(5.5)
+          padding-right: +unit(1)
     &-legal
       h4
         position: relative

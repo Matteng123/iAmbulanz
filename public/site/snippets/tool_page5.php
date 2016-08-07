@@ -25,12 +25,12 @@
 
 				<?php if($price == 0) : ?>
 					<?php if(get('device') == 'Anderes') :  ?>
-							<?php echo $page->unknownboxtext()->kirby() ?>
+							<?php echo $page->unknownboxtext()->kt() ?>
 						<?php else : ?>
-							<?php echo $page->nopriceboxtext()->kirby() ?>
+							<?php echo $page->nopriceboxtext()->kt() ?>
 						<?php endif; ?>
 				<?php else : ?>
-					<?php echo $page->priceboxtext()->kirby() ?>
+					<?php echo $page->priceboxtext()->kt() ?>
 				<?php endif; ?>
 
 		</div>

@@ -1,1 +1,1 @@
-<?php go($page->redirecttarget()); ?>
+<?php go($page->redirecttarget(), 302); ?>

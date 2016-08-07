@@ -4,16 +4,12 @@
   &-body
     max-width: $max-size
     margin: 0 auto
-    padding: 30px $border-small
+    padding: 20px $border-small
     +bp('medium')
-      padding: $border-medium
+      +clearfix()
+      padding: 20px $border-medium
     +bp('large')
-      padding: $border-large
-
-  &:after
-    content: ""
-    display: table
-    clear: both
+      padding: 40px $border-large 20px
 
   a
     font-family: $font-link
@@ -35,47 +31,50 @@
     &-col
       +bp('medium')
         float: left
-        width: unit(6)
+        width: unit(4)
   &-leftbar
     +bp('medium')
       float: left
-      width: unit(6)
+      width: unit(12)
     +bp('large')
-      width: unit(4)
-  &-centerbar
+      width: unit(6)
     ul
       margin-bottom: 30px
       padding: 0
-    +bp('medium')
-      float: left
-      width: unit(6)
-    +bp('large')
-      width: unit(4)
+      text-align: center
+      +bp('medium')
+        text-align: left
   &-rightbar
     +bp('medium')
       float: left
       width: unit(12)
+      +clearfix()
     +bp('large')
-      width: unit(4)
+      width: unit(6)
   &-copyright
-    margin-top: 30px
+    margin-top: 10px
     text-align: center
+    p
+      font-size: 1em
+      display: inline-block
+      vertical-align: middle
+    div
+      display: inline-block
+      vertical-align: middle
+      margin-left: 20px
     +bp('medium')
       width: unit(12)
       float: left
     +bp('large')
       text-align: left
-      margin-bottom: $border-large
   &-box
     text-align: center
-    border: 5px solid white
-    padding: 20px
+    +bp('medium')
+      margin: 0 auto
+      width: +unit(6)
     +bp('large')
+      float: right
       text-align: left
-      padding: 40px
-    +bp('larger')
-      padding: $border-larger
-
     p
       font-size: 1.2em
       +bp('larger')

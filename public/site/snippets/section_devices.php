@@ -4,6 +4,7 @@
 	$categorys = array();
 	// Tabellen aufbauen
 	$tables = array();
+	$maxdevices = 0;
 	foreach($devices as $device) {
 		if($device->overview()->isTrue()){
 			$cat = $device->category()->value();
@@ -13,6 +14,9 @@
 				$tables[$cat] = array();
 			}
 			array_push($tables[$cat], $device);
+			if(count($tables[$cat]) > $maxdevices) {
+				$maxdevices = count($tables[$cat]);
+			}
 		}
 	}
 	$categorys = array_unique ( $categorys );
@@ -37,7 +41,9 @@
 						</div>
 						<h3>Modelle:</h3>
 						<ul>
+							<?php $countcurrent = 0; ?>
 							<?php foreach($tables[$category] as $device):
+								$countcurrent++;
 								$servicedisplay = $device->service_display()->split($separator = ',');
 								foreach($servicedisplay as $damage){
 									array_push($damagelist, explode(':', (string)$damage)[0]);
@@ -53,6 +59,12 @@
 							?>
 								<li><?php echo $device->device(); ?></li>
 							<?php endforeach; ?>
+							<?php if($countcurrent < $maxdevices) :
+								for ($i = $countcurrent; $i < $maxdevices; $i++) : ?>
+    								<li class="hideMobile">&nbsp;</li>
+
+								<?php endfor; ?>
+							<?php endif; ?>
 						</ul>
 						<h3>Defekte:</h3>
 						<?php $damagelist = array_unique ( $damagelist ); ?>
