@@ -9,7 +9,7 @@ pages:
     - section_benefits
     - section_services
 fields:
-  title: title
+  titel: title
   info:
     label: Inhaltselemente
     type: info

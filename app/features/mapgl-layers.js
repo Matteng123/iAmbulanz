@@ -145,22 +145,23 @@ let layers = {
 
 		var features = self.map.queryRenderedFeatures([[e.point.x-20, e.point.y-20],[e.point.x+20, e.point.y+20] ], {layers: keys});
 
-		if(features.length > 0) {
-			var prop = features[0].properties;
-				// popup template
-				var output = '';
-				output += '<div class="map-popup-layer">';
-				output += prop.headline !== "" ? '<strong>' + prop.headline + '</strong>' : '';
-				output += prop.description !== "" ? prop.description : '';
-				output += '</div>';
+		if (!features.length) {
+        return;
+    }
 
-				self.popup.setLngLat( features[0].geometry.coordinates )
-					.setHTML(output)
-					.addTo(self.map);
+		var prop = features[0].properties;
+			// popup template
+			var output = '';
+			output += '<div class="map-popup-layer">';
+			output += prop.headline !== "" ? '<strong>' + prop.headline + '</strong>' : '';
+			output += prop.description !== "" ? prop.description : '';
+			output += '</div>';
 
-		} else {
-			self.popup.remove();
-		}
+			self.popup.setLngLat( features[0].geometry.coordinates )
+				.setHTML(output)
+				.addTo(self.map);
+
+
 	},
 
 	_loadLayer: function (){
