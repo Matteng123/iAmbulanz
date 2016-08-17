@@ -7,7 +7,7 @@
     <span>Schritt 5/6</span>
   	<h1><?php echo $page->step5headline() ?></h1>
   </div>
-	<div class="Tool-leftbar">
+	<!-- <div class="Tool-leftbar">
 		<div class="Tool-leftbar-pricebox">
 				<h4>Vorraussichtliche</h4>
 				<h3>Reparaturkosten</h4>
@@ -34,9 +34,9 @@
 				<?php endif; ?>
 
 		</div>
-	</div>
+	</div>-->
 		<?php if($services->count()): ?>
-			<div class="Services-items">
+			<div class="Services-items Services-items--wide">
 				<?php foreach($services as $item): ?>
 					<div class="Services-items-box">
 						<div>

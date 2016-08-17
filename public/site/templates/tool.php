@@ -14,7 +14,7 @@ $statusItems = array(
     'title' => 'Schaden',
     'param' => 'damage' ),
   4 => array( 'page' => 5,
-    'title' => 'Preis',
+    'title' => 'Service',
     'param' => 'price' ),
   5 => array( 'page' => 6,
     'title' => 'Unverbindliche Anfrage',

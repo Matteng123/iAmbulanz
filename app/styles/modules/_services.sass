@@ -23,6 +23,13 @@
 		+bp('large')
 			width: +unit(9)
 			float: left
+		&--wide
+			+bp('large')
+				width: +unit(12)
+				float: left
+			.Services-items-box
+				div:last-child
+					text-align: center
 		&-box
 			background-color: white
 			margin-bottom: $border-small
