@@ -44,7 +44,7 @@ fields:
     label: Headline
     type: text
   services: services
-  preisboxtext:
+  priceboxtext:
     label: Preisbox Text
     type: textarea
   analyseprice:
@@ -107,20 +107,11 @@ fields:
     type: text
     help: Link geht auf erstes PDF in den Files
   section8:
-    label: Sonstiges Gerät
+    label: Unbekanntes Geräte oder kein Preis
     type: headline
-  differentheadline:
-    label: Sonstiges Gerät Headline
-    type: text
-  differenttext:
-    label: Sonstiges Gerät Text
+  unknownboxtext:
+    label: Anderes Gerät Text in Box
     type: textarea
-  differentboxheadline:
-    label: Sonstiges Gerät Headline in Box
-    type: text
-  differentboxtext:
-    label: Sonstiges Gerät Text in Box
+  nopriceboxtext:
+    label: Kein ermittelbarer Preis Text in Box
     type: textarea
-  differentbutton:
-    label: Sonstiges Gerät Button
-    type: text

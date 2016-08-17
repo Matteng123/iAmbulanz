@@ -5,7 +5,7 @@
 	// Tabellen aufbauen
 	$tables = array();
 	foreach($devices as $device) {
-		if($device->overview()){
+		if($device->overview()->isTrue()){
 			$cat = $device->category()->value();
 			$categorys[] = $cat;
 			if(!array_key_exists( $cat , $tables )){

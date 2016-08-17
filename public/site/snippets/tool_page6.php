@@ -41,21 +41,46 @@
 							<h5><?php echo $servicetime; ?></h5>
 						</span>
 					<?php endif; ?>
-
-
 				</div>
-				<p><?php echo $page->preisboxtext()->html() ?></p>
+				<?php if($price == 0) : ?>
+					<?php if(get('device') == 'Anderes') :  ?>
+							<?php echo $page->unknownboxtext()->kt() ?>
+						<?php else : ?>
+							<?php echo $page->nopriceboxtext()->kt() ?>
+						<?php endif; ?>
+				<?php else : ?>
+					<?php echo $page->priceboxtext()->kt() ?>
+				<?php endif; ?>
 		</div>
 		<div class="Tool-leftbar-rabattbox">
 			<div>
 	        <?php echo $page->rabattimage()->toFile()->html() ?>
 	    </div>
 	    <div>
-	        <?php echo $page->rabatt()->kirby() ?>
+	        <?php echo $page->rabatt()->kt() ?>
 	    </div>
 		</div>
 	</div>
 	<div class="Tool-rightbar">
+		<?php if(get('price') == 'Per-Post') :  ?>
+			<div class="Tool-rightbar-postbox">
+				<div>
+					<?php
+						$pdf = $page->files()->filterBy('extension', 'pdf');
+					?>
+					<h3><?php echo $page->postheadline()->html() ?></h3>
+					<?php echo $page->posttext()->kt() ?>
+					<br/>
+					<a class="Services-button" href="/" title="Download" ><span>Zur Startseite</span></a>
+				</div>
+				<div>
+					<h3>Formular ausfüllen und beilegen:</h3>
+					<br/>
+					<a class="Services-button" href="<?php echo $pdf->url(); ?>" title="Download" ><span>Download</span></a>
+				</div>
+			</div>
+
+		<?php else : ?>
 		<div class="Form">
 				<form id="<?php echo $page->uid() ?>" data-url="<?php echo $page->uri() ?>">
 					<p class="Form-errormessage"><?php echo $page->error() ?></p>
@@ -90,6 +115,10 @@
 		      </div>
 				</form>
 		</div>
-
+		<div class="Tool-rightbar-legal">
+				<h4><?php echo $page->datenschutzheadline()->html() ?></h4>
+				<p><?php echo $page->datenschutztext()->html() ?></p>
+		</div>
+	<?php endif; ?>
 	</div>
 </div>

@@ -1,42 +1,23 @@
   <footer class="Footer cf" role="contentinfo">
     <div class="Footer-body">
       <div class="Footer-leftbar">
-      	<?php echo $site->company()->kirbytext() ?>
-        <br/>
-      	<?php echo $site->adress()->kirbytext() ?>
-        <br/>
-        <table>
-          <tr>
-            <td>USt-IdNr.</td>
-            <td><?php echo $site->ust()->kirbytext() ?></td>
-          </tr>
-          <tr>
-            <td>Tel: </td>
-            <td><?php echo $site->tel()->html() ?></td>
-          </tr>
-          <tr>
-            <td>E-Mail: </td>
-            <td><a href="mailto:<?php echo $site->email()->html() ?>">› <?php echo $site->email()->html() ?></a></td>
-          </tr>
-      	</table>
-
-        <br>
-      </div>
-      <div class="Footer-centerbar">
         <div class="Footer-navigation">
           <div class="Footer-navigation-col">
-            <?php
-              $metaitems = $pages->filterBy('ispart', 'meta');
-              if($metaitems and $metaitems->count()):
-            ?>
-            <ul>
-              <?php foreach($metaitems as $p): ?>
-              <li>
-                <a <?php e($p->isOpen(), ' class="active"') ?> href="<?php echo $p->url() ?>"><?php echo $p->title()->html() ?></a>
-              </li>
-              <?php endforeach ?>
-            </ul>
-            <?php endif ?>
+              <?php
+                $metaitems = $pages->filterBy('ispart', 'meta');
+                if($metaitems and $metaitems->count()):
+              ?>
+              <ul>
+                <?php foreach($metaitems as $p): ?>
+                <li>
+                  <a <?php e($p->isOpen(), ' class="active"') ?> href="<?php echo $p->url() ?>"><?php echo $p->title()->html() ?></a>
+                </li>
+                <?php endforeach ?>
+              </ul>
+              <?php endif ?>
+
+            </div>
+          <div class="Footer-navigation-col">
             <?php
               $footeritems = $pages->filterBy('ispart', 'footer');
               if($footeritems and $footeritems->count()):
@@ -69,13 +50,12 @@
       <div class="Footer-rightbar">
         <div class="Footer-box">
           <p>Handy defekt? Jetzt anrufen:</p>
-          <a href="tel:<?php echo $site->tel()->html() ?>"><?php echo $site->tel()->html() ?></a>
-          <p>oder:</p>
+          <a href="tel:<?php echo $site->tel()->html() ?>"><?php echo $site->tel()->html() ?></a><br/>
           <a class="Footer-box-button" href="<?php echo $site->find($site->tool())->url(); ?>"><span>Online-Termin machen</span></a>
         </div>
       </div>
       <div class="Footer-copyright">
-        <?php echo $site->copyright()->kirbytext() ?>
+        <?php echo $site->copyright()->kirbytext() ?> <div class="fb-like" data-href="https://www.facebook.com/iAmbulanz" data-layout="button_count" data-action="like" data-size="large" data-show-faces="true" data-share="false"></div>
       </div>
     </div>
   </footer>

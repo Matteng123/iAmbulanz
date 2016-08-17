@@ -1,5 +1,9 @@
 .Devices
 	&-carousel
+		.hideMobile
+			display: none
+			+bp('large')
+				display: inherit
 		&-body
 			@extend .Section-body--smaller
 		.owl-item

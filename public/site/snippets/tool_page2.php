@@ -2,11 +2,12 @@
 	$devices = $site->Devices()->toStructure();
 	$filtered = array();
 	foreach($devices as $device) {
-			$target = $device->category()->value();
-			if($target == get('device')){
-				array_push($filtered, $device);
-			}
+		$target = $device->category()->value();
+		if($target == get('device')){
+			array_push($filtered, $device);
+		}
 	}
+
 ?>
 <div class="Tool-body">
 	<div class="Tool-header">

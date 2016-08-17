@@ -6,6 +6,7 @@ pages:
     - default
     - faq
     - blog
+    - redirect
     - tool
 fields:
   section1:

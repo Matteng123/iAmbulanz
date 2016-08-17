@@ -29,12 +29,13 @@ $damages = array(
 		'value' => 'service-akku' ),
 	2 => array(
 		'title' => 'Andere Komponente',
-		'value' => 'service-smallpiece' ),
+		'value' => 'service-smallpiece',
+    'help' => 'Zu Kleinkomponenten zählen folgende Teile:<br/>Kamera; Kameralinse; Innenkamera; Hörmuschel; Homebutton; Powerbutton; Lautstärkeregler; Stummschalter; Ladebuchse; Lautsprecher; Mikrofon; Kopfhörerbuchse; Backcover / Mittelrahmen; SIM / SD Kartenleser; WLAN / Bluetooth Antenne'),
 	3 => array(
 		'title' => 'Wasserschaden',
 		'value' => 'service-waterdamage' ),
 	4 => array(
-		'title' => 'Schadenstyp unbekannt',
+		'title' => 'Anderer Schaden',
 		'value' => 'service-unknown' )
 );
 
