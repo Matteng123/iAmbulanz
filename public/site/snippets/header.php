@@ -81,9 +81,10 @@
         height: 80px;
         position: relative;
         border: 5px solid rgb(177,0,0);
-        -webkit-border-radius: 15px;
+        border-radius: 15px;
         -webkit-border-radius: 15px;
         -moz-border-radius: 15px;
+        -o-border-radius: 15px;
         top: 50%;
         animation: loader 2s infinite ease;
         -webkit-animation: loader 2s infinite ease;
@@ -94,9 +95,10 @@
         vertical-align: top;
         display: inline-block;
         width: 100%;
-        -webkit-border-radius: 5px;
+        border-radius: 5px;
         -webkit-border-radius: 5px;
         -moz-border-radius: 5px;
+        -o-border-radius: 5px;
         background-color: rgb(177,0,0);
         animation: loader-inner 2s infinite ease-in;
         -webkit-animation: loader-inner 2s infinite ease-in;
