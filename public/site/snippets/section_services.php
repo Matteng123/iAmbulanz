@@ -21,7 +21,7 @@
 						<p><strong><?php echo $item->headline(); ?> | <?php echo $item->time(); ?></strong><br>
 						<?php echo $item->description(); ?></p>
 						<h6><span>Anleitung:</span></h6>
-						<?php snippet('partial_guide-'.$item->icon()); ?>
+						<?php snippet('partial_guide-'.$item->type()); ?>
 					</div>
 					<div>
 						<a class="Services-button" href="<?php echo $toolpage.'/?page=1&price='.$item->type(); ?>"><span><?php echo $item->button_text()->html(); ?></span></a>
