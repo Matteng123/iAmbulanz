@@ -117,7 +117,7 @@
 		</div>
 		<div class="Tool-rightbar-legal">
 				<h4><?php echo $page->datenschutzheadline()->html() ?></h4>
-				<p><?php echo $page->datenschutztext()->html() ?></p>
+				<?php echo $page->datenschutztext()->kt() ?>
 		</div>
 	<?php endif; ?>
 	</div>
