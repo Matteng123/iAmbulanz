@@ -10868,7 +10868,7 @@
 /* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
 	 * @license   Licensed under MIT license
@@ -42976,8 +42976,6 @@
 					console.log("loadLayer");
 					self._loadLayer();
 				});
-	
-				this.popup = new _mapboxGl2.default.Popup();
 				this.map.on('click', function (e) {
 					self._clickPopup(e);
 				});
@@ -43004,6 +43002,7 @@
 		_clickPopup: function _clickPopup(e) {
 			var self = this,
 			    keys = [];
+	
 			(0, _ampEach2.default)(self.MapConfig.layer, function (layerData, key) {
 				keys.push(key);
 			});
@@ -43022,7 +43021,7 @@
 			output += prop.description !== "" ? prop.description : '';
 			output += '</div>';
 	
-			self.popup.setLngLat(features[0].geometry.coordinates).setHTML(output).addTo(self.map);
+			var popup = new _mapboxGl2.default.Popup().setLngLat(features[0].geometry.coordinates).setHTML(output).addTo(self.map);
 		},
 	
 		_loadLayer: function _loadLayer() {

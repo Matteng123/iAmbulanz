@@ -111,8 +111,6 @@ let layers = {
 				console.log("loadLayer");
 				self._loadLayer();
 			});
-
-			this.popup = new mapboxgl.Popup();
 			this.map.on('click', function (e) {
 				self._clickPopup(e);
 			});
@@ -139,6 +137,7 @@ let layers = {
 	_clickPopup: function (e){
 		var self = this,
 			keys = [];
+
 		each(self.MapConfig.layer, function(layerData, key) {
 			keys.push(key);
 		});
@@ -149,19 +148,19 @@ let layers = {
         return;
     }
 
+
 		var prop = features[0].properties;
 			// popup template
-			var output = '';
+		var output = '';
 			output += '<div class="map-popup-layer">';
 			output += prop.headline !== "" ? '<strong>' + prop.headline + '</strong>' : '';
 			output += prop.description !== "" ? prop.description : '';
 			output += '</div>';
 
-			self.popup.setLngLat( features[0].geometry.coordinates )
-				.setHTML(output)
-				.addTo(self.map);
-
-
+		var popup = new mapboxgl.Popup()
+					.setLngLat( features[0].geometry.coordinates )
+					.setHTML(output)
+					.addTo(self.map);
 	},
 
 	_loadLayer: function (){
