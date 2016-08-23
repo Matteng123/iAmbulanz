@@ -81,7 +81,7 @@ function getPriceforDamage($site){
 				case 'Akku' :
 					$filtered = $device->service_akku()->split($separator = ',');
 					break;
-				case 'Andere Komponente' :
+				case 'Kleinkomponente' :
 					$filtered = $device->service_smallpiece()->split($separator = ',');
 					break;
 				case 'Wasserschaden' :
