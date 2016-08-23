@@ -1,11 +1,13 @@
 &.Header--sticky-open
   .Header--sticky
+    visibility: visible
     +transform(translateY(0%))
     +transition(all, 0.45s)
 .Header--sticky
   display: none
   +bp('large')
     display: block
+    visibility: hidden
   background-color: $color-background
   width: 100%
   position: fixed
