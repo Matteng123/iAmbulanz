@@ -4,7 +4,7 @@
 				<h2><?php echo $section->headline()->html() ?></h2>
 				<?php echo $section->copy()->kirbytext() ?>
 				<?php if($section->button_text()->exsits()): ?>
-					<a class="Button" href="<?php echo html($section->button_url()) ?>"><span><?php echo html($section->button_text()) ?></span></a>
+					<a class="Button" href="<?php echo html($section->button_link()) ?>"><span><?php echo html($section->button_text()) ?></span></a>
 				<?php endif; ?>
 		</div>
 		<div class="Location-teaser-tab">
