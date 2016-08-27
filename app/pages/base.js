@@ -18,9 +18,9 @@ let Base = View.extend({
     },
 
     render: function(){
-        console.log("RENDER", this.isInitial);
+        // console.log("RENDER", this.isInitial);
         if(!this.isInitial){
-            console.log("RENDER width Template");
+            // console.log("RENDER width Template");
             this.renderWithTemplate(this);
         }
 
@@ -84,7 +84,7 @@ let Base = View.extend({
     },
 
     cleanup: function(){
-        console.log("cleanup");
+        // console.log("cleanup");
     },
 
 

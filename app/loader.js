@@ -10,7 +10,7 @@ var Loader = {
       });
     },
     removeLoader: () => {
-        console.log("removeLoader");
+        // console.log("removeLoader");
         document.body.setAttribute("class", document.body.getAttribute("class").split("hideloader").join(""));
         var preloader = document.getElementsByClassName("preloader")[0];
         if(preloader && preloader.parentNode){
@@ -22,7 +22,7 @@ var Loader = {
         if(window.App == undefined){
             setTimeout(Loader.startApp, 500);
         } else {
-            console.log("blastoff");
+            // console.log("blastoff");
             App.blastoff();
 
             document.body.setAttribute("class", document.body.getAttribute("class").split("loading").join("loaded") );

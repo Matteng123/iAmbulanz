@@ -125,11 +125,11 @@ Content = Content.extend({
 
       let activeA = this.query(".Tool-statusbar-carousel a.active");
       let activeO = activeA.getAttribute('data-page');
-      console.log("perpage", perpage);
-      console.log("to page", Math.ceil(activeO/perpage)-1);
+      // console.log("perpage", perpage);
+      // console.log("to page", Math.ceil(activeO/perpage)-1);
       owl.trigger('to.owl.carousel', [Math.ceil(activeO/perpage)-1, 1]);
 
-      console.log(owl);
+      // console.log(owl);
       // owl.next();
     }
   },

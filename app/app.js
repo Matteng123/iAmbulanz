@@ -30,7 +30,9 @@ var App = {
                 }
             });
             view.model.on("error", function(model, resp){
-                console.log("failed to load");
+                console.warn("failed to load: 404");
+                view.model.id = '';
+                view.model.fetch();
             });
             view.model.fetch();
         });
