@@ -20,7 +20,9 @@
     "start": "gulp",
     "production": "gulp production",
     "init": "git-ftp init --syncroot public -u matteng_de_9  -P - ftp://kontentftp.matteng.de/iambulanz/htdocs",
-    "push": "git-ftp push --syncroot public -u matteng_de_9  -P - ftp://kontentftp.matteng.de/iambulanz/htdocs"
+    "push": "git-ftp push --syncroot public -u matteng_de_9  -P - ftp://kontentftp.matteng.de/iambulanz/htdocs",
+    "initlive": "git-ftp init --syncroot public -u web39  -P - ftp://www57.estugo.de/www.iambulanz.de",
+    "pushlive": "git-ftp push --syncroot public -u web39  -P - ftp://www57.estugo.de/www.iambulanz.de"
   },
   "browserify": "",
   "devDependencies": {
