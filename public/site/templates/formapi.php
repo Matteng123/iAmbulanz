@@ -10,7 +10,18 @@ if(!get('author') or get('author') != 'iAmbulanz') notFound();
     $mailbody = str_replace('%'.$mail_key.'%', $mail_value, $mailbody);
     $clientbody = str_replace('%'.$mail_key.'%', $mail_value, $clientbody);
   }
-  if(strrpos($form->recipient(), ",")){
+
+  if(strrpos($form->recipient(), ", ")) {
+    $recipientlist = split(", ", $form->recipient());
+    foreach($recipientlist as $recipient){
+        $email = email(array(
+        'to'      => $recipient,
+        'from'    => $form->sender(),
+        'subject' => $form->mailsubject(),
+        'body'    => $mailbody
+        ));
+    }
+  } else if(strrpos($form->recipient(), ",")) {
     $recipientlist = split(",", $form->recipient());
     foreach($recipientlist as $recipient){
         $email = email(array(
