@@ -51,7 +51,7 @@
 								<div>
 									<span></span>
 									<p>Zu Kleinkomponenten zählen folgende Teile:<br/>
-											Kamera; Kameralinse; Innenkamera; Hörmuschel; Homebutton; Powerbutton; Lautstärkeregler; Stummschalter; Ladebuchse; Lautsprecher; Mikrofon; Kopfhörerbuchse; Backcover / Mittelrahmen; SIM / SD Kartenleser;
+											Kamera; Kameralinse; Innenkamera; Hörmuschel; Homebutton; Powerbutton; Lautstärkeregler; Stummschalter; Ladebuchse; Lautsprecher; Mikrofon; Kopfhörerbuchse; SIM / SD Kartenleser;
 											WLAN / Bluetooth Antenne
 									</p>
 								</div>
