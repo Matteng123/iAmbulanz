@@ -2,12 +2,22 @@
 	$fields = $page->formluar()->toStructure();
 	$price = getPriceforDamage($site);
 	$services = $page->services()->toStructure();
+	$devices = $site->Devices()->toStructure();
 	foreach ($services as $key => $service) {
 		if($service->type()==get('price')){
 			$serviceprice = $service->price()->value();
-			$servicetime = $service->time()->html();
 		}
 	}
+	foreach($devices as $device) {
+			$target = $device->device();
+			if($target == get('model')) {
+					$servicetime = $device->service_time();
+			}
+	}
+	if($servicetime == "") {
+		$servicetime = "1 Tag";
+	}
+
 ?>
 <div class="Tool-body">
 	<div class="Tool-header">
@@ -67,6 +77,8 @@
 				<div>
 					<?php
 						$pdf = $page->files()->filterBy('extension', 'pdf');
+						$pdfarray = explode("/", $pdf);
+						$pdf = array_pop($pdfarray);
 					?>
 					<h3><?php echo $page->postheadline()->html() ?></h3>
 					<?php echo $page->posttext()->kt() ?>
@@ -76,7 +88,7 @@
 				<div>
 					<h3>Formular ausfüllen und beilegen:</h3>
 					<br/>
-					<a class="Services-button" href="<?php echo $pdf->url(); ?>" title="Download" ><span>Download</span></a>
+					<a class="Services-button" href="<?php echo $page->contentURL()."/".$pdf ?>" title="Download" target="_blank"><span>Download</span></a>
 				</div>
 			</div>
 

@@ -116,6 +116,10 @@ fields:
       service-akku:
         label: Schaden Akku
         type: tags
+      service-time:
+        label: Zeit für die Reparatur
+        type: text
+        default: 2 Tage
       image: image_select
   tool:
     label: Seite für Anfragen

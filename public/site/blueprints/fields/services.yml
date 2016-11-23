@@ -4,7 +4,6 @@ modalsize: large
 entry: >
   Type: {{type}}<br />
   <strong>{{headline}}</strong><br />
-  {{time}}<br />
   <br />
   {{description}}
   Preis: {{price}} €<br />
@@ -19,11 +18,4 @@ fields:
       Per-Post: Per Post
   headline: headline
   description: description
-  time:
-    label: Zeit
-    type: text
   button_text: button_text
-  price:
-    label: Kosten
-    type: number
-    help: Muss nur in dem Anfragentool ausgefüllt werden

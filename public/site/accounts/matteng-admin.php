@@ -8,7 +8,5 @@ language: de
 role: admin
 history:
   - anfrage
-  - garantie/garantieformular
-  - reparatur/geraete
   - blog
   - blog/project-a

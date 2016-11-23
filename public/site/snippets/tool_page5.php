@@ -43,7 +43,7 @@
 							<span class="Services-items-icon Services-items-icon--<?php echo $item->type(); ?>"></span>
 						</div>
 						<div>
-							<p><strong><?php echo $item->headline(); ?> | <?php echo $item->time(); ?><?php if(!$item->price()->isEmpty()) : ?> | <?php echo $item->price().' €'; ?><?php endif; ?></strong><br>
+							<p><strong><?php echo $item->headline(); ?><?php if(!$item->price()->isEmpty()) : ?> | <?php echo $item->price().' €'; ?><?php endif; ?></strong><br>
 							<?php echo $item->description(); ?></p>
 							<h6><span>Anleitung:</span></h6>
 							<?php snippet('partial_guide-'.$item->type()); ?>
