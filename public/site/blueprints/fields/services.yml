@@ -16,6 +16,7 @@ fields:
       Vor-Ort: Vor-Ort
       Kurierdienst: Kurier
       Per-Post: Per Post
+      Stationar: Stationäre Aufnahme
   headline: headline
   description: description
   button_text: button_text
