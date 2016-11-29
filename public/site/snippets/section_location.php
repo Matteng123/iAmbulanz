@@ -19,11 +19,11 @@
 							<table>
 								<tr>
 									<td>Telefon:&nbsp;&nbsp;</td>
-									<td><?php echo $l->tel(); ?></td>
+									<td><a class="nolink" href="tel:<?php echo $l->tel(); ?>"><?php echo $l->tel(); ?></a></td>
 								</tr>
 								<tr>
 									<td>Mobil:</td>
-									<td><?php echo $l->mobil(); ?></td>
+									<td><a class="nolink" href="tel:<?php echo $l->mobil(); ?>"><?php echo $l->mobil(); ?></a></td>
 								</tr>
 								<tr>
 									<td>E-Mail:</td>

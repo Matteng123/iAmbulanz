@@ -7,7 +7,7 @@
     "zoom": 8,
     "bearing": 0,
     "pitch": 0,
-    "layer":{
+    "layer": {
         "locations": {
             "type": "point",
             "url": "/api/locations/",

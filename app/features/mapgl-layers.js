@@ -73,6 +73,7 @@ let layers = {
 	},
 
 	_renderMap: function(mapNode){
+		console.log("_renderMap");
 		if(this.MapConfig === undefined){
 			console.log("Keine Config Datei angelegt");
 			return;
