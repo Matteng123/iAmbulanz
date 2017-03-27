@@ -20,3 +20,7 @@ fields:
   headline: headline
   description: description
   button_text: button_text
+  price:
+    label: Kosten
+    type: number
+    help: Muss nur in dem Anfragentool ausgefüllt werden
